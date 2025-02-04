@@ -1,0 +1,24 @@
+Code Naming Guidelines:
+SQL - Simple Names (Full)
+
+Naming:
+Constants - CAPS_WITH_UNDERSCORES (Describing exactly what it is for)
+Components - ShelterComponentName - ShelterFrameComponentName
+Methods - Describe what they do e.g. fillForm();
+		- Lambda for Events naming - onEventDescription();
+Local Variables - radioButton
+Class Field - genderButtonGroup
+			- cityTextField
+			
+			
+Classes:
+	dataLayer:
+		DataManager
+		Entities:
+			Exact name of Table
+	BLLayer:
+		DTOManager (Bzw xManager in case of multiple needed where x stands for Form/Panel)
+		Entities:
+			Exact name of Table + DTO
+			//ListData
+			
