@@ -1,14 +1,22 @@
 package data;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import data.entities.Animal;
+import data.entities.AnimalType;
 import data.entities.Entity;
+import data.entities.Patron;
+import data.entities.Room;
 import util.Constants;
 
 public class DataManager {
@@ -86,4 +94,23 @@ public class DataManager {
 			e.printStackTrace();
 		}
 	}
+	
+	public static byte[] imageToByteArrayJava9(Path imagePath) throws IOException{
+	      return Files.readAllBytes(imagePath);
+	    }
+	
+	public static void main(String[] args) {
+		String imagePathStr = "C:\\Users\\MaximillianKempen\\Documents";
+		Path imagePath = Path.of(imagePathStr);
+		try {
+			byte[] lule = imageToByteArrayJava9(imagePath);
+			Date dateOfBirth = null;
+			Animal an = new Animal("name", Animal.Gender.fromValue(1), dateOfBirth, "hahaha" , new AnimalType(), new Patron(),
+					new Room());
+			instance.saveEntity(an);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
 }
