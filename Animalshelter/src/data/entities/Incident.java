@@ -13,6 +13,8 @@ public class Incident extends Entity {
 	private Caretaker caretaker;
 	private Animal animal;
 	
+	public Incident() {};
+	
 	public Incident(ResultSet resultSet) throws SQLException {
 		this.id = resultSet.getInt("incident.id");
 		this.title = resultSet.getString("incident.name");

@@ -19,7 +19,8 @@ public abstract class Entity {
 	
 	public PreparedStatement getSqlDeleteStatement(Connection connection) {
 		String sql = "DELETE FROM " + this.getClass().getSimpleName() + " WHERE id = ?";
-		try(PreparedStatement statement = connection.prepareStatement(sql)) {
+		try {
+			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setInt(1, id);
 			return statement;
 		} catch (SQLException e) {
@@ -30,7 +31,8 @@ public abstract class Entity {
 	
 	public PreparedStatement getSqlSelectByIdStatement(Connection connection) {
 		String sql = "SELECT * FROM " + this.getClass().getSimpleName() + " WHERE id = ?";
-		try(PreparedStatement statement = connection.prepareStatement(sql)) {
+		try {
+			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setInt(1, id);
 			return statement;
 		} catch (SQLException e) {
@@ -41,7 +43,8 @@ public abstract class Entity {
 	
 	public PreparedStatement getSqlSelectAllStatement(Connection connection) {
 		String sql = "SELECT * FROM " + this.getClass().getSimpleName();
-		try(PreparedStatement statement = connection.prepareStatement(sql)) {
+		try {
+			PreparedStatement statement = connection.prepareStatement(sql);
 			return statement;
 		} catch (SQLException e) {
 			e.printStackTrace();

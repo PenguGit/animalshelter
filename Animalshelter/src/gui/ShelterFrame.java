@@ -12,8 +12,8 @@ public class ShelterFrame extends JFrame implements GUIConstants {
 		setBounds(FRAME_BOUNDS);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		ShelterPanel shelterPanel = new ShelterPanel();
-		add(shelterPanel);
+		CaretakerPanel caretakerPanel = new CaretakerPanel();
+		add(caretakerPanel);
 		pack();
 		setVisible(true);
 	}

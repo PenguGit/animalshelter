@@ -8,6 +8,8 @@ import java.sql.SQLException;
 public class Room extends Entity {
 	private String name;
 	
+	public Room() {};
+	
 	public Room(ResultSet resultSet) throws SQLException {
 		this.id = resultSet.getInt("room.id");
 		this.name = resultSet.getString("room.name");

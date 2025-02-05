@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Adopter extends Person {
+	public Adopter() {};
+	
 	public Adopter(ResultSet resultSet) throws SQLException {
 		this.lastName = resultSet.getString("adopter.last_name");
 		this.firstName = resultSet.getString("adopter.first_name");

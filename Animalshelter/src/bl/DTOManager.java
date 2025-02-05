@@ -40,16 +40,16 @@ public class DTOManager {
 	}
 
 	// Adopter
-	public static void saveAdopter(AdopterDTO adopterDTO) {
+	public void saveAdopter(AdopterDTO adopterDTO) {
 		Adopter adopter = DataObjectMapper.getAdopterFromAdopterDTO(adopterDTO);
 		DataManager.getInstance().saveEntity(adopter);
 	}
 
-	public static AdopterDTO loadAdopterById(int id) {
+	public AdopterDTO loadAdopterById(int id) {
 		return DataObjectMapper.getAdopterDTOFromAdopter(DataManager.getInstance().loadEntityById(Adopter.class, id));
 	}
 
-	public static ArrayList<AdopterDTO> loadAdopters() {
+	public ArrayList<AdopterDTO> loadAdopters() {
 		ArrayList<AdopterDTO> adopterDTOs = new ArrayList<>();
 		for (Adopter adopter : DataManager.getInstance().loadEntities(Adopter.class)) {
 			adopterDTOs.add(DataObjectMapper.getAdopterDTOFromAdopter(adopter));
@@ -57,22 +57,22 @@ public class DTOManager {
 		return adopterDTOs;
 	}
 
-	public static void deleteAdopter(AdopterDTO adopterDTO) {
+	public void deleteAdopter(AdopterDTO adopterDTO) {
 		Adopter adopter = DataObjectMapper.getAdopterFromAdopterDTO(adopterDTO);
 	    DataManager.getInstance().deleteEntity(adopter);
 	}
 	
 	// Adoption
-	public static void saveAdoption(AdoptionDTO adoptionDTO) {
+	public void saveAdoption(AdoptionDTO adoptionDTO) {
 	    Adoption adoption = DataObjectMapper.getAdoptionFromAdoptionDTO(adoptionDTO);
 	    DataManager.getInstance().saveEntity(adoption);
 	}
 
-	public static AdoptionDTO loadAdoptionById(int id) {
+	public AdoptionDTO loadAdoptionById(int id) {
 	    return DataObjectMapper.getAdoptionDTOFromAdoption(DataManager.getInstance().loadEntityById(Adoption.class, id));
 	}
 
-	public static ArrayList<AdoptionDTO> loadAdoptions() {
+	public ArrayList<AdoptionDTO> loadAdoptions() {
 	    ArrayList<AdoptionDTO> adoptionDTOs = new ArrayList<>();
 	    for (Adoption adoption : DataManager.getInstance().loadEntities(Adoption.class)) {
 	        adoptionDTOs.add(DataObjectMapper.getAdoptionDTOFromAdoption(adoption));
@@ -80,22 +80,22 @@ public class DTOManager {
 	    return adoptionDTOs;
 	}
 
-	public static void deleteAdoption(AdoptionDTO adoptionDTO) {
+	public void deleteAdoption(AdoptionDTO adoptionDTO) {
 	    Adoption adoption = DataObjectMapper.getAdoptionFromAdoptionDTO(adoptionDTO);
 	    DataManager.getInstance().deleteEntity(adoption);
 	}
 
 	// Animal
-	public static void saveAnimal(AnimalDTO animalDTO) {
+	public void saveAnimal(AnimalDTO animalDTO) {
 	    Animal animal = DataObjectMapper.getAnimalFromAnimalDTO(animalDTO);
 	    DataManager.getInstance().saveEntity(animal);
 	}
 
-	public static AnimalDTO loadAnimalById(int id) {
+	public AnimalDTO loadAnimalById(int id) {
 	    return DataObjectMapper.getAnimalDTOFromAnimal(DataManager.getInstance().loadEntityById(Animal.class, id));
 	}
 
-	public static ArrayList<AnimalDTO> loadAnimals() {
+	public ArrayList<AnimalDTO> loadAnimals() {
 	    ArrayList<AnimalDTO> animalDTOs = new ArrayList<>();
 	    for (Animal animal : DataManager.getInstance().loadEntities(Animal.class)) {
 	        animalDTOs.add(DataObjectMapper.getAnimalDTOFromAnimal(animal));
@@ -103,22 +103,22 @@ public class DTOManager {
 	    return animalDTOs;
 	}
 
-	public static void deleteAnimal(AnimalDTO animalDTO) {
+	public void deleteAnimal(AnimalDTO animalDTO) {
 	    Animal animal = DataObjectMapper.getAnimalFromAnimalDTO(animalDTO);
 	    DataManager.getInstance().deleteEntity(animal);
 	}
 
 	// AnimalType
-	public static void saveAnimalType(AnimalTypeDTO animalTypeDTO) {
+	public void saveAnimalType(AnimalTypeDTO animalTypeDTO) {
 	    AnimalType animalType = DataObjectMapper.getAnimalTypeFromAnimalTypeDTO(animalTypeDTO);
 	    DataManager.getInstance().saveEntity(animalType);
 	}
 
-	public static AnimalTypeDTO loadAnimalTypeById(int id) {
+	public AnimalTypeDTO loadAnimalTypeById(int id) {
 	    return DataObjectMapper.getAnimalTypeDTOFromAnimalType(DataManager.getInstance().loadEntityById(AnimalType.class, id));
 	}
 
-	public static ArrayList<AnimalTypeDTO> loadAnimalTypes() {
+	public ArrayList<AnimalTypeDTO> loadAnimalTypes() {
 	    ArrayList<AnimalTypeDTO> animalTypeDTOs = new ArrayList<>();
 	    for (AnimalType animalType : DataManager.getInstance().loadEntities(AnimalType.class)) {
 	        animalTypeDTOs.add(DataObjectMapper.getAnimalTypeDTOFromAnimalType(animalType));
@@ -126,22 +126,22 @@ public class DTOManager {
 	    return animalTypeDTOs;
 	}
 
-	public static void deleteAnimalType(AnimalTypeDTO animalTypeDTO) {
+	public void deleteAnimalType(AnimalTypeDTO animalTypeDTO) {
 	    AnimalType animalType = DataObjectMapper.getAnimalTypeFromAnimalTypeDTO(animalTypeDTO);
 	    DataManager.getInstance().deleteEntity(animalType);
 	}
 
 	// Caretaker
-	public static void saveCaretaker(CaretakerDTO caretakerDTO) {
+	public void saveCaretaker(CaretakerDTO caretakerDTO) {
 	    Caretaker caretaker = DataObjectMapper.getCaretakerFromCaretakerDTO(caretakerDTO);
 	    DataManager.getInstance().saveEntity(caretaker);
 	}
 
-	public static CaretakerDTO loadCaretakerById(int id) {
+	public CaretakerDTO loadCaretakerById(int id) {
 	    return DataObjectMapper.getCaretakerDTOFromCaretaker(DataManager.getInstance().loadEntityById(Caretaker.class, id));
 	}
 
-	public static ArrayList<CaretakerDTO> loadCaretakers() {
+	public ArrayList<CaretakerDTO> loadCaretakers() {
 	    ArrayList<CaretakerDTO> caretakerDTOs = new ArrayList<>();
 	    for (Caretaker caretaker : DataManager.getInstance().loadEntities(Caretaker.class)) {
 	        caretakerDTOs.add(DataObjectMapper.getCaretakerDTOFromCaretaker(caretaker));
@@ -149,22 +149,22 @@ public class DTOManager {
 	    return caretakerDTOs;
 	}
 
-	public static void deleteCaretaker(CaretakerDTO caretakerDTO) {
+	public void deleteCaretaker(CaretakerDTO caretakerDTO) {
 	    Caretaker caretaker = DataObjectMapper.getCaretakerFromCaretakerDTO(caretakerDTO);
 	    DataManager.getInstance().deleteEntity(caretaker);
 	}
 
 	// Examination
-	public static void saveExamination(ExaminationDTO examinationDTO) {
+	public void saveExamination(ExaminationDTO examinationDTO) {
 	    Examination examination = DataObjectMapper.getExaminationFromExaminationDTO(examinationDTO);
 	    DataManager.getInstance().saveEntity(examination);
 	}
 
-	public static ExaminationDTO loadExaminationById(int id) {
+	public ExaminationDTO loadExaminationById(int id) {
 	    return DataObjectMapper.getExaminationDTOFromExamination(DataManager.getInstance().loadEntityById(Examination.class, id));
 	}
 
-	public static ArrayList<ExaminationDTO> loadExaminations() {
+	public ArrayList<ExaminationDTO> loadExaminations() {
 	    ArrayList<ExaminationDTO> examinationDTOs = new ArrayList<>();
 	    for (Examination examination : DataManager.getInstance().loadEntities(Examination.class)) {
 	        examinationDTOs.add(DataObjectMapper.getExaminationDTOFromExamination(examination));
@@ -172,22 +172,22 @@ public class DTOManager {
 	    return examinationDTOs;
 	}
 
-	public static void deleteExamination(ExaminationDTO examinationDTO) {
+	public void deleteExamination(ExaminationDTO examinationDTO) {
 	    Examination examination = DataObjectMapper.getExaminationFromExaminationDTO(examinationDTO);
 	    DataManager.getInstance().deleteEntity(examination);
 	}
 
 	// Incident
-	public static void saveIncident(IncidentDTO incidentDTO) {
+	public void saveIncident(IncidentDTO incidentDTO) {
 	    Incident incident = DataObjectMapper.getIncidentFromIncidentDTO(incidentDTO);
 	    DataManager.getInstance().saveEntity(incident);
 	}
 
-	public static IncidentDTO loadIncidentById(int id) {
+	public IncidentDTO loadIncidentById(int id) {
 	    return DataObjectMapper.getIncidentDTOFromIncident(DataManager.getInstance().loadEntityById(Incident.class, id));
 	}
 
-	public static ArrayList<IncidentDTO> loadIncidents() {
+	public ArrayList<IncidentDTO> loadIncidents() {
 	    ArrayList<IncidentDTO> incidentDTOs = new ArrayList<>();
 	    for (Incident incident : DataManager.getInstance().loadEntities(Incident.class)) {
 	        incidentDTOs.add(DataObjectMapper.getIncidentDTOFromIncident(incident));
@@ -195,22 +195,22 @@ public class DTOManager {
 	    return incidentDTOs;
 	}
 
-	public static void deleteIncident(IncidentDTO incidentDTO) {
+	public void deleteIncident(IncidentDTO incidentDTO) {
 	    Incident incident = DataObjectMapper.getIncidentFromIncidentDTO(incidentDTO);
 	    DataManager.getInstance().deleteEntity(incident);
 	}
 
 	// Patron
-	public static void savePatron(PatronDTO patronDTO) {
+	public void savePatron(PatronDTO patronDTO) {
 	    Patron patron = DataObjectMapper.getPatronFromPatronDTO(patronDTO);
 	    DataManager.getInstance().saveEntity(patron);
 	}
 
-	public static PatronDTO loadPatronById(int id) {
+	public PatronDTO loadPatronById(int id) {
 	    return DataObjectMapper.getPatronDTOFromPatron(DataManager.getInstance().loadEntityById(Patron.class, id));
 	}
 
-	public static ArrayList<PatronDTO> loadPatrons() {
+	public ArrayList<PatronDTO> loadPatrons() {
 	    ArrayList<PatronDTO> patronDTOs = new ArrayList<>();
 	    for (Patron patron : DataManager.getInstance().loadEntities(Patron.class)) {
 	        patronDTOs.add(DataObjectMapper.getPatronDTOFromPatron(patron));
@@ -218,22 +218,22 @@ public class DTOManager {
 	    return patronDTOs;
 	}
 
-	public static void deletePatron(PatronDTO patronDTO) {
+	public void deletePatron(PatronDTO patronDTO) {
 	    Patron patron = DataObjectMapper.getPatronFromPatronDTO(patronDTO);
 	    DataManager.getInstance().deleteEntity(patron);
 	}
 
 	// Room
-	public static void saveRoom(RoomDTO roomDTO) {
+	public void saveRoom(RoomDTO roomDTO) {
 	    Room room = DataObjectMapper.getRoomFromRoomDTO(roomDTO);
 	    DataManager.getInstance().saveEntity(room);
 	}
 
-	public static RoomDTO loadRoomById(int id) {
+	public RoomDTO loadRoomById(int id) {
 	    return DataObjectMapper.getRoomDTOFromRoom(DataManager.getInstance().loadEntityById(Room.class, id));
 	}
 
-	public static ArrayList<RoomDTO> loadRooms() {
+	public ArrayList<RoomDTO> loadRooms() {
 	    ArrayList<RoomDTO> roomDTOs = new ArrayList<>();
 	    for (Room room : DataManager.getInstance().loadEntities(Room.class)) {
 	        roomDTOs.add(DataObjectMapper.getRoomDTOFromRoom(room));
@@ -241,22 +241,22 @@ public class DTOManager {
 	    return roomDTOs;
 	}
 
-	public static void deleteRoom(RoomDTO roomDTO) {
+	public void deleteRoom(RoomDTO roomDTO) {
 	    Room room = DataObjectMapper.getRoomFromRoomDTO(roomDTO);
 	    DataManager.getInstance().deleteEntity(room);
 	}
 
 	// Vet
-	public static void saveVet(VetDTO vetDTO) {
+	public void saveVet(VetDTO vetDTO) {
 	    Vet vet = DataObjectMapper.getVetFromVetDTO(vetDTO);
 	    DataManager.getInstance().saveEntity(vet);
 	}
 
-	public static VetDTO loadVetById(int id) {
+	public VetDTO loadVetById(int id) {
 	    return DataObjectMapper.getVetDTOFromVet(DataManager.getInstance().loadEntityById(Vet.class, id));
 	}
 
-	public static ArrayList<VetDTO> loadVets() {
+	public ArrayList<VetDTO> loadVets() {
 	    ArrayList<VetDTO> vetDTOs = new ArrayList<>();
 	    for (Vet vet : DataManager.getInstance().loadEntities(Vet.class)) {
 	        vetDTOs.add(DataObjectMapper.getVetDTOFromVet(vet));
@@ -264,7 +264,7 @@ public class DTOManager {
 	    return vetDTOs;
 	}
 
-	public static void deleteVet(VetDTO vetDTO) {
+	public void deleteVet(VetDTO vetDTO) {
 	    Vet vet = DataObjectMapper.getVetFromVetDTO(vetDTO);
 	    DataManager.getInstance().deleteEntity(vet);
 	}
