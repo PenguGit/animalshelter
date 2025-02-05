@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Patron extends Person {
+	public Patron() {};
+	
 	public Patron(ResultSet resultSet) throws SQLException {
 		this.lastName = resultSet.getString("patron.last_name");
 		this.firstName = resultSet.getString("patron.first_name");

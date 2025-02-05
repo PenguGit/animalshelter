@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Caretaker extends Person {
+	public Caretaker() {};
+	
 	public Caretaker(ResultSet resultSet) throws SQLException {
 		this.lastName = resultSet.getString("caretaker.last_name");
 		this.firstName = resultSet.getString("caretaker.first_name");

@@ -46,6 +46,8 @@ public class Animal extends Entity {
 	private Patron patron;
 	private Room room;
 	
+	public Animal() {};
+	
 	public Animal(ResultSet resultSet) throws SQLException {
 		this.id = resultSet.getInt("animal.id");
 		this.name = resultSet.getString("animal.name");

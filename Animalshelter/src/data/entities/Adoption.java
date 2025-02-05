@@ -11,6 +11,8 @@ public class Adoption extends Entity {
 	private Adopter adopter;
 	private Animal animal;
 	
+	public Adoption() {};
+	
 	public Adoption(ResultSet resultSet) throws SQLException {
 		this.id = resultSet.getInt("adoption.id");
 		this.date = resultSet.getDate("adoption.date");

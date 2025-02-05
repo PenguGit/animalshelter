@@ -8,6 +8,8 @@ import java.sql.SQLException;
 public class AnimalType extends Entity {
 	private String name;
 	
+	public AnimalType() {};
+	
 	public AnimalType(ResultSet resultSet) throws SQLException {
 		this.id = resultSet.getInt("animaltype.id");
 		this.name = resultSet.getString("animaltype.name");

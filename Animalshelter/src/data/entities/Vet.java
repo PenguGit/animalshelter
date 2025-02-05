@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Vet extends Person {
+	public Vet() {};
+	
 	public Vet(ResultSet resultSet) throws SQLException {
 		this.lastName = resultSet.getString("vet.last_name");
 		this.firstName = resultSet.getString("vet.first_name");
