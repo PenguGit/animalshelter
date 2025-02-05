@@ -10,7 +10,7 @@ public class Room extends Entity {
 	
 	public Room(ResultSet resultSet) throws SQLException {
 		this.id = resultSet.getInt("room.id");
-		this.name = resultSet.getString("room.room_name");
+		this.name = resultSet.getString("room.name");
 	}
 	
 	public Room(String name) {
@@ -32,7 +32,7 @@ public class Room extends Entity {
 
 	@Override
 	public PreparedStatement getSqlInsertStatement(Connection connection) {
-		String sql = "INSERT INTO room(room_name) VALUES(?)";
+		String sql = "INSERT INTO room(name) VALUES(?)";
 		try(PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 			statement.setString(1, name);
 			return statement;
@@ -44,7 +44,7 @@ public class Room extends Entity {
 
 	@Override
 	public PreparedStatement getSqlUpdateStatement(Connection connection) {
-		String sql = "UPDATE room SET room_name = ? WHERE id = ?";
+		String sql = "UPDATE room SET name = ? WHERE id = ?";
 		try(PreparedStatement statement = connection.prepareStatement(sql)) {
 			statement.setString(1, name);
 			statement.setInt(2, id);

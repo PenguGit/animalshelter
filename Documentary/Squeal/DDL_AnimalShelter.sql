@@ -53,24 +53,7 @@ DROP TABLE IF EXISTS `animalshelter`.`Room` ;
 
 CREATE TABLE IF NOT EXISTS `animalshelter`.`Room` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `room_name` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_unicode_ci;
-
-
--- -----------------------------------------------------
--- Table `animalshelter`.`Adopter`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `animalshelter`.`Adopter` ;
-
-CREATE TABLE IF NOT EXISTS `animalshelter`.`Adopter` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `last_name` VARCHAR(45) NOT NULL,
-  `first_name` VARCHAR(45) NOT NULL,
-  `phone_number` VARCHAR(45) NOT NULL,
-  `email` VARCHAR(45) NULL,
+  `name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
@@ -91,7 +74,6 @@ CREATE TABLE IF NOT EXISTS `animalshelter`.`Animal` (
   `AnimalType_id` INT NOT NULL,
   `Patron_id` INT NULL,
   `Room_id` INT NOT NULL,
-  `Adopter_id` INT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_Animal_AnimalType`
     FOREIGN KEY (`AnimalType_id`)
@@ -107,12 +89,24 @@ CREATE TABLE IF NOT EXISTS `animalshelter`.`Animal` (
     FOREIGN KEY (`Room_id`)
     REFERENCES `animalshelter`.`Room` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Animal_Adopter1`
-    FOREIGN KEY (`Adopter_id`)
-    REFERENCES `animalshelter`.`Adopter` (`id`)
-    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_unicode_ci;
+
+
+-- -----------------------------------------------------
+-- Table `animalshelter`.`Adopter`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `animalshelter`.`Adopter` ;
+
+CREATE TABLE IF NOT EXISTS `animalshelter`.`Adopter` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `last_name` VARCHAR(45) NOT NULL,
+  `first_name` VARCHAR(45) NOT NULL,
+  `phone_number` VARCHAR(45) NOT NULL,
+  `email` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
@@ -206,6 +200,30 @@ CREATE TABLE IF NOT EXISTS `animalshelter`.`Examination` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
+
+
+-- -----------------------------------------------------
+-- Table `animalshelter`.`Adoption`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `animalshelter`.`Adoption` ;
+
+CREATE TABLE IF NOT EXISTS `animalshelter`.`Adoption` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `date` DATE NOT NULL,
+  `Adopter_id` INT NOT NULL,
+  `Animal_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_Adoption_Adopter1`
+    FOREIGN KEY (`Adopter_id`)
+    REFERENCES `animalshelter`.`Adopter` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Adoption_Animal1`
+    FOREIGN KEY (`Animal_id`)
+    REFERENCES `animalshelter`.`Animal` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

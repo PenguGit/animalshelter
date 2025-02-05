@@ -45,7 +45,6 @@ public class Animal extends Entity {
 	private AnimalType animalType;
 	private Patron patron;
 	private Room room;
-	private Adopter adopter;
 	
 	public Animal(ResultSet resultSet) throws SQLException {
 		this.id = resultSet.getInt("animal.id");
@@ -56,11 +55,10 @@ public class Animal extends Entity {
 		this.animalType = new AnimalType(resultSet);
 		this.patron = new Patron(resultSet);
 		this.room = new Room(resultSet);
-		this.adopter = new Adopter(resultSet);
 	}
 	
 	public Animal(String name, Gender gender, Date dateOfBirth, String additionalInfo, AnimalType animalType,
-			Patron patron, Room room, Adopter adopter) {
+			Patron patron, Room room) {
 		this.name = name;
 		this.gender = gender;
 		this.dateOfBirth = dateOfBirth;
@@ -68,11 +66,10 @@ public class Animal extends Entity {
 		this.animalType = animalType;
 		this.patron = patron;
 		this.room = room;
-		this.adopter = adopter;
 	}
 	
 	public Animal(int id, String name, Gender gender, Date dateOfBirth, String additionalInfo, AnimalType animalType,
-			Patron patron, Room room, Adopter adopter) {
+			Patron patron, Room room) {
 		this.id = id;
 		this.name = name;
 		this.gender = gender;
@@ -81,7 +78,6 @@ public class Animal extends Entity {
 		this.animalType = animalType;
 		this.patron = patron;
 		this.room = room;
-		this.adopter = adopter;
 	}
 	
 	public String getName() {
@@ -126,16 +122,11 @@ public class Animal extends Entity {
 	public void setRoom(Room room) {
 		this.room = room;
 	}
-	public Adopter getAdopter() {
-		return adopter;
-	}
-	public void setAdopter(Adopter adopter) {
-		this.adopter = adopter;
-	}
+	
 	
 	@Override
 	public PreparedStatement getSqlInsertStatement(Connection connection) {
-		String sql = "INSERT INTO animal(name, gender, date_of_birth, additional_info, AnimalType_id, Patron_id, Room_id, Adopter_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO animal(name, gender, date_of_birth, additional_info, AnimalType_id, Patron_id, Room_id) VALUES(?, ?, ?, ?, ?, ?, ?)";
 		try(PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 			statement.setString(1, name);
 			statement.setInt(2, gender.getValue());
@@ -152,11 +143,6 @@ public class Animal extends Entity {
 				statement.setInt(6, animalType.getId());
 			}
 			statement.setInt(7, room.getId());
-			if(adopter == null) {
-				statement.setNull(8, Types.INTEGER);
-			} else {
-				statement.setInt(8, adopter.getId());
-			}
 			return statement;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -166,7 +152,7 @@ public class Animal extends Entity {
 	
 	@Override
 	public PreparedStatement getSqlUpdateStatement(Connection connection) {
-		String sql = "UPDATE animal SET name = ?, gender = ?, date_of_birth = ?, additional_info = ?, AnimalType_id = ?, Patron_id = ?, Room_id = ?, Adopter_id = ? WHERE id = ?";
+		String sql = "UPDATE animal SET name = ?, gender = ?, date_of_birth = ?, additional_info = ?, AnimalType_id = ?, Patron_id = ?, Room_id = ? WHERE id = ?";
 		try(PreparedStatement statement = connection.prepareStatement(sql)) {
 			statement.setString(1, name);
 			statement.setInt(2, gender.getValue());
@@ -183,12 +169,7 @@ public class Animal extends Entity {
 				statement.setInt(6, animalType.getId());
 			}
 			statement.setInt(7, room.getId());
-			if(adopter == null) {
-				statement.setNull(8, Types.INTEGER);
-			} else {
-				statement.setInt(8, adopter.getId());
-			}
-			statement.setInt(9, id);
+			statement.setInt(8, id);
 			return statement;
 		} catch (SQLException e) {
 			e.printStackTrace();
