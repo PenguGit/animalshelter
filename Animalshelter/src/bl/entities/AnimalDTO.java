@@ -7,6 +7,30 @@ public class AnimalDTO extends EntityDTO {
 		UNKNOWN,
 		FEMALE,
 		MALE;
+		
+	    public int getValue() {
+	    	switch(this) {
+		    	case UNKNOWN:
+					return 0;
+		    	case FEMALE:
+					return 1;
+				case MALE:
+					return 2;
+				default:
+					return -1;
+	    	}
+	    }
+	    
+	    public static Gender fromValue(int value) {
+	    	switch(value) {
+		    	case 0:
+		    		return Gender.UNKNOWN;
+		    	case 1:
+		    		return Gender.FEMALE;
+		    	default:
+		    		return Gender.MALE;
+	    	}
+	    }
 	}
 	
 	private String name;
@@ -16,10 +40,9 @@ public class AnimalDTO extends EntityDTO {
 	private AnimalTypeDTO animalType;
 	private PatronDTO patron;
 	private RoomDTO room;
-	private AdopterDTO adopter;
 	
 	public AnimalDTO(String name, Gender gender, LocalDate dateOfBirth, String additionalInfo, AnimalTypeDTO animalType,
-			PatronDTO patron, RoomDTO room, AdopterDTO adopter) {
+			PatronDTO patron, RoomDTO room) {
 		this.name = name;
 		this.gender = gender;
 		this.dateOfBirth = dateOfBirth;
@@ -27,11 +50,10 @@ public class AnimalDTO extends EntityDTO {
 		this.animalType = animalType;
 		this.patron = patron;
 		this.room = room;
-		this.adopter = adopter;
 	}
 	
 	public AnimalDTO(int id, String name, Gender gender, LocalDate dateOfBirth, String additionalInfo, AnimalTypeDTO animalType,
-			PatronDTO patron, RoomDTO room, AdopterDTO adopter) {
+			PatronDTO patron, RoomDTO room) {
 		this.id = id;
 		this.name = name;
 		this.gender = gender;
@@ -40,7 +62,6 @@ public class AnimalDTO extends EntityDTO {
 		this.animalType = animalType;
 		this.patron = patron;
 		this.room = room;
-		this.adopter = adopter;
 	}
 	
 	public String getName() {
@@ -84,11 +105,5 @@ public class AnimalDTO extends EntityDTO {
 	}
 	public void setRoom(RoomDTO room) {
 		this.room = room;
-	}
-	public AdopterDTO getAdopter() {
-		return adopter;
-	}
-	public void setAdopter(AdopterDTO adopter) {
-		this.adopter = adopter;
 	}
 }

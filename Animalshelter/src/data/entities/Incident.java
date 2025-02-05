@@ -82,7 +82,8 @@ public class Incident extends Entity {
 	@Override
 	public PreparedStatement getSqlInsertStatement(Connection connection) {
 		String sql = "INSERT INTO incident(title, date, description, Caretaker_id, Animal_id) VALUES(?, ?, ?, ?, ?)";
-		try(PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+		try {
+			PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 			statement.setString(1, title);
 			statement.setDate(2, date);
 			statement.setString(3, description);
@@ -98,7 +99,8 @@ public class Incident extends Entity {
 	@Override
 	public PreparedStatement getSqlUpdateStatement(Connection connection) {
 		String sql = "UPDATE incident SET title = ?, date = ?, description = ?, Caretaker_id = ?, Animal_id = ? WHERE id = ?";
-		try(PreparedStatement statement = connection.prepareStatement(sql)) {
+		try {
+			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, title);
 			statement.setDate(2, date);
 			statement.setString(3, description);

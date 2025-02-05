@@ -59,7 +59,8 @@ public class Adoption extends Entity {
 	@Override
 	public PreparedStatement getSqlInsertStatement(Connection connection) {
 		String sql = "INSERT INTO adoption(date, Adopter_id, Animal_id) VALUES(?, ?, ?)";
-		try(PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+		try {
+			PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 			statement.setDate(1, date);
 			statement.setInt(2, adopter.getId());
 			statement.setInt(3, animal.getId());
@@ -73,7 +74,8 @@ public class Adoption extends Entity {
 	@Override
 	public PreparedStatement getSqlUpdateStatement(Connection connection) {
 		String sql = "UPDATE adoption SET date = ?, Adopter_id = ?, Animal_id = ? WHERE id = ?";
-		try(PreparedStatement statement = connection.prepareStatement(sql)) {
+		try {
+			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setDate(1, date);
 			statement.setInt(2, adopter.getId());
 			statement.setInt(3, animal.getId());

@@ -33,7 +33,8 @@ public class AnimalType extends Entity {
 	@Override
 	public PreparedStatement getSqlInsertStatement(Connection connection) {
 		String sql = "INSERT INTO animaltype(name) VALUES(?)";
-		try(PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+		try {
+			PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 			statement.setString(1, name);
 			return statement;
 		} catch (SQLException e) {
@@ -45,7 +46,8 @@ public class AnimalType extends Entity {
 	@Override
 	public PreparedStatement getSqlUpdateStatement(Connection connection) {
 		String sql = "UPDATE animaltype SET name = ? WHERE id = ?";
-		try(PreparedStatement statement = connection.prepareStatement(sql)) {
+		try {
+			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, name);
 			statement.setInt(2, id);
 			return statement;

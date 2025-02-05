@@ -127,7 +127,8 @@ public class Animal extends Entity {
 	@Override
 	public PreparedStatement getSqlInsertStatement(Connection connection) {
 		String sql = "INSERT INTO animal(name, gender, date_of_birth, additional_info, AnimalType_id, Patron_id, Room_id) VALUES(?, ?, ?, ?, ?, ?, ?)";
-		try(PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+		try {
+			PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 			statement.setString(1, name);
 			statement.setInt(2, gender.getValue());
 			statement.setDate(3, dateOfBirth);
@@ -153,7 +154,8 @@ public class Animal extends Entity {
 	@Override
 	public PreparedStatement getSqlUpdateStatement(Connection connection) {
 		String sql = "UPDATE animal SET name = ?, gender = ?, date_of_birth = ?, additional_info = ?, AnimalType_id = ?, Patron_id = ?, Room_id = ? WHERE id = ?";
-		try(PreparedStatement statement = connection.prepareStatement(sql)) {
+		try {
+			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, name);
 			statement.setInt(2, gender.getValue());
 			statement.setDate(3, dateOfBirth);

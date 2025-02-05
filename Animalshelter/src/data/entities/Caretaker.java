@@ -32,7 +32,8 @@ public class Caretaker extends Person {
 	@Override
 	public PreparedStatement getSqlInsertStatement(Connection connection) {
 		String sql = "INSERT INTO caretaker(last_name, first_name, phone_number, email) VALUES(?, ?, ?, ?)";
-		try(PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+		try {
+			PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 			statement.setString(1, lastName);
 			statement.setString(2, firstName);
 			statement.setString(3, phoneNumber);
@@ -47,7 +48,8 @@ public class Caretaker extends Person {
 	@Override
 	public PreparedStatement getSqlUpdateStatement(Connection connection) {
 		String sql = "UPDATE caretaker SET last_name = ?, first_name = ?, phone_number = ?, email = ? WHERE id = ?";
-		try(PreparedStatement statement = connection.prepareStatement(sql)) {
+		try {
+			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, lastName);
 			statement.setString(2, firstName);
 			statement.setString(3, phoneNumber);
