@@ -1,0 +1,198 @@
+package data.entities;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
+
+public class Animal extends Entity {
+	public enum Gender {
+		UNKNOWN,
+		FEMALE,
+		MALE;
+		
+	    public int getValue() {
+	    	switch(this) {
+		    	case UNKNOWN:
+					return 0;
+		    	case FEMALE:
+					return 1;
+				case MALE:
+					return 2;
+				default:
+					return -1;
+	    	}
+	    }
+	    
+	    public static Gender fromValue(int value) {
+	    	switch(value) {
+		    	case 0:
+		    		return Gender.UNKNOWN;
+		    	case 1:
+		    		return Gender.FEMALE;
+		    	default:
+		    		return Gender.MALE;
+	    	}
+	    }
+	}
+	
+	private String name;
+	private Gender gender;
+	private Date dateOfBirth;
+	private String additionalInfo;
+	private AnimalType animalType;
+	private Patron patron;
+	private Room room;
+	private Adopter adopter;
+	
+	public Animal(ResultSet resultSet) throws SQLException {
+		this.id = resultSet.getInt("animal.id");
+		this.name = resultSet.getString("animal.name");
+		this.gender = Gender.fromValue(resultSet.getInt("animal.gender"));
+		this.dateOfBirth = resultSet.getDate("animal.date_of_birth");
+		this.additionalInfo = resultSet.getString("animal.additional_info");
+		this.animalType = new AnimalType(resultSet);
+		this.patron = new Patron(resultSet);
+		this.room = new Room(resultSet);
+		this.adopter = new Adopter(resultSet);
+	}
+	
+	public Animal(String name, Gender gender, Date dateOfBirth, String additionalInfo, AnimalType animalType,
+			Patron patron, Room room, Adopter adopter) {
+		this.name = name;
+		this.gender = gender;
+		this.dateOfBirth = dateOfBirth;
+		this.additionalInfo = additionalInfo;
+		this.animalType = animalType;
+		this.patron = patron;
+		this.room = room;
+		this.adopter = adopter;
+	}
+	
+	public Animal(int id, String name, Gender gender, Date dateOfBirth, String additionalInfo, AnimalType animalType,
+			Patron patron, Room room, Adopter adopter) {
+		this.id = id;
+		this.name = name;
+		this.gender = gender;
+		this.dateOfBirth = dateOfBirth;
+		this.additionalInfo = additionalInfo;
+		this.animalType = animalType;
+		this.patron = patron;
+		this.room = room;
+		this.adopter = adopter;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public Gender getGender() {
+		return gender;
+	}
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
+	public Date getDateOfBirth() {
+		return dateOfBirth;
+	}
+	public void setDateOfBirth(Date dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+	public String getAdditionalInfo() {
+		return additionalInfo;
+	}
+	public void setAdditionalInfo(String additionalInfo) {
+		this.additionalInfo = additionalInfo;
+	}
+	public AnimalType getAnimalType() {
+		return animalType;
+	}
+	public void setAnimalType(AnimalType animalType) {
+		this.animalType = animalType;
+	}
+	public Patron getPatron() {
+		return patron;
+	}
+	public void setPatron(Patron patron) {
+		this.patron = patron;
+	}
+	public Room getRoom() {
+		return room;
+	}
+	public void setRoom(Room room) {
+		this.room = room;
+	}
+	public Adopter getAdopter() {
+		return adopter;
+	}
+	public void setAdopter(Adopter adopter) {
+		this.adopter = adopter;
+	}
+	
+	@Override
+	public PreparedStatement getSqlInsertStatement(Connection connection) {
+		String sql = "INSERT INTO animal(name, gender, date_of_birth, additional_info, AnimalType_id, Patron_id, Room_id, Adopter_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+		try(PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+			statement.setString(1, name);
+			statement.setInt(2, gender.getValue());
+			statement.setDate(3, dateOfBirth);
+			if(additionalInfo.isBlank()) {
+				statement.setNull(4, Types.VARCHAR);
+			} else {
+				statement.setString(4, additionalInfo);
+			}
+			statement.setInt(5, animalType.getId());
+			if(animalType == null) {
+				statement.setNull(6, Types.INTEGER);
+			} else {
+				statement.setInt(6, animalType.getId());
+			}
+			statement.setInt(7, room.getId());
+			if(adopter == null) {
+				statement.setNull(8, Types.INTEGER);
+			} else {
+				statement.setInt(8, adopter.getId());
+			}
+			return statement;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Override
+	public PreparedStatement getSqlUpdateStatement(Connection connection) {
+		String sql = "UPDATE animal SET name = ?, gender = ?, date_of_birth = ?, additional_info = ?, AnimalType_id = ?, Patron_id = ?, Room_id = ?, Adopter_id = ? WHERE id = ?";
+		try(PreparedStatement statement = connection.prepareStatement(sql)) {
+			statement.setString(1, name);
+			statement.setInt(2, gender.getValue());
+			statement.setDate(3, dateOfBirth);
+			if(additionalInfo.isBlank()) {
+				statement.setNull(4, Types.VARCHAR);
+			} else {
+				statement.setString(4, additionalInfo);
+			}
+			statement.setInt(5, animalType.getId());
+			if(animalType == null) {
+				statement.setNull(6, Types.INTEGER);
+			} else {
+				statement.setInt(6, animalType.getId());
+			}
+			statement.setInt(7, room.getId());
+			if(adopter == null) {
+				statement.setNull(8, Types.INTEGER);
+			} else {
+				statement.setInt(8, adopter.getId());
+			}
+			statement.setInt(9, id);
+			return statement;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+}
