@@ -1,13 +1,11 @@
 package gui;
 
 import java.awt.HeadlessException;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import javax.swing.JFrame;
 
 import bl.DTOManager;
+import gui.startpage.MainPanel;
 import gui.startpage.StartpagePanel;
 
 public class ShelterFrame extends JFrame implements GUIConstants {
@@ -21,8 +19,8 @@ public class ShelterFrame extends JFrame implements GUIConstants {
 
 		CaretakerPanel caretakerPanel = new CaretakerPanel();
 		StartpagePanel startpagePanel = new StartpagePanel();
-		
-		add(startpagePanel);
+		MainPanel mainPanel = new MainPanel();
+		add(mainPanel);
 		pack();
 		setVisible(true);
 	}

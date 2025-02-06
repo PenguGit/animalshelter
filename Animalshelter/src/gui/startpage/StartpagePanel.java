@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 
@@ -21,6 +22,8 @@ public class StartpagePanel extends ShelterPanel {
         ShelterPanel buttonPanel = new ShelterPanel();
         buttonPanel.setLayout(new GridBagLayout());  // 2x3 grid, spacing
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
+        
+        ArrayList<ShelterButton> buttons = new ArrayList<>();
         
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -45,7 +48,16 @@ public class StartpagePanel extends ShelterPanel {
             } else {
                 gbc.gridx++; // Move to the next column
             }
+            
+            buttons.add(button);
         }
         add(buttonPanel, BorderLayout.CENTER);
+        
+        buttons.get(0).setText("Tiere");
+        buttons.get(1).setText("Räume");
+        buttons.get(2).setText("Adoption");
+        buttons.get(3).setText("Paten");
+        buttons.get(4).setText("Pfleger");
+        buttons.get(5).setText("Ärzte");
 	}
 }
