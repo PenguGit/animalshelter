@@ -13,7 +13,13 @@ import gui.ShelterLabel;
 import gui.ShelterPanel;
 
 public class StartpagePanel extends ShelterPanel {
-
+	public ShelterButton animalsButton;
+	public ShelterButton roomsButton;
+	public ShelterButton adoptionsButton;
+	public ShelterButton patronsButton;
+	public ShelterButton caretakersButton;
+	public ShelterButton vetsButton;
+	
 	public StartpagePanel() {
 		setLayout(new BorderLayout());
         ShelterLabel titleLabel = new ShelterLabel(GREETING);
@@ -23,41 +29,77 @@ public class StartpagePanel extends ShelterPanel {
         buttonPanel.setLayout(new GridBagLayout());  // 2x3 grid, spacing
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
         
-        ArrayList<ShelterButton> buttons = new ArrayList<>();
-        
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        for (int i = 1; i <= 6; i++) {
-            ShelterButton button = new ShelterButton("Button " + i);
-            button.setPreferredSize(new Dimension(200, 200));
-
-            gbc.gridwidth = 1;
-            gbc.gridheight = 1;
-            gbc.fill = GridBagConstraints.NONE;
-            gbc.weightx = 0;
-            gbc.weighty = 0;
-            gbc.insets = new java.awt.Insets(30, 30, 30, 30);
-
-            buttonPanel.add(button, gbc);
-            
-            // Move to the next position in the grid
-            if (i % 3 == 0) {
-                gbc.gridx = 0; // Start at the first column
-                gbc.gridy++;  // Move to the next row
-            } else {
-                gbc.gridx++; // Move to the next column
-            }
-            
-            buttons.add(button);
-        }
-        add(buttonPanel, BorderLayout.CENTER);
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
+        gbc.insets = new java.awt.Insets(30, 30, 30, 30);
         
-        buttons.get(0).setText("Tiere");
-        buttons.get(1).setText("Räume");
-        buttons.get(2).setText("Adoption");
-        buttons.get(3).setText("Paten");
-        buttons.get(4).setText("Pfleger");
-        buttons.get(5).setText("Ärzte");
+        int index = 1;
+        animalsButton = new ShelterButton("Tiere");
+        animalsButton.setPreferredSize(new Dimension(200, 200));
+        buttonPanel.add(animalsButton, gbc);
+        if (index++ % 3 == 0) {
+            gbc.gridx = 0;
+            gbc.gridy++;
+        } else {
+            gbc.gridx++;
+        }
+        
+        roomsButton = new ShelterButton("Räume");
+        roomsButton.setPreferredSize(new Dimension(200, 200));
+        buttonPanel.add(roomsButton, gbc);
+        if (index++ % 3 == 0) {
+            gbc.gridx = 0;
+            gbc.gridy++;
+        } else {
+            gbc.gridx++;
+        }
+        
+        adoptionsButton = new ShelterButton("Adoption");
+        adoptionsButton.setPreferredSize(new Dimension(200, 200));
+        buttonPanel.add(adoptionsButton, gbc);
+        if (index++ % 3 == 0) {
+            gbc.gridx = 0;
+            gbc.gridy++;
+        } else {
+            gbc.gridx++;
+        }
+        
+        patronsButton = new ShelterButton("Paten");
+        patronsButton.setPreferredSize(new Dimension(200, 200));
+        buttonPanel.add(patronsButton, gbc);
+        if (index++ % 3 == 0) {
+            gbc.gridx = 0;
+            gbc.gridy++;
+        } else {
+            gbc.gridx++;
+        }
+        
+        caretakersButton = new ShelterButton("Pfleger");
+        caretakersButton.setPreferredSize(new Dimension(200, 200));
+        buttonPanel.add(caretakersButton, gbc);
+        if (index++ % 3 == 0) {
+            gbc.gridx = 0;
+            gbc.gridy++;
+        } else {
+            gbc.gridx++;
+        }
+        
+        vetsButton = new ShelterButton("Ärzte");
+        vetsButton.setPreferredSize(new Dimension(200, 200));
+        buttonPanel.add(vetsButton, gbc);
+        if (index++ % 3 == 0) {
+        	gbc.gridx = 0;
+        	gbc.gridy++;
+        } else {
+        	gbc.gridx++;
+        }
+        
+        add(buttonPanel, BorderLayout.CENTER);
 	}
 }
