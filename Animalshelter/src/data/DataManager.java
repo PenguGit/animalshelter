@@ -105,23 +105,22 @@ public class DataManager {
 	    }
 	
 	public static void main(String[] args) {
-		String imagePathStr = "C:\\Users\\MaximillianKempen\\Documents\\lmao.png";
-		Path imagePath = Path.of(imagePathStr);
-		try {
-			byte[] lule = imageToByteArrayJava9(imagePath);
-			Room ro = new Room("hallo");
-			AnimalType ani = new AnimalType("eggse");
-			LocalDate lD = LocalDate.EPOCH;
-			Date dateOfBirth = Date.valueOf(lD);
-			Animal an = new Animal("name", Animal.Gender.fromValue(1), dateOfBirth, "hahaha" , ani, null,
-					ro);
-			an.setImage(lule);
+//		String imagePathStr = "C:\\Users\\MaximillianKempen\\Documents\\lmao.png";
+//		Path imagePath = Path.of(imagePathStr);
+//		try {
+//			byte[] lule = imageToByteArrayJava9(imagePath);
+//			Room ro = new Room("hallo");
+//			AnimalType ani = new AnimalType("eggse");
+//			LocalDate lD = LocalDate.EPOCH;
+//			Date dateOfBirth = Date.valueOf(lD);
+//			Animal an = new Animal("name", Animal.Gender.fromValue(1), dateOfBirth, "hahaha" , ani, null,
+//					ro,lule);
 			//getInstance().saveEntity(an);
 			
-			Animal fresh = getInstance().loadEntityById(Animal.class, 3);
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
+//			Animal fresh = getInstance().loadEntityById(Animal.class, 3);
+//		} catch (Exception e) {
+//			System.out.println(e.getMessage());
+//		}
 	}
 	
 }

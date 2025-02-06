@@ -40,9 +40,10 @@ public class AnimalDTO extends EntityDTO {
 	private AnimalTypeDTO animalType;
 	private PatronDTO patron;
 	private RoomDTO room;
+	private byte[] image;
 	
 	public AnimalDTO(String name, Gender gender, LocalDate dateOfBirth, String additionalInfo, AnimalTypeDTO animalType,
-			PatronDTO patron, RoomDTO room) {
+			PatronDTO patron, RoomDTO room, byte[] image) {
 		this.name = name;
 		this.gender = gender;
 		this.dateOfBirth = dateOfBirth;
@@ -50,10 +51,11 @@ public class AnimalDTO extends EntityDTO {
 		this.animalType = animalType;
 		this.patron = patron;
 		this.room = room;
+		this.image = image;
 	}
 	
 	public AnimalDTO(int id, String name, Gender gender, LocalDate dateOfBirth, String additionalInfo, AnimalTypeDTO animalType,
-			PatronDTO patron, RoomDTO room) {
+			PatronDTO patron, RoomDTO room, byte[] image) {
 		this.id = id;
 		this.name = name;
 		this.gender = gender;
@@ -62,6 +64,7 @@ public class AnimalDTO extends EntityDTO {
 		this.animalType = animalType;
 		this.patron = patron;
 		this.room = room;
+		this.image = image;
 	}
 	
 	public String getName() {
@@ -105,5 +108,13 @@ public class AnimalDTO extends EntityDTO {
 	}
 	public void setRoom(RoomDTO room) {
 		this.room = room;
+	}
+	
+	public byte[] getImage() {
+		return image;
+	}
+
+	public void setImage(byte[] image) {
+		this.image = image;
 	}
 }

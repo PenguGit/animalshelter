@@ -83,15 +83,8 @@ public class Animal extends Entity {
 	    }
 	}
 	
-	public byte[] getImage() {
-		return image;
-	}
-
-	public void setImage(byte[] image) {
-		this.image = image;
-	}
 	public Animal(String name, Gender gender, Date dateOfBirth, String additionalInfo, AnimalType animalType,
-			Patron patron, Room room) {
+			Patron patron, Room room, byte[] image) {
 		this.name = name;
 		this.gender = gender;
 		this.dateOfBirth = dateOfBirth;
@@ -99,10 +92,11 @@ public class Animal extends Entity {
 		this.animalType = animalType;
 		this.patron = patron;
 		this.room = room;
+		this.image = image;
 	}
 	
 	public Animal(int id, String name, Gender gender, Date dateOfBirth, String additionalInfo, AnimalType animalType,
-			Patron patron, Room room) {
+			Patron patron, Room room, byte[] image) {
 		this.id = id;
 		this.name = name;
 		this.gender = gender;
@@ -111,6 +105,7 @@ public class Animal extends Entity {
 		this.animalType = animalType;
 		this.patron = patron;
 		this.room = room;
+		this.image = image;
 	}
 	
 	public String getName() {
@@ -144,6 +139,8 @@ public class Animal extends Entity {
 		this.animalType = animalType;
 	}
 	public Patron getPatron() {
+		if (patron == null)
+			patron = new Patron();
 		return patron;
 	}
 	public void setPatron(Patron patron) {
@@ -155,6 +152,14 @@ public class Animal extends Entity {
 	public void setRoom(Room room) {
 		this.room = room;
 	}
+	public byte[] getImage() {
+		return image;
+	}
+
+	public void setImage(byte[] image) {
+		this.image = image;
+	}
+	
 	
 	@Override
 	public PreparedStatement getSqlInsertStatement(Connection connection) {
@@ -170,7 +175,7 @@ public class Animal extends Entity {
 				statement.setString(4, additionalInfo);
 			}
 			statement.setInt(5, animalType.getId());
-			if(patron == null) {
+			if(patron == null || patron.getId()==-1) { //TODO getID -1 checked because changing DTOMapper to catch give null is more time
 				statement.setNull(6, Types.INTEGER);
 			} else {
 				statement.setInt(6, patron.getId());
@@ -180,7 +185,6 @@ public class Animal extends Entity {
 	            try (ByteArrayInputStream inputStream = new ByteArrayInputStream(image)) {
 	                statement.setBinaryStream(8, inputStream, image.length);
 	            } catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 	        } else {

@@ -26,18 +26,6 @@ import data.entities.Vet;
 import util.DataObjectMapper;
 
 public class DTOManager {
-	private static DTOManager instance;
-
-	private DTOManager() {
-		super();
-	}
-
-	public static DTOManager getInstance() {
-		if (instance == null) {
-			instance = new DTOManager();
-		}
-		return instance;
-	}
 
 	// Adopter
 	public void saveAdopter(AdopterDTO adopterDTO) {

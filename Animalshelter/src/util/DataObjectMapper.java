@@ -48,14 +48,14 @@ public class DataObjectMapper {
 		return new AnimalDTO(animal.getId(), animal.getName(),
 				AnimalDTO.Gender.fromValue(animal.getGender().getValue()), animal.getDateOfBirth().toLocalDate(),
 				animal.getAdditionalInfo(), getAnimalTypeDTOFromAnimalType(animal.getAnimalType()),
-				getPatronDTOFromPatron(animal.getPatron()), getRoomDTOFromRoom(animal.getRoom()));
+				getPatronDTOFromPatron(animal.getPatron()), getRoomDTOFromRoom(animal.getRoom()), animal.getImage());
 	}
 
 	public static Animal getAnimalFromAnimalDTO(AnimalDTO animalDTO) {
 		return new Animal(animalDTO.getId(), animalDTO.getName(),
 				Animal.Gender.fromValue(animalDTO.getGender().getValue()), Date.valueOf(animalDTO.getDateOfBirth()),
 				animalDTO.getAdditionalInfo(), getAnimalTypeFromAnimalTypeDTO(animalDTO.getAnimalType()),
-				getPatronFromPatronDTO(animalDTO.getPatron()), getRoomFromRoomDTO(animalDTO.getRoom()));
+				getPatronFromPatronDTO(animalDTO.getPatron()), getRoomFromRoomDTO(animalDTO.getRoom()), animalDTO.getImage());
 	}
 
 	public static AnimalTypeDTO getAnimalTypeDTOFromAnimalType(AnimalType animalType) {
