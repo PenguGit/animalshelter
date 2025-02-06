@@ -10,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import data.entities.Animal;
@@ -100,14 +101,22 @@ public class DataManager {
 	    }
 	
 	public static void main(String[] args) {
-		String imagePathStr = "C:\\Users\\MaximillianKempen\\Documents";
+		String imagePathStr = "C:\\Users\\MaximillianKempen\\Documents\\lmao.png";
 		Path imagePath = Path.of(imagePathStr);
 		try {
 			byte[] lule = imageToByteArrayJava9(imagePath);
-			Date dateOfBirth = null;
-			Animal an = new Animal("name", Animal.Gender.fromValue(1), dateOfBirth, "hahaha" , new AnimalType(), new Patron(),
-					new Room());
-			instance.saveEntity(an);
+			Room ro = new Room("hallo");
+			getInstance().saveEntity(ro);
+			AnimalType ani = new AnimalType("eggse");
+			getInstance().saveEntity(ani);
+			LocalDate lD = LocalDate.EPOCH;
+			Date dateOfBirth = Date.valueOf(lD);
+			Animal an = new Animal("name", Animal.Gender.fromValue(1), dateOfBirth, "hahaha" , ani, null,
+					ro);
+			an.setImage(lule);
+			getInstance().saveEntity(an);
+			Animal fresh = getInstance().loadEntityById(Animal.class, 3);
+			System.out.println("Bigtest");
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
