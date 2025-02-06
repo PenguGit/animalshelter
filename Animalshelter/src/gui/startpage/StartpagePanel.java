@@ -22,8 +22,6 @@ public class StartpagePanel extends ShelterPanel {
 	
 	public StartpagePanel() {
 		setLayout(new BorderLayout());
-        ShelterLabel titleLabel = new ShelterLabel(GREETING);
-        add(titleLabel, BorderLayout.NORTH);
         
         ShelterPanel buttonPanel = new ShelterPanel();
         buttonPanel.setLayout(new GridBagLayout());  // 2x3 grid, spacing
