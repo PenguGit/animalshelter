@@ -39,6 +39,8 @@ public class CaretakerPanel extends ShelterPanel {
 	private ShelterButton deleteButton;
 	
 	public CaretakerPanel() {
+		dtoManager = new DTOManager();
+		
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		
@@ -52,7 +54,7 @@ public class CaretakerPanel extends ShelterPanel {
 
 	private void initializeListComponents() {
 		caretakerListModel  = new DefaultListModel<CaretakerDTO>();
-		caretakerListModel.addAll(DTOManager.getInstance().loadCaretakers());
+		caretakerListModel.addAll(dtoManager.loadCaretakers());
 		caretakerList = new ShelterList<CaretakerDTO>(caretakerListModel);
 		caretakerList.setSelectedIndex(-1);
 		
@@ -85,7 +87,7 @@ public class CaretakerPanel extends ShelterPanel {
 
 	public void updateTableData() {
 		caretakerListModel  = new DefaultListModel<CaretakerDTO>();
-		caretakerListModel.addAll(DTOManager.getInstance().loadCaretakers());
+		caretakerListModel.addAll(dtoManager.loadCaretakers());
 		caretakerList.setModel(caretakerListModel);
 		caretakerList.setSelectedIndex(-1);
 	}
