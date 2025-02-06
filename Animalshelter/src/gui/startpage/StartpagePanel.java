@@ -14,9 +14,8 @@ import gui.ShelterPanel;
 public class StartpagePanel extends ShelterPanel {
 
 	public StartpagePanel() {
-		super();
 		setLayout(new BorderLayout());
-        ShelterLabel titleLabel = new ShelterLabel("Welcome to the Start Panel");
+        ShelterLabel titleLabel = new ShelterLabel(GREETING);
         add(titleLabel, BorderLayout.NORTH);
         
         ShelterPanel buttonPanel = new ShelterPanel();
