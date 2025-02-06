@@ -7,8 +7,9 @@ import java.awt.Rectangle;
 public interface GUIConstants {
 	public static final String FONT_SANS = "Comic Sans MS";
 	
-	public static final String APP_TITEL = "AnimalShelter";
-	public static final Rectangle FRAME_BOUNDS = new Rectangle(600, 100, 800, 300);
+	public static final String APP_TITEL = "Beim kleinen Dackel";
+	public static final Rectangle FRAME_BOUNDS = new Rectangle(600, 100, 800, 400);
+	public static final String GREETING = "Wilkommen im Tierheim 'Beim kleinen Dackel'!";
 
 	public static final Color COLOR_PANEL = Color.WHITE;
 	public static final Color COLOR_LABEL = Color.WHITE;
