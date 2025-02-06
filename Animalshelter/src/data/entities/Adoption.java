@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import data.DataManager;
+
 public class Adoption extends Entity {
 	private Date date;
 	private Adopter adopter;
@@ -16,8 +18,9 @@ public class Adoption extends Entity {
 	public Adoption(ResultSet resultSet) throws SQLException {
 		this.id = resultSet.getInt("adoption.id");
 		this.date = resultSet.getDate("adoption.date");
-		this.adopter = new Adopter(resultSet);
-		this.animal = new Animal(resultSet);
+		
+		this.adopter = DataManager.getInstance().loadEntityById(Adopter.class, resultSet.getInt("animal.adopter_id"));
+		this.animal = DataManager.getInstance().loadEntityById(Animal.class, resultSet.getInt("animal.animal_id"));
 	}
 	
 	public Adoption(Date date, Adopter adopter, Animal animal) {

@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.time.LocalDate;
 
+import data.DataManager;
+
 public class Animal extends Entity {
 	public enum Gender {
 		UNKNOWN,
@@ -60,23 +62,25 @@ public class Animal extends Entity {
 		this.gender = Gender.fromValue(resultSet.getInt("animal.gender"));
 		this.dateOfBirth = resultSet.getDate("animal.date_of_birth");
 		this.additionalInfo = resultSet.getString("animal.additional_info");
-		this.animalType = new AnimalType(resultSet);
-		this.patron = new Patron(resultSet);
-		this.room = new Room(resultSet);
-//		try {
-//	        Blob blob = resultSet.getBlob("animal.image"); // Get the image as a Blob
-//	        if (blob != null) { // Check if an image exists
-//	            try (InputStream inputStream = blob.getBinaryStream()) {
-//	                this.image = inputStream.readAllBytes(); // Read the bytes into the byte array
-//	            }
-//	        } else {
-//	            this.image = null; // Set image to null if it doesn't exist
-//	        }
-//	    } catch (SQLException | IOException e) {
-//	        // Handle the exception appropriately (e.g., log it, re-throw, etc.)
-//	        e.printStackTrace(); // Example: print the error
-//	        this.image = null; // Or set to a default image if you have one
-//	    }
+		
+		this.animalType = DataManager.getInstance().loadEntityById(AnimalType.class, resultSet.getInt("animal.animaltype_id"));
+		this.patron = DataManager.getInstance().loadEntityById(Patron.class, resultSet.getInt("animal.patron_id"));
+		this.room = DataManager.getInstance().loadEntityById(Room.class, resultSet.getInt("animal.room_id"));
+		
+		try {
+	        Blob blob = resultSet.getBlob("animal.image"); // Get the image as a Blob
+	        if (blob != null) { // Check if an image exists
+	            try (InputStream inputStream = blob.getBinaryStream()) {
+	                this.image = inputStream.readAllBytes(); // Read the bytes into the byte array
+	            }
+	        } else {
+	            this.image = null; // Set image to null if it doesn't exist
+	        }
+	    } catch (SQLException | IOException e) {
+	        // Handle the exception appropriately (e.g., log it, re-throw, etc.)
+	        e.printStackTrace(); // Example: print the error
+	        this.image = null; // Or set to a default image if you have one
+	    }
 	}
 	
 	public byte[] getImage() {

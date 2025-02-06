@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import data.DataManager;
+
 public class Examination extends Entity {
 	private String title;
 	private Date date;
@@ -20,8 +22,9 @@ public class Examination extends Entity {
 		this.title = resultSet.getString("examination.name");
 		this.date = resultSet.getDate("examination.date");
 		this.description = resultSet.getString("examination.description");
-		this.vet = new Vet(resultSet);
-		this.animal = new Animal(resultSet);
+		
+		this.vet = DataManager.getInstance().loadEntityById(Vet.class, resultSet.getInt("animal.vet"));
+		this.animal = DataManager.getInstance().loadEntityById(Animal.class, resultSet.getInt("animal.animal_id"));
 	}
 	
 	public Examination(String title, Date date, String description, Vet vet, Animal animal) {

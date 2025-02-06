@@ -53,9 +53,11 @@ public class DataManager {
 		T entity = null;
 		
 		try (Connection connection = DriverManager.getConnection(Constants.DB_URL, Constants.DB_USER, Constants.DB_PASSWORD)){
-			PreparedStatement statement = entityType.getDeclaredConstructor().newInstance().getSqlSelectByIdStatement(connection);
+			T tempEntity = entityType.getDeclaredConstructor().newInstance();
+			tempEntity.setId(id);
+			PreparedStatement statement = tempEntity.getSqlSelectByIdStatement(connection);
 			ResultSet rs = statement.executeQuery();
-			if(rs.first()) {
+			if(rs.next()) {
 				var constructor = entityType.getDeclaredConstructor(ResultSet.class);
 				entity = constructor.newInstance(rs);
 			}
@@ -74,7 +76,9 @@ public class DataManager {
 		try (Connection connection = DriverManager.getConnection(Constants.DB_URL, Constants.DB_USER, Constants.DB_PASSWORD)) {
 			PreparedStatement statement = entityType.getDeclaredConstructor().newInstance().getSqlSelectAllStatement(connection);
 			ResultSet rs = statement.executeQuery();
+			System.out.println("Yo");
 			while(rs.next()) {
+				System.out.println("Yo");
 				var constructor = entityType.getDeclaredConstructor(ResultSet.class);
 				result.add(constructor.newInstance(rs));
 			}
@@ -106,17 +110,15 @@ public class DataManager {
 		try {
 			byte[] lule = imageToByteArrayJava9(imagePath);
 			Room ro = new Room("hallo");
-			getInstance().saveEntity(ro);
 			AnimalType ani = new AnimalType("eggse");
-			getInstance().saveEntity(ani);
 			LocalDate lD = LocalDate.EPOCH;
 			Date dateOfBirth = Date.valueOf(lD);
 			Animal an = new Animal("name", Animal.Gender.fromValue(1), dateOfBirth, "hahaha" , ani, null,
 					ro);
 			an.setImage(lule);
-			getInstance().saveEntity(an);
+			//getInstance().saveEntity(an);
+			
 			Animal fresh = getInstance().loadEntityById(Animal.class, 3);
-			System.out.println("Bigtest");
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
