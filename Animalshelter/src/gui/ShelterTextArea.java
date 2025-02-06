@@ -21,5 +21,10 @@ public class ShelterTextArea extends JTextArea implements GUIConstants {
 		super();
 		setFont(FONT_TEXTFIELD);
 	}
+
+	public ShelterTextArea(int i, int j) {
+		super(i,j);
+		setFont(FONT_TEXTFIELD);
+	}
 	
 }

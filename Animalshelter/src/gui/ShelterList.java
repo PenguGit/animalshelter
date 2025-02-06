@@ -9,4 +9,7 @@ public class ShelterList<E extends EntityDTO> extends JList<E> {
 	public ShelterList(ListModel<E> dataModel) {
 		super(dataModel);
 	}
+	public ShelterList() {
+		super();
+	}
 }

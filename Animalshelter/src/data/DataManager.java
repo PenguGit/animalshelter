@@ -76,9 +76,7 @@ public class DataManager {
 		try (Connection connection = DriverManager.getConnection(Constants.DB_URL, Constants.DB_USER, Constants.DB_PASSWORD)) {
 			PreparedStatement statement = entityType.getDeclaredConstructor().newInstance().getSqlSelectAllStatement(connection);
 			ResultSet rs = statement.executeQuery();
-			System.out.println("Yo");
 			while(rs.next()) {
-				System.out.println("Yo");
 				var constructor = entityType.getDeclaredConstructor(ResultSet.class);
 				result.add(constructor.newInstance(rs));
 			}

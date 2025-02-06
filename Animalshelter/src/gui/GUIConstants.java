@@ -14,6 +14,7 @@ public interface GUIConstants {
 	public static final Color COLOR_LABEL = Color.WHITE;
 
 	public static final Font FONT_TAB = new Font(FONT_SANS, Font.PLAIN, 20);
+	public static final Font FONT_LIST = new Font(FONT_SANS, Font.PLAIN, 30);
 	public static final Font FONT_TEXTFIELD = new Font(FONT_SANS, Font.PLAIN, 25);
 	public static final Font FONT_LABELS = new Font(FONT_SANS, Font.PLAIN, 25);
 	public static final Font FONT_BUTTON = new Font(FONT_SANS, Font.PLAIN, 30);

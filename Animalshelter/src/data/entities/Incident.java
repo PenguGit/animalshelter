@@ -19,11 +19,11 @@ public class Incident extends Entity {
 	
 	public Incident(ResultSet resultSet) throws SQLException {
 		this.id = resultSet.getInt("incident.id");
-		this.title = resultSet.getString("incident.name");
+		this.title = resultSet.getString("incident.title");
 		this.date = resultSet.getDate("incident.date");
 		this.description = resultSet.getString("incident.description");
-		this.caretaker = DataManager.getInstance().loadEntityById(Caretaker.class, resultSet.getInt("animal.caretaker_id"));
-		this.animal = DataManager.getInstance().loadEntityById(Animal.class, resultSet.getInt("animal.animal_id"));
+		this.caretaker = DataManager.getInstance().loadEntityById(Caretaker.class, resultSet.getInt("incident.caretaker_id"));
+		this.animal = DataManager.getInstance().loadEntityById(Animal.class, resultSet.getInt("incident.animal_id"));
 	}
 	
 	public Incident(String title, Date date, String description, Caretaker caretaker, Animal animal) {

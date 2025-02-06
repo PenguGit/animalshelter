@@ -19,12 +19,12 @@ public class Examination extends Entity {
 	
 	public Examination(ResultSet resultSet) throws SQLException {
 		this.id = resultSet.getInt("examination.id");
-		this.title = resultSet.getString("examination.name");
+		this.title = resultSet.getString("examination.title");
 		this.date = resultSet.getDate("examination.date");
 		this.description = resultSet.getString("examination.description");
 		
-		this.vet = DataManager.getInstance().loadEntityById(Vet.class, resultSet.getInt("animal.vet"));
-		this.animal = DataManager.getInstance().loadEntityById(Animal.class, resultSet.getInt("animal.animal_id"));
+		this.vet = DataManager.getInstance().loadEntityById(Vet.class, resultSet.getInt("examination.vet_id"));
+		this.animal = DataManager.getInstance().loadEntityById(Animal.class, resultSet.getInt("examination.animal_id"));
 	}
 	
 	public Examination(String title, Date date, String description, Vet vet, Animal animal) {
