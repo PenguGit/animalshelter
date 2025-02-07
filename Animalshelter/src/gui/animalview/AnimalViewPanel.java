@@ -8,17 +8,22 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.ButtonModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 import bl.DTOManager;
 import bl.entities.AnimalDTO;
 import bl.entities.AnimalTypeDTO;
+import bl.entities.EntityDTO;
 import bl.entities.ExaminationDTO;
 import bl.entities.IncidentDTO;
 import bl.entities.PatronDTO;
@@ -30,17 +35,21 @@ import gui.ShelterImagePanel;
 import gui.ShelterLabel;
 import gui.ShelterList;
 import gui.ShelterPanel;
+import gui.ShelterRadioButton;
 import gui.ShelterTextArea;
 import gui.ShelterTextField;
 
 public class AnimalViewPanel extends ShelterPanel {
 	DTOManager dtoManager;
 	private AnimalDTO animal;
-	
-	
+
 	private ShelterList<AnimalDTO> animalList;
 	private ShelterList<IncidentDTO> incidentList;
 	private ShelterList<ExaminationDTO> examinationList;
+	DefaultListModel<AnimalDTO> animalListModel;
+	DefaultListModel<IncidentDTO> incidentListModel;
+	DefaultListModel<ExaminationDTO> examinationListModel;
+
 	private ShelterButton addIncidentButton;
 	private ShelterButton saveButton;
 	private ShelterButton deleteButton;
@@ -50,8 +59,8 @@ public class AnimalViewPanel extends ShelterPanel {
 	private ShelterComboBox<RoomDTO> roomComboBox;
 	private ShelterComboBox<PatronDTO> patronComboBox;
 	
-	private ShelterTextField animalTypeField;
-	private ShelterTextField genderField;
+	private ArrayList<ShelterRadioButton> radioButtonList;
+
 	private ShelterTextField nameField;
 	private ShelterLabel nameLabel;
 	private ShelterBirthdateTextField birthDateField;
@@ -63,6 +72,7 @@ public class AnimalViewPanel extends ShelterPanel {
 	private ShelterTextArea additionalInfoArea;
 
 	private ShelterImagePanel imagePanel;
+	private ButtonGroup genderButtonGroup;
 	
 
 	public AnimalViewPanel() {
@@ -120,7 +130,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		boxModel.addAll(dtoManager.loadPatrons());
 		patronComboBox = new ShelterComboBox<>(boxModel);
 		patronComboBox.setRenderer(new PersonListCellRenderer());
-		
+
 		panel.add(patronLabel);
 		panel.add(patronComboBox);
 
@@ -131,12 +141,36 @@ public class AnimalViewPanel extends ShelterPanel {
 		ShelterPanel centerPanel = new ShelterPanel();
 		centerPanel.setLayout(new GridBagLayout());
 		centerPanel.setBackground(Color.LIGHT_GRAY);
+
+		genderButtonGroup = new ButtonGroup();
+		ShelterPanel genderPanel = new ShelterPanel(new FlowLayout(FlowLayout.LEFT, 2, 2));
+
+		genderPanel.setBackground(centerPanel.getBackground());
 		
+		radioButtonList = new ArrayList<>();
+		
+		ShelterRadioButton maleRadioButton = new ShelterRadioButton("M");
+		ShelterRadioButton femaleRadioButton = new ShelterRadioButton("W");
+		ShelterRadioButton unknownRadioButton = new ShelterRadioButton("N/A");
+		maleRadioButton.setBackground(centerPanel.getBackground());
+		femaleRadioButton.setBackground(centerPanel.getBackground());
+		unknownRadioButton.setBackground(centerPanel.getBackground());
+		genderButtonGroup.add(maleRadioButton);
+		genderButtonGroup.add(femaleRadioButton);
+		genderButtonGroup.add(unknownRadioButton);
+		genderPanel.add(maleRadioButton);
+		genderPanel.add(femaleRadioButton);
+		genderPanel.add(unknownRadioButton);
+		
+		radioButtonList.add(maleRadioButton);
+		radioButtonList.add(femaleRadioButton);
+		radioButtonList.add(unknownRadioButton);
+
 		DefaultComboBoxModel<RoomDTO> roomBoxModel = new DefaultComboBoxModel<>();
 		roomBoxModel.addAll(dtoManager.loadRooms());
 		roomComboBox = new ShelterComboBox<>(roomBoxModel);
 		roomComboBox.setRenderer(new PersonListCellRenderer());
-		
+
 		DefaultComboBoxModel<AnimalTypeDTO> animalTypeBoxModel = new DefaultComboBoxModel<>();
 		animalTypeBoxModel.addAll(dtoManager.loadAnimalTypes());
 		animalTypeComboBox = new ShelterComboBox<>(animalTypeBoxModel);
@@ -182,16 +216,16 @@ public class AnimalViewPanel extends ShelterPanel {
 		// Gender Field
 		gbc.gridx = 2;
 		gbc.gridy = 2;
-		centerPanel.add(genderField = new ShelterTextField(15), gbc);
-		
+		centerPanel.add(genderPanel, gbc);
+
 		gbc.gridx = 0;
 		gbc.gridy = 3;
 		centerPanel.add(new ShelterLabel("Typ: "), gbc);
-		
+
 		gbc.gridx = 1;
 		gbc.gridy = 3;
 		centerPanel.add(animalTypeComboBox, gbc);
-		
+
 		gbc.gridx = 0;
 		gbc.gridy = 4;
 		centerPanel.add(new ShelterLabel("Raum: "), gbc);
@@ -214,11 +248,11 @@ public class AnimalViewPanel extends ShelterPanel {
 		adoptionButton = new ShelterButton("Adoptieren");
 		saveButton = new ShelterButton("Speichern");
 		deleteButton = new ShelterButton("Löschen");
-		
+
 		saveButton.addActionListener(e -> {
 			saveAnimal();
 		});
-		
+
 		buttonPanel.add(adoptionButton);
 		buttonPanel.add(saveButton);
 		buttonPanel.add(deleteButton);
@@ -243,14 +277,23 @@ public class AnimalViewPanel extends ShelterPanel {
 	}
 
 	private void initSideList(ShelterPanel listPanel) {
-		DefaultListModel<AnimalDTO> listModel = new DefaultListModel<>();
-		listModel.addAll(dtoManager.loadAnimals());
-		animalList = new ShelterList<AnimalDTO>(listModel);
+		animalListModel = new DefaultListModel<>();
+		animalListModel.addAll(dtoManager.loadAnimals());
+		animalList = new ShelterList<AnimalDTO>(animalListModel);
 		animalList.setCellRenderer(new PersonListCellRenderer());
 		animalList.setFont(FONT_LIST);
+		animalList.addListSelectionListener(e -> {
+			if (!e.getValueIsAdjusting()) {
+				AnimalDTO selectedAnimal = animalList.getSelectedValue();
+
+				if (selectedAnimal != null) {
+					loadAnimal(selectedAnimal);
+				}
+			}
+		});
 		JScrollPane sideListScrollPane = new JScrollPane(animalList);
 		sideListScrollPane.setPreferredSize(new Dimension(250, 300));
-		
+
 		add(sideListScrollPane, BorderLayout.WEST);
 	}
 
@@ -277,9 +320,9 @@ public class AnimalViewPanel extends ShelterPanel {
 
 		// Create and style components
 		ShelterLabel incidentLabel = new ShelterLabel("Incidents:");
-		DefaultListModel<IncidentDTO> listModel = new DefaultListModel<>();
-		listModel.addAll(dtoManager.loadIncidents()); //TODO Something bad here?
-		incidentList = new ShelterList<IncidentDTO>(listModel);
+		incidentListModel = new DefaultListModel<>();
+		incidentListModel.addAll(dtoManager.loadIncidents()); // TODO Something bad here?
+		incidentList = new ShelterList<IncidentDTO>(incidentListModel);
 		incidentList.setCellRenderer(new PersonListCellRenderer());
 		incidentList.setFont(FONT_LIST);
 		addIncidentButton = new ShelterButton("+");
@@ -295,12 +338,12 @@ public class AnimalViewPanel extends ShelterPanel {
 		ShelterPanel examinationPanel = new ShelterPanel();
 		examinationPanel.setLayout(new BorderLayout());
 		examinationPanel.setBackground(Color.CYAN);
-		
+
 		// Create and style components
 		ShelterLabel examinationLabel = new ShelterLabel("Examination:");
-		DefaultListModel<ExaminationDTO> listModel = new DefaultListModel<>();
-		listModel.addAll(dtoManager.loadExaminations()); //TODO Something bad here?
-		examinationList = new ShelterList<ExaminationDTO>(listModel);
+		examinationListModel = new DefaultListModel<>();
+		examinationListModel.addAll(dtoManager.loadExaminations()); // TODO Something bad here?
+		examinationList = new ShelterList<ExaminationDTO>(examinationListModel);
 		examinationList.setCellRenderer(new PersonListCellRenderer());
 		examinationList.setFont(FONT_LIST);
 
@@ -310,84 +353,149 @@ public class AnimalViewPanel extends ShelterPanel {
 
 		return examinationPanel;
 	}
-	
+
+	public static <T> void refreshListModel(DefaultListModel<T> model, ArrayList<T> newItems) {
+		model.clear();
+		model.addAll(newItems);
+	}
+
 	// Assuming AnimalDTO is defined with relevant fields and constructor
 	public void saveAnimal() {
-	    // Retrieve text from fields
-	    String name = nameField.getText().trim();
-	    LocalDate birthDate = birthDateField.getDate();
-	    String additionalInfo = additionalInfoArea.getText().trim();
+		// Retrieve text from fields
 
-	    int gender = 0; // Default value
-	    
-	    // Get selected patron from ComboBox (if any)
-	    PatronDTO patron = (PatronDTO) patronComboBox.getSelectedItem();
-	    AnimalTypeDTO animalType  = (AnimalTypeDTO) animalTypeComboBox.getSelectedItem();
-	    RoomDTO room  = (RoomDTO) roomComboBox.getSelectedItem();
+		if (animal == null) {
 
-	    byte[] image;
-	    image = null;
-	    
-	    animal = new AnimalDTO(name, AnimalDTO.Gender.fromValue(0), birthDate, additionalInfo, animalType, patron, room, image);
+			String name = nameField.getText().trim();
+			LocalDate birthDate = birthDateField.getDate();
+			String additionalInfo = additionalInfoArea.getText().trim();
 
-	    // Validate and save or process the object
-	    if (validateAnimal(animal)) {
-	        // Save or perform operations with animalDTO
-	    	dtoManager.saveAnimal(animal);
-	    } else {
-	        JOptionPane.showMessageDialog(null, "Please fill all required fields correctly.", 
-	                                      "Validation Error", JOptionPane.ERROR_MESSAGE);
-	    }
+			// Get selected patron from ComboBox (if any)
+			PatronDTO patron = (PatronDTO) patronComboBox.getSelectedItem();
+			AnimalTypeDTO animalType = (AnimalTypeDTO) animalTypeComboBox.getSelectedItem();
+			RoomDTO room = (RoomDTO) roomComboBox.getSelectedItem();
+
+			byte[] image;
+			image = null;
+
+			animal = new AnimalDTO(name, AnimalDTO.Gender.fromValue(0), birthDate, additionalInfo, animalType, patron,
+					room, image);
+
+			// Validate and save or process the object
+			if (validateAnimal(animal)) {
+				// Save or perform operations with animalDTO
+				dtoManager.saveAnimal(animal);
+			} else {
+				JOptionPane.showMessageDialog(null, "Please fill all required fields correctly.", "Validation Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
+			refreshListModel(animalListModel, dtoManager.loadAnimals());
+			clearForm();
+		}
+
+		if (animal != null) {
+
+			String name = nameField.getText().trim();
+			LocalDate birthDate = birthDateField.getDate();
+			String additionalInfo = additionalInfoArea.getText().trim();
+
+			// Get selected patron from ComboBox (if any)
+			PatronDTO patron = (PatronDTO) patronComboBox.getSelectedItem();
+			AnimalTypeDTO animalType = (AnimalTypeDTO) animalTypeComboBox.getSelectedItem();
+			RoomDTO room = (RoomDTO) roomComboBox.getSelectedItem();
+
+			byte[] image;
+			image = null;
+
+			animal = new AnimalDTO(animal.getId(), name, AnimalDTO.Gender.fromValue(getGenderFromRadio()), birthDate, additionalInfo,
+					animalType, patron, room, image);
+
+			// Validate and save or process the object
+			if (validateAnimal(animal)) {
+				// Save or perform operations with animalDTO
+				dtoManager.saveAnimal(animal);
+			} else {
+				JOptionPane.showMessageDialog(null, "Please fill all required fields correctly.", "Validation Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
+			refreshListModel(animalListModel, dtoManager.loadAnimals());
+			clearForm();
+		}
+	}
+
+	public void clearForm() {
+		// Clear text fields
+		nameField.setText("");
+		birthDateField.setText("");
+		additionalInfoArea.setText("");
+		
+
+		// Reset combo boxes
+		roomComboBox.setSelectedIndex(-1);
+		patronComboBox.setSelectedIndex(-1);
+		animalTypeComboBox.setSelectedIndex(-1);
+
+		incidentListModel.clear();
+		examinationListModel.clear();
+		genderButtonGroup.clearSelection();
+		animal = null;
 	}
 
 	// Example validation logic
 	private boolean validateAnimal(AnimalDTO animalDTO) {
-	    return !animalDTO.getName().isEmpty() && animalDTO.getDateOfBirth() != null
-	            && animalDTO.getRoom() != null && animalDTO.getGender() != null && animalDTO.getAnimalType() != null;
+		return !animalDTO.getName().isEmpty() && animalDTO.getDateOfBirth() != null && animalDTO.getRoom() != null
+				&& animalDTO.getGender() != null && animalDTO.getAnimalType() != null;
 	}
 	
-//	public void loadAnimal(AnimalDTO animal) {
-//	    // Populate text fields
-//	    nameField.setText(animal.getName());
-//	    birthDateField.setText(animal.getBirthDate());
-//	    roomField.setText(animal.getRoom());
-//	    additionalInfoArea.setText(animal.getAdditionalInfo());
-//
-//	    // Set the gender radio button based on the stored value
-//	    switch (animal.getGender()) {
-//	        case "M":
-//	            maleRadioButton.setSelected(true);
-//	            break;
-//	        case "F":
-//	            femaleRadioButton.setSelected(true);
-//	            break;
-//	        default:
-//	            naRadioButton.setSelected(true);
-//	            break;
-//	    }
-//
-//	    // Select the matching room in the ComboBox
-//	    selectComboBoxItemById(roomComboBox, animal.getRoomId());
-//
-//	    // Select the matching patron in the ComboBox if available
-//	    if (animal.getPatronId() != null) {
-//	        selectComboBoxItemById(patronComboBox, animal.getPatronId());
-//	    }
-//	}
-//
-//	// Utility method to select an item in a ComboBox by ID
-//	private void selectComboBoxItemById(ShelterComboBox<T extends EntityDTO> comboBox, String id) {
-//	    for (int i = 0; i < comboBox.getItemCount(); i++) {
-//	        Item item = comboBox.getItemAt(i);
-//	        if (item.getId().equals(id)) { // Assuming Item has getId() for comparison
-//	            comboBox.setSelectedIndex(i);
-//	            break;
-//	        }
-//	    }
-//	}
-
 	
-	
+    private int getGenderFromRadio() {
+        if (genderButtonGroup.getSelection() != null) {
+            for (int i = 0; i < radioButtonList.size(); i++) {
+                if (radioButtonList.get(i).isSelected()) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
 
+    
+    private void setRadioFromGender() {
+        for (int i = 0; i < radioButtonList.size(); i++) {
+            if (animal.getGender().getValue() == i) {
+                radioButtonList.get(i).setSelected(true);
+            }
+        }
+    }
+    
+
+	public void loadAnimal(AnimalDTO animal) {
+		this.animal = animal;
+		// Populate text fields
+		nameField.setText(animal.getName());
+		birthDateField.setDate(animal.getDateOfBirth());
+		additionalInfoArea.setText(animal.getAdditionalInfo());
+		setRadioFromGender();
+
+		// Select the matching room in the ComboBox
+		selectComboBoxItemById(roomComboBox, animal.getRoom());
+		selectComboBoxItemById(animalTypeComboBox, animal.getAnimalType());
+		// Select the matching patron in the ComboBox if available
+		if (animal.getPatron() != null) {
+			selectComboBoxItemById(patronComboBox, animal.getPatron());
+		}
+	}
+
+	// Utility method to select an item in a ComboBox by ID
+	private <T extends EntityDTO> void selectComboBoxItemById(JComboBox<T> comboBox, T entity) {
+		if (entity == null)
+			return;
+		for (int i = 0; i < comboBox.getItemCount(); i++) {
+			T item = comboBox.getItemAt(i);
+			if (item.getId() == entity.getId()) {
+				comboBox.setSelectedIndex(i);
+				break;
+			}
+		}
+	}
 
 }
