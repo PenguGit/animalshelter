@@ -139,8 +139,6 @@ public class Animal extends Entity {
 		this.animalType = animalType;
 	}
 	public Patron getPatron() {
-		if (patron == null)
-			patron = new Patron();
 		return patron;
 	}
 	public void setPatron(Patron patron) {

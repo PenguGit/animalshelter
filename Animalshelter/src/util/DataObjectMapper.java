@@ -101,12 +101,12 @@ public class DataObjectMapper {
 	}
 
 	public static PatronDTO getPatronDTOFromPatron(Patron patron) {
-		return new PatronDTO(patron.getId(), patron.getLastName(), patron.getFirstName(), patron.getPhoneNumber(),
+		return patron == null ? null : new PatronDTO(patron.getId(), patron.getLastName(), patron.getFirstName(), patron.getPhoneNumber(),
 				patron.getEmail());
 	}
 
 	public static Patron getPatronFromPatronDTO(PatronDTO patronDTO) {
-		return new Patron(patronDTO.getId(), patronDTO.getLastName(), patronDTO.getFirstName(),
+		return patronDTO == null ? null : new Patron(patronDTO.getId(), patronDTO.getLastName(), patronDTO.getFirstName(),
 				patronDTO.getPhoneNumber(), patronDTO.getEmail());
 	}
 

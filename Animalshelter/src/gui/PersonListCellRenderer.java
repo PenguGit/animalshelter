@@ -6,7 +6,11 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
 import bl.entities.AnimalDTO;
+import bl.entities.AnimalTypeDTO;
+import bl.entities.ExaminationDTO;
+import bl.entities.IncidentDTO;
 import bl.entities.PersonDTO;
+import bl.entities.RoomDTO;
 
 public class PersonListCellRenderer extends DefaultListCellRenderer {
 	@Override
@@ -17,6 +21,18 @@ public class PersonListCellRenderer extends DefaultListCellRenderer {
         }
         if (value instanceof AnimalDTO AnimalDTO) {
             setText(AnimalDTO.getName());
+        }
+        if (value instanceof IncidentDTO IncidentDTO) {
+            setText(IncidentDTO.getDate().toString() + " " + IncidentDTO.getTitle());
+        }
+        if (value instanceof ExaminationDTO ExaminationDTO) {
+            setText(ExaminationDTO.getDate().toString() + " " + ExaminationDTO.getTitle());
+        }
+        if (value instanceof RoomDTO RoomDTO) {
+            setText(RoomDTO.getName());
+        }
+        if (value instanceof AnimalTypeDTO AnimalTypeDTO) {
+            setText(AnimalTypeDTO.getName());
         }
         return this;
     }
