@@ -9,6 +9,7 @@ public class Adopter extends Person {
 	public Adopter() {};
 	
 	public Adopter(ResultSet resultSet) throws SQLException {
+		this.id = resultSet.getInt("adopter.id");
 		this.lastName = resultSet.getString("adopter.last_name");
 		this.firstName = resultSet.getString("adopter.first_name");
 		this.phoneNumber = resultSet.getString("adopter.phone_number");

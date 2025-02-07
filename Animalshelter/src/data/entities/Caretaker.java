@@ -9,6 +9,7 @@ public class Caretaker extends Person {
 	public Caretaker() {};
 	
 	public Caretaker(ResultSet resultSet) throws SQLException {
+		this.id = resultSet.getInt("caretaker.id");
 		this.lastName = resultSet.getString("caretaker.last_name");
 		this.firstName = resultSet.getString("caretaker.first_name");
 		this.phoneNumber = resultSet.getString("caretaker.phone_number");

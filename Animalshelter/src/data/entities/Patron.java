@@ -9,6 +9,7 @@ public class Patron extends Person {
 	public Patron() {};
 	
 	public Patron(ResultSet resultSet) throws SQLException {
+		this.id = resultSet.getInt("patron.id");
 		this.lastName = resultSet.getString("patron.last_name");
 		this.firstName = resultSet.getString("patron.first_name");
 		this.phoneNumber = resultSet.getString("patron.phone_number");
