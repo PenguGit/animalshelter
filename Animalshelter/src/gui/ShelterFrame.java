@@ -5,11 +5,15 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import bl.DTOManager;
 import gui.animalview.AnimalViewPanel;
@@ -74,8 +78,15 @@ public class ShelterFrame extends JFrame implements GUIConstants {
         	onNavigationButtonPressed(e, "rooms", "Räume");
         });
         
-        startPagePanel.adoptionsButton.addActionListener((ActionEvent e) -> {
-        	onNavigationButtonPressed(e, "adoptions", "Adoption");
+//        startPagePanel.adoptionsButton.addActionListener((ActionEvent e) -> {
+//        	onNavigationButtonPressed(e, "adoptions", "Adoption");
+//        });
+        
+        startPagePanel.adoptionsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openDialog();
+            }
         });
         
         startPagePanel.patronsButton.addActionListener((ActionEvent e) -> {
@@ -98,7 +109,8 @@ public class ShelterFrame extends JFrame implements GUIConstants {
         PlaceholderPanel roomsPlaceholderPanel = new PlaceholderPanel("Räume");
         cardPanel.add(roomsPlaceholderPanel, "rooms");
         
-        PlaceholderPanel adoptionsPlaceholderPanel = new PlaceholderPanel("Adoption");
+//        PlaceholderPanel adoptionsPlaceholderPanel = new PlaceholderPanel("Adoption");
+        IncidentPopupPanel adoptionsPlaceholderPanel = new IncidentPopupPanel();
         cardPanel.add(adoptionsPlaceholderPanel, "adoptions");
         
         PatronPanel patronPanel = new PatronPanel();
@@ -116,6 +128,32 @@ public class ShelterFrame extends JFrame implements GUIConstants {
 		setVisible(true);
 	}
 
+	private void openDialog() {
+        JDialog dialog = new JDialog(this, "Dialog", true);
+        dialog.setSize(200, 150);
+        dialog.setLocationRelativeTo(this);
+
+        IncidentPopupPanel panel = new IncidentPopupPanel();
+        dialog.add(panel);
+
+        panel.cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dialog.dispose();
+            }
+        });
+        
+        panel.saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dialog.dispose();
+            }
+        });
+
+        dialog.pack();
+        dialog.setVisible(true);
+    }
+	
 	public static void main(String[] args) {
 		new ShelterFrame();
 	}
