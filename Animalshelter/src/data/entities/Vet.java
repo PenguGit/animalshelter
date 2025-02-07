@@ -9,6 +9,7 @@ public class Vet extends Person {
 	public Vet() {};
 	
 	public Vet(ResultSet resultSet) throws SQLException {
+		this.id = resultSet.getInt("vet.id");
 		this.lastName = resultSet.getString("vet.last_name");
 		this.firstName = resultSet.getString("vet.first_name");
 		this.phoneNumber = resultSet.getString("vet.phone_number");

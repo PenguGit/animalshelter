@@ -16,30 +16,29 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 
 import bl.DTOManager;
-import bl.entities.CaretakerDTO;
+import bl.entities.PatronDTO;
 import bl.entities.PersonDTO;
 
 public class PatronPanel extends ShelterPanel {
+	private boolean isInEditMode = false;
+	private boolean isInCreateMode = false;
+	
 	private ShelterPanel mainContainer;
 	private ShelterList<PersonDTO> personList;
 	private DefaultListModel<PersonDTO> personListModel;
 
-	DTOManager dtoManager;
+	private DTOManager dtoManager;
 
 	private GridBagConstraints gbc = new GridBagConstraints();
 
 	private ShelterPanel dataLayoutPanel;
 	private ShelterLabel firstNameLabel;
-	private ShelterLabel firstNameDataLabel;
 	private ShelterTextField firstNameTextField;
 	private ShelterLabel lastNameLabel;
-	private ShelterLabel lastNameDataLabel;
 	private ShelterTextField lastNameTextField;
 	private ShelterLabel emailLabel;
-	private ShelterLabel emailDataLabel;
 	private ShelterTextField emailTextField;
 	private ShelterLabel phoneLabel;
-	private ShelterLabel phoneDataLabel;
 	private ShelterTextField phoneTextField;
 
 	private ShelterPanel buttonLayoutPanel;
@@ -88,39 +87,38 @@ public class PatronPanel extends ShelterPanel {
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
-		add(dataLayoutPanel, BorderLayout.LINE_END);
+        add(dataLayoutPanel, BorderLayout.CENTER);
 		firstNameLabel = new ShelterLabel("Vorname:");
-		firstNameDataLabel = new ShelterLabel("");
 		firstNameTextField = new ShelterTextField();
-		firstNameTextField.setVisible(false);
+		firstNameTextField.setPreferredSize(new Dimension(250, 30));
+		firstNameTextField.setEnabled(false);
 
 		lastNameLabel = new ShelterLabel("Nachname:");
-		lastNameDataLabel = new ShelterLabel("");
 		lastNameTextField = new ShelterTextField();
-		lastNameTextField.setVisible(false);
+		lastNameTextField.setPreferredSize(new Dimension(250, 30));
+		lastNameTextField.setEnabled(false);
 
 		emailLabel = new ShelterLabel("E-Mail:");
-		emailDataLabel = new ShelterLabel("");
 		emailTextField = new ShelterTextField();
-		emailTextField.setVisible(false);
+		emailTextField.setPreferredSize(new Dimension(250, 30));
+		emailTextField.setEnabled(false);
 
 		phoneLabel = new ShelterLabel("Telefon-Nr.:");
-		phoneDataLabel = new ShelterLabel("");
 		phoneTextField = new ShelterTextField();
-		phoneTextField.setVisible(false);
+		phoneTextField.setPreferredSize(new Dimension(250, 30));
+		phoneTextField.setEnabled(false);
 
-		addLabelAndField(dataLayoutPanel, gbc, 0, firstNameLabel, firstNameDataLabel, firstNameTextField);
-        addLabelAndField(dataLayoutPanel, gbc, 1, lastNameLabel, lastNameDataLabel, lastNameTextField);
-        addLabelAndField(dataLayoutPanel, gbc, 2, emailLabel, emailDataLabel, emailTextField);
-        addLabelAndField(dataLayoutPanel, gbc, 3, phoneLabel, phoneDataLabel, phoneTextField);
+		addLabelAndField(dataLayoutPanel, gbc, 0, firstNameLabel, firstNameTextField);
+        addLabelAndField(dataLayoutPanel, gbc, 1, lastNameLabel, lastNameTextField);
+        addLabelAndField(dataLayoutPanel, gbc, 2, emailLabel, emailTextField);
+        addLabelAndField(dataLayoutPanel, gbc, 3, phoneLabel, phoneTextField);
 	}
 
-	private void addLabelAndField(ShelterPanel panel, GridBagConstraints gbc, int row, ShelterLabel label, ShelterLabel dataLabel, ShelterTextField field) {
+	private void addLabelAndField(ShelterPanel panel, GridBagConstraints gbc, int row, ShelterLabel label, ShelterTextField field) {
         gbc.gridy = row;
         gbc.gridx = 0;
         panel.add(label, gbc);
         gbc.gridx = 1;
-        panel.add(dataLabel, gbc);
         panel.add(field, gbc);
     }
 
@@ -134,6 +132,7 @@ public class PatronPanel extends ShelterPanel {
 		editButton.addActionListener((ActionEvent _) -> {
 			onEditButtonPressed();
 		});
+		editButton.setFocusable(false);
 		editButton.setVisible(false);
 		buttonLayoutPanel.add(editButton);
 		buttonLayoutPanel.add(Box.createHorizontalGlue());
@@ -142,6 +141,7 @@ public class PatronPanel extends ShelterPanel {
 		deleteButton.addActionListener((ActionEvent _) -> {
 			onDeleteButtonPressed();
 		});
+		deleteButton.setFocusable(false);
 		deleteButton.setVisible(false);
 		buttonLayoutPanel.add(deleteButton);
 		buttonLayoutPanel.add(Box.createHorizontalGlue());
@@ -150,6 +150,7 @@ public class PatronPanel extends ShelterPanel {
 		cancelButton.addActionListener((ActionEvent _) -> {
 			onCancelButtonPressed();
 		});
+		cancelButton.setFocusable(false);
 		cancelButton.setVisible(false);
 		buttonLayoutPanel.add(cancelButton);
 		buttonLayoutPanel.add(Box.createHorizontalGlue());
@@ -158,6 +159,7 @@ public class PatronPanel extends ShelterPanel {
 		saveButton.addActionListener((ActionEvent _) -> {
 			onSaveButtonPressed();
 		});
+		saveButton.setFocusable(false);
 		saveButton.setVisible(false);
 		buttonLayoutPanel.add(saveButton);
 		buttonLayoutPanel.add(Box.createHorizontalGlue());
@@ -166,6 +168,7 @@ public class PatronPanel extends ShelterPanel {
 		newButton.addActionListener((ActionEvent _) -> {
 			onNewButtonPressed();
 		});
+		newButton.setFocusable(false);
 		buttonLayoutPanel.add(newButton);
 
 		gbc.gridx = 0;
@@ -177,70 +180,120 @@ public class PatronPanel extends ShelterPanel {
 	}
 
 	private void onListSelectionChanged(ListSelectionEvent e) {
-		PersonDTO selected = personList.getSelectedValue();
-		if(selected == null) {
-			cancelButton.setVisible(false);
-			editButton.setVisible(false);
-			deleteButton.setVisible(false);
+		if(e.getValueIsAdjusting()) {
+			return;
 		}
-		else {
-			editButton.setVisible(true);
-			deleteButton.setVisible(true);
-
-			firstNameDataLabel.setText(selected.getFirstName());
-			lastNameDataLabel.setText(selected.getLastName());
-			emailDataLabel.setText(selected.getEmail());
-			phoneDataLabel.setText(selected.getPhoneNumber());
-		}
+		
+		changeButtonState();
+		changeTextFieldState();
 	}
 
 	private void onEditButtonPressed() {
+		isInEditMode = true;
+		isInCreateMode = false;
+		changeButtonState();
+		changeTextFieldState();
 	}
 
 	private void onDeleteButtonPressed() {
+		PatronDTO selectedItem = (PatronDTO)personList.getSelectedValue();
+		if(selectedItem == null) {
+			return;
+		}
+		System.out.println("Deleting!");
+		dtoManager.deletePatron(selectedItem);
+		
+		personList.clearSelection();
+		isInEditMode = false;
+		isInCreateMode = false;
+		changeButtonState();
+		changeTextFieldState();
+		updateTableData();
 	}
 
 	private void onCancelButtonPressed() {
-		personList.setSelectedIndex(-1);
-
-		personList.setEnabled(true);
-		cancelButton.setVisible(false);
-		saveButton.setVisible(false);
-
-		firstNameDataLabel.setVisible(true);
-		lastNameDataLabel.setVisible(true);
-		emailDataLabel.setVisible(true);
-		phoneDataLabel.setVisible(true);
-
-		firstNameTextField.setVisible(false);
-		lastNameTextField.setVisible(false);
-		emailTextField.setVisible(false);
-		phoneTextField.setVisible(false);
+		personList.clearSelection();
+		isInEditMode = false;
+		isInCreateMode = false;
+		changeButtonState();
+		changeTextFieldState();
 	}
 
 	private void onSaveButtonPressed() {
+		PatronDTO activePerson = (PatronDTO)personList.getSelectedValue();
+		if(firstNameTextField.getText().isBlank()) {
+			return;
+		}
+		if(lastNameTextField.getText().isBlank()) {
+			return;
+		}
+		if(emailTextField.getText().isBlank()) {
+			return;
+		}
+		if(phoneTextField.getText().isBlank()) {
+			return;
+		}
+		
+		if(activePerson == null) {
+			activePerson = new PatronDTO(lastNameTextField.getText(), firstNameTextField.getText(), emailTextField.getText(), phoneTextField.getText());
+		}
+		else {
+			activePerson.setFirstName(firstNameTextField.getText());
+			activePerson.setLastName(lastNameTextField.getText());
+			activePerson.setEmail(emailTextField.getText());
+			activePerson.setPhoneNumber(phoneTextField.getText());
+		}
+		
+		dtoManager.savePatron(activePerson);
+		
+		personList.clearSelection();
+		isInEditMode = false;
+		isInCreateMode = false;
+		changeButtonState();
+		changeTextFieldState();
+		updateTableData();
 	}
 
 	private void onNewButtonPressed() {
-		personList.setSelectedIndex(-1);
-
-		personList.setEnabled(false);
-		editButton.setVisible(false);
-		deleteButton.setVisible(false);
-		cancelButton.setVisible(true);
-		saveButton.setVisible(true);
-
-		firstNameDataLabel.setVisible(false);
-		lastNameDataLabel.setVisible(false);
-		emailDataLabel.setVisible(false);
-		phoneDataLabel.setVisible(false);
-
-		firstNameTextField.setVisible(true);
-		lastNameTextField.setVisible(true);
-		emailTextField.setVisible(true);
-		phoneTextField.setVisible(true);
+		personList.clearSelection();
+		isInEditMode = false;
+		isInCreateMode = true;
+		changeButtonState();
+		changeTextFieldState();
 	}
 
+	public void changeButtonState() {
+		boolean hasSelectedItem = personList.getSelectedIndex() >= 0;
+		
+		personList.setEnabled(!isInEditMode && !isInCreateMode);
+		editButton.setVisible(hasSelectedItem && !isInEditMode && !isInCreateMode);
+		deleteButton.setVisible(hasSelectedItem && !isInEditMode && !isInCreateMode);
+		cancelButton.setVisible(isInEditMode || isInCreateMode);
+		saveButton.setVisible(isInEditMode || isInCreateMode);
+		newButton.setVisible(!isInEditMode && !isInCreateMode);
+	}
+	
+	public void changeTextFieldState() {
+		firstNameTextField.setEnabled(isInEditMode || isInCreateMode);
+		lastNameTextField.setEnabled(isInEditMode || isInCreateMode);
+		emailTextField.setEnabled(isInEditMode || isInCreateMode);
+		phoneTextField.setEnabled(isInEditMode || isInCreateMode);
+		
+		PatronDTO selectedItem = (PatronDTO)personList.getSelectedValue();
+		if(selectedItem == null || isInCreateMode) {
+			firstNameTextField.setText("");
+			lastNameTextField.setText("");
+			emailTextField.setText("");
+			phoneTextField.setText("");
+		}
+		else {
+			firstNameTextField.setText(selectedItem.getFirstName());
+			lastNameTextField.setText(selectedItem.getLastName());
+			emailTextField.setText(selectedItem.getEmail());
+			phoneTextField.setText(selectedItem.getPhoneNumber());
+		}
+	}
+	
 	public void updateTableData() {
 		personListModel  = new DefaultListModel<PersonDTO>();
 		personListModel.addAll(dtoManager.loadPatrons());

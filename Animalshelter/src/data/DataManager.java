@@ -36,13 +36,16 @@ public class DataManager {
 	
 	public void saveEntity(Entity entity) {
 		try (Connection connection = DriverManager.getConnection(Constants.DB_URL, Constants.DB_USER, Constants.DB_PASSWORD)){
-			PreparedStatement statement = entity.getId() > 0 ? entity.getSqlUpdateStatement(connection) : entity.getSqlInsertStatement(connection);
+			boolean isUpdate = entity.getId() > 0;
+			PreparedStatement statement = isUpdate ? entity.getSqlUpdateStatement(connection) : entity.getSqlInsertStatement(connection);
 			statement.executeUpdate();
-			ResultSet rs = statement.getGeneratedKeys();
-			if(rs.first()) {
-				entity.setId(rs.getInt(1));
+			if(!isUpdate) {
+				ResultSet rs = statement.getGeneratedKeys();
+				if(rs.next()) {
+					entity.setId(rs.getInt(1));
+				}
+				rs.close();
 			}
-			rs.close();
 			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
