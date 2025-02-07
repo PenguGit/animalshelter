@@ -20,16 +20,10 @@ public class ShelterFrameTest extends JFrame implements GUIConstants {
 		
 		CaretakerPanel caretakerPanel = new CaretakerPanel();
 		StartpagePanel startpagePanel = new StartpagePanel();
-		ShelterImagePanel sip = new ShelterImagePanel(dtoManager.loadAnimalById(3).getImage());
 		AnimalViewPanel avp = new AnimalViewPanel();
 		
-		add(avp);
+		add(startpagePanel);
 		pack();
 		setVisible(true);
 	}
-
-	public static void main(String[] args) {
-		new ShelterFrameTest();
-	}
-
 }

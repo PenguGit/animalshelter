@@ -19,7 +19,7 @@ import bl.DTOManager;
 import bl.entities.CaretakerDTO;
 import bl.entities.PersonDTO;
 
-public class CaretakerPanel extends ShelterPanel {
+public class VetPanel extends ShelterPanel {
 	private ShelterPanel mainContainer;
 	private ShelterList<PersonDTO> personList;
 	private DefaultListModel<PersonDTO> personListModel;
@@ -49,7 +49,7 @@ public class CaretakerPanel extends ShelterPanel {
 	private ShelterButton saveButton;
 	private ShelterButton newButton;
 
-	public CaretakerPanel() {
+	public VetPanel() {
 		dtoManager = new DTOManager();
 
 		setLayout(new BorderLayout());
@@ -66,7 +66,7 @@ public class CaretakerPanel extends ShelterPanel {
 
 	private void initializeListComponents() {
 		personListModel  = new DefaultListModel<PersonDTO>();
-		personListModel.addAll(dtoManager.loadCaretakers());
+		personListModel.addAll(dtoManager.loadVets());
 		personList = new ShelterList<PersonDTO>(personListModel);
 		personList.setCellRenderer(new PersonListCellRenderer());
 		personList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -243,7 +243,7 @@ public class CaretakerPanel extends ShelterPanel {
 
 	public void updateTableData() {
 		personListModel  = new DefaultListModel<PersonDTO>();
-		personListModel.addAll(dtoManager.loadCaretakers());
+		personListModel.addAll(dtoManager.loadVets());
 		personList.setModel(personListModel);
 		personList.setSelectedIndex(-1);
 	}

@@ -12,6 +12,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 
 import bl.DTOManager;
+import gui.animalview.AnimalViewPanel;
 import gui.startpage.StartpagePanel;
 
 public class ShelterFrame extends JFrame implements GUIConstants {
@@ -91,8 +92,8 @@ public class ShelterFrame extends JFrame implements GUIConstants {
         
         cardPanel.add(startPagePanel, "start");
         
-        PlaceholderPanel animalsPlaceholderPanel = new PlaceholderPanel("Tiere");
-        cardPanel.add(animalsPlaceholderPanel, "animals");
+        AnimalViewPanel animalViewPanel = new AnimalViewPanel();
+        cardPanel.add(animalViewPanel, "animals");
         
         PlaceholderPanel roomsPlaceholderPanel = new PlaceholderPanel("Räume");
         cardPanel.add(roomsPlaceholderPanel, "rooms");
@@ -100,14 +101,14 @@ public class ShelterFrame extends JFrame implements GUIConstants {
         PlaceholderPanel adoptionsPlaceholderPanel = new PlaceholderPanel("Adoption");
         cardPanel.add(adoptionsPlaceholderPanel, "adoptions");
         
-        PlaceholderPanel patronsPlaceholderPanel = new PlaceholderPanel("Paten");
-        cardPanel.add(patronsPlaceholderPanel, "patrons");
+        PatronPanel patronPanel = new PatronPanel();
+        cardPanel.add(patronPanel, "patrons");
         
         CaretakerPanel caretakerPanel = new CaretakerPanel();
         cardPanel.add(caretakerPanel, "caretakers");
         
-        PlaceholderPanel vetsPlaceholderPanel = new PlaceholderPanel("Ärzte");
-        cardPanel.add(vetsPlaceholderPanel, "vets");
+        VetPanel vetPanel = new VetPanel();
+        cardPanel.add(vetPanel, "vets");
 		
         mainPanel.add(cardPanel);
 		

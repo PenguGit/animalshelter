@@ -1,5 +1,25 @@
 package gui;
 
+import java.io.FileWriter;
+import java.util.Arrays;
+
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
+
+public class PersonPanelGenerator {
+	public static void main(String[] args) {
+        PersonPanelGenerator.generatePersonPanelClasses();
+	}
+	
+	public static void generatePersonPanelClasses() {
+		String[] classNames = {"CaretakerPanel", "VetPanel", "PatronPanel"};
+		
+		try {
+            String sourceCode = """
+package gui;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -19,15 +39,15 @@ import bl.DTOManager;
 import bl.entities.CaretakerDTO;
 import bl.entities.PersonDTO;
 
-public class CaretakerPanel extends ShelterPanel {
+public class %s extends ShelterPanel {
 	private ShelterPanel mainContainer;
 	private ShelterList<PersonDTO> personList;
 	private DefaultListModel<PersonDTO> personListModel;
-
+	
 	DTOManager dtoManager;
 
 	private GridBagConstraints gbc = new GridBagConstraints();
-
+	
 	private ShelterPanel dataLayoutPanel;
 	private ShelterLabel firstNameLabel;
 	private ShelterLabel firstNameDataLabel;
@@ -48,17 +68,17 @@ public class CaretakerPanel extends ShelterPanel {
 	private ShelterButton cancelButton;
 	private ShelterButton saveButton;
 	private ShelterButton newButton;
-
-	public CaretakerPanel() {
+	
+	public %s() {
 		dtoManager = new DTOManager();
-
+		
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
+		
 		mainContainer = new ShelterPanel();
 		mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.X_AXIS));
 		add(mainContainer);
-
+		
 		initializeListComponents();
 		initializePersonDataComponents();
 		initializeButtons();
@@ -66,22 +86,22 @@ public class CaretakerPanel extends ShelterPanel {
 
 	private void initializeListComponents() {
 		personListModel  = new DefaultListModel<PersonDTO>();
-		personListModel.addAll(dtoManager.loadCaretakers());
+		personListModel.addAll(dtoManager.%%());
 		personList = new ShelterList<PersonDTO>(personListModel);
 		personList.setCellRenderer(new PersonListCellRenderer());
 		personList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		personList.setSelectedIndex(-1);
-
+		
 		personList.addListSelectionListener((ListSelectionEvent e) -> {
 			onListSelectionChanged(e);
 		});
-
+		
 		JScrollPane scrollPane = new JScrollPane(personList);
 		mainContainer.add(scrollPane);
 		scrollPane.setPreferredSize(new Dimension(150, 0));
 		add(scrollPane, BorderLayout.WEST);
 	}
-
+	
 	private void initializePersonDataComponents() {
 		dataLayoutPanel = new ShelterPanel();
 		dataLayoutPanel.setLayout(new GridBagLayout());
@@ -93,28 +113,28 @@ public class CaretakerPanel extends ShelterPanel {
 		firstNameDataLabel = new ShelterLabel("");
 		firstNameTextField = new ShelterTextField();
 		firstNameTextField.setVisible(false);
-
+		
 		lastNameLabel = new ShelterLabel("Nachname:");
 		lastNameDataLabel = new ShelterLabel("");
 		lastNameTextField = new ShelterTextField();
 		lastNameTextField.setVisible(false);
-
+		
 		emailLabel = new ShelterLabel("E-Mail:");
 		emailDataLabel = new ShelterLabel("");
 		emailTextField = new ShelterTextField();
 		emailTextField.setVisible(false);
-
+		
 		phoneLabel = new ShelterLabel("Telefon-Nr.:");
 		phoneDataLabel = new ShelterLabel("");
 		phoneTextField = new ShelterTextField();
 		phoneTextField.setVisible(false);
-
+		
 		addLabelAndField(dataLayoutPanel, gbc, 0, firstNameLabel, firstNameDataLabel, firstNameTextField);
         addLabelAndField(dataLayoutPanel, gbc, 1, lastNameLabel, lastNameDataLabel, lastNameTextField);
         addLabelAndField(dataLayoutPanel, gbc, 2, emailLabel, emailDataLabel, emailTextField);
         addLabelAndField(dataLayoutPanel, gbc, 3, phoneLabel, phoneDataLabel, phoneTextField);
 	}
-
+	
 	private void addLabelAndField(ShelterPanel panel, GridBagConstraints gbc, int row, ShelterLabel label, ShelterLabel dataLabel, ShelterTextField field) {
         gbc.gridy = row;
         gbc.gridx = 0;
@@ -123,11 +143,11 @@ public class CaretakerPanel extends ShelterPanel {
         panel.add(dataLabel, gbc);
         panel.add(field, gbc);
     }
-
+	
 	private void initializeButtons() {
 		buttonLayoutPanel = new ShelterPanel();
 		mainContainer.add(buttonLayoutPanel);
-
+		
 		buttonLayoutPanel.setLayout(new BoxLayout(buttonLayoutPanel, BoxLayout.X_AXIS));
 		add(buttonLayoutPanel, BorderLayout.PAGE_END);
 		editButton = new ShelterButton("Edit");
@@ -145,7 +165,7 @@ public class CaretakerPanel extends ShelterPanel {
 		deleteButton.setVisible(false);
 		buttonLayoutPanel.add(deleteButton);
 		buttonLayoutPanel.add(Box.createHorizontalGlue());
-
+		
 		cancelButton = new ShelterButton("Cancel");
 		cancelButton.addActionListener((ActionEvent _) -> {
 			onCancelButtonPressed();
@@ -153,7 +173,7 @@ public class CaretakerPanel extends ShelterPanel {
 		cancelButton.setVisible(false);
 		buttonLayoutPanel.add(cancelButton);
 		buttonLayoutPanel.add(Box.createHorizontalGlue());
-
+		
 		saveButton = new ShelterButton("Save");
 		saveButton.addActionListener((ActionEvent _) -> {
 			onSaveButtonPressed();
@@ -161,18 +181,18 @@ public class CaretakerPanel extends ShelterPanel {
 		saveButton.setVisible(false);
 		buttonLayoutPanel.add(saveButton);
 		buttonLayoutPanel.add(Box.createHorizontalGlue());
-
+		
 		newButton = new ShelterButton("New");
 		newButton.addActionListener((ActionEvent _) -> {
 			onNewButtonPressed();
 		});
 		buttonLayoutPanel.add(newButton);
-
+        
 		gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 2;
         dataLayoutPanel.add(buttonLayoutPanel, gbc);
-
+        
         add(dataLayoutPanel, BorderLayout.CENTER);
 	}
 
@@ -186,55 +206,55 @@ public class CaretakerPanel extends ShelterPanel {
 		else {
 			editButton.setVisible(true);
 			deleteButton.setVisible(true);
-
+			
 			firstNameDataLabel.setText(selected.getFirstName());
 			lastNameDataLabel.setText(selected.getLastName());
 			emailDataLabel.setText(selected.getEmail());
 			phoneDataLabel.setText(selected.getPhoneNumber());
 		}
 	}
-
+	
 	private void onEditButtonPressed() {
 	}
-
+	
 	private void onDeleteButtonPressed() {
 	}
-
+	
 	private void onCancelButtonPressed() {
 		personList.setSelectedIndex(-1);
-
+		
 		personList.setEnabled(true);
 		cancelButton.setVisible(false);
 		saveButton.setVisible(false);
-
+		
 		firstNameDataLabel.setVisible(true);
 		lastNameDataLabel.setVisible(true);
 		emailDataLabel.setVisible(true);
 		phoneDataLabel.setVisible(true);
-
+		
 		firstNameTextField.setVisible(false);
 		lastNameTextField.setVisible(false);
 		emailTextField.setVisible(false);
 		phoneTextField.setVisible(false);
 	}
-
+	
 	private void onSaveButtonPressed() {
 	}
-
+	
 	private void onNewButtonPressed() {
 		personList.setSelectedIndex(-1);
-
+		
 		personList.setEnabled(false);
 		editButton.setVisible(false);
 		deleteButton.setVisible(false);
 		cancelButton.setVisible(true);
 		saveButton.setVisible(true);
-
+		
 		firstNameDataLabel.setVisible(false);
 		lastNameDataLabel.setVisible(false);
 		emailDataLabel.setVisible(false);
 		phoneDataLabel.setVisible(false);
-
+		
 		firstNameTextField.setVisible(true);
 		lastNameTextField.setVisible(true);
 		emailTextField.setVisible(true);
@@ -243,9 +263,33 @@ public class CaretakerPanel extends ShelterPanel {
 
 	public void updateTableData() {
 		personListModel  = new DefaultListModel<PersonDTO>();
-		personListModel.addAll(dtoManager.loadCaretakers());
+		personListModel.addAll(dtoManager.%%());
 		personList.setModel(personListModel);
 		personList.setSelectedIndex(-1);
 	}
 }
 
+            """;
+            
+            for(String className: classNames) {
+            	FileWriter writer = new FileWriter("src/gui/" + className + ".java");
+                writer.write(sourceCode.replaceAll("%s", className).replaceAll("%%", 
+    				className.equals("CaretakerPanel") ? "loadCaretakers" : className.equals("VetPanel") ? "loadVets" : "loadPatrons"
+        		));
+                writer.close();
+
+                JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+                StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
+
+                // Specify the source file and the output directory
+                Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects("src/gui/" + className + ".java");
+                Iterable<String> options = Arrays.asList("-d", "bin");
+
+                compiler.getTask(null, fileManager, null, options, null, compilationUnits).call();
+                fileManager.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+	}
+}
