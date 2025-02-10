@@ -458,7 +458,6 @@ public class AnimalViewPanel extends ShelterPanel {
 		birthDateField.setText("");
 		additionalInfoArea.setText("");
 		
-
 		// Reset combo boxes
 		roomComboBox.setSelectedIndex(-1);
 		patronComboBox.setSelectedIndex(-1);
@@ -509,7 +508,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		additionalInfoArea.setText(animal.getAdditionalInfo());
 		setRadioFromGender();
 
-		// Select the matching room in the ComboBox
+		// Select the matching room and animal type in the ComboBox
 		selectComboBoxItemById(roomComboBox, animal.getRoom());
 		selectComboBoxItemById(animalTypeComboBox, animal.getAnimalType());
 		// Select the matching patron in the ComboBox if available
@@ -536,22 +535,20 @@ public class AnimalViewPanel extends ShelterPanel {
 	
 	private void onAnimalListSelectionChanged(ListSelectionEvent e) {
 		if (!e.getValueIsAdjusting()) {
-			AnimalDTO selectedAnimal = animalList.getSelectedValue();
+			animal = animalList.getSelectedValue();
 
-			if (selectedAnimal != null) {
-				loadAnimal(selectedAnimal);
+			if (animal != null) {
+				loadAnimal(animal);
 			}
 			
-			addIncidentButton.setEnabled(selectedAnimal != null);
-			addExaminationButton.setEnabled(selectedAnimal != null);
-			deleteButton.setVisible(selectedAnimal != null);
-			adoptionButton.setVisible(selectedAnimal != null);
+			addIncidentButton.setEnabled(animal != null);
+			addExaminationButton.setEnabled(animal != null);
+			deleteButton.setVisible(animal != null);
+			adoptionButton.setVisible(animal != null);
 		}
 	}
 
 	private void onNewIncidentButtonPressed() {
-		animal = animalList.getSelectedValue();
-		
 		if(animal == null) {
 			return;
 		}
@@ -599,8 +596,6 @@ public class AnimalViewPanel extends ShelterPanel {
 	}
 	
 	private void onNewExaminationButtonPressed() {
-		animal = animalList.getSelectedValue();
-		
 		if(animal == null) {
 			return;
 		}
