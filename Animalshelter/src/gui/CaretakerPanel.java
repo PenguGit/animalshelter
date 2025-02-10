@@ -77,7 +77,7 @@ public class CaretakerPanel extends ShelterPanel {
 
 		JScrollPane scrollPane = new JScrollPane(personList);
 		mainContainer.add(scrollPane);
-		scrollPane.setPreferredSize(new Dimension(150, 0));
+		scrollPane.setPreferredSize(new Dimension(250, 0));
 		add(scrollPane, BorderLayout.WEST);
 	}
 
@@ -297,6 +297,14 @@ public class CaretakerPanel extends ShelterPanel {
 		personListModel  = new DefaultListModel<PersonDTO>();
 		personListModel.addAll(dtoManager.loadCaretakers());
 		personList.setModel(personListModel);
+		personList.setSelectedIndex(-1);
+	}
+	
+	public void clear() {
+		firstNameTextField.setText("");
+		lastNameTextField.setText("");
+		emailTextField.setText("");
+		phoneTextField.setText("");
 		personList.setSelectedIndex(-1);
 	}
 }
