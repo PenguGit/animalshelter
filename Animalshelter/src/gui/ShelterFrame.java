@@ -10,10 +10,8 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 import bl.DTOManager;
 import gui.animalview.AnimalViewPanel;
@@ -153,10 +151,6 @@ public class ShelterFrame extends JFrame implements GUIConstants {
         dialog.pack();
         dialog.setVisible(true);
     }
-	
-	public static void main(String[] args) {
-		new ShelterFrame();
-	}
 	
 	private void onNavigationButtonPressed(ActionEvent e, String name, String title) {
 		backButton.setVisible(!name.equals("start"));
