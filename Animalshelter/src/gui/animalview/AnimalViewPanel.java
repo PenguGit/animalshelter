@@ -284,8 +284,6 @@ public class AnimalViewPanel extends ShelterPanel {
 	}
 
 	private void initLists() {
-		// Create main list panel
-
 		// Add side list to the main panel
 		initSideList();
 
@@ -351,7 +349,9 @@ public class AnimalViewPanel extends ShelterPanel {
 		incidentHeaderPanel.add(incidentLabel);
 		incidentHeaderPanel.add(Box.createHorizontalGlue());
 		incidentHeaderPanel.add(addIncidentButton);
-		incidentPanel.add(new JScrollPane(incidentList), BorderLayout.CENTER);
+		JScrollPane scrollPane = new JScrollPane(incidentList);
+		scrollPane.setPreferredSize(new Dimension(250, 300));
+		incidentPanel.add(scrollPane, BorderLayout.CENTER);
 
 		return incidentPanel;
 	}
@@ -382,7 +382,9 @@ public class AnimalViewPanel extends ShelterPanel {
 		examinationHeaderPanel.add(examinationLabel);
 		examinationHeaderPanel.add(Box.createHorizontalGlue());
 		examinationHeaderPanel.add(addExaminationButton);
-		examinationPanel.add(new JScrollPane(examinationList), BorderLayout.CENTER);
+		JScrollPane scrollPane = new JScrollPane(examinationList);
+		scrollPane.setPreferredSize(new Dimension(250, 300));
+		examinationPanel.add(scrollPane, BorderLayout.CENTER);
 
 		return examinationPanel;
 	}
