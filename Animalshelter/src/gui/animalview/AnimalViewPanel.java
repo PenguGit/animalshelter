@@ -406,8 +406,6 @@ public class AnimalViewPanel extends ShelterPanel {
 
 	// Assuming AnimalDTO is defined with relevant fields and constructor
 	public void saveAnimal() {
-		// Retrieve text from fields
-
 		if (animal == null) {
 
 			String name = nameField.getText().trim();
@@ -427,7 +425,6 @@ public class AnimalViewPanel extends ShelterPanel {
 
 			// Validate and save or process the object
 			if (validateAnimal(animal)) {
-				// Save or perform operations with animalDTO
 				dtoManager.saveAnimal(animal);
 			} else {
 				JOptionPane.showMessageDialog(null, "Please fill all required fields correctly.", "Validation Error",
@@ -436,9 +433,7 @@ public class AnimalViewPanel extends ShelterPanel {
 			refreshListModel(animalListModel, dtoManager.loadAnimals());
 			clearForm();
 		}
-
-		if (animal != null) {
-
+		else {
 			String name = nameField.getText().trim();
 			LocalDate birthDate = birthDateField.getDate();
 			String additionalInfo = additionalInfoArea.getText().trim();
@@ -451,12 +446,17 @@ public class AnimalViewPanel extends ShelterPanel {
 			byte[] image;
 			image = null;
 
-			animal = new AnimalDTO(animal.getId(), name, AnimalDTO.Gender.fromValue(getGenderFromRadio()), birthDate, additionalInfo,
-					animalType, patron, room, image);
+			animal.setName(name);
+			animal.setGender(AnimalDTO.Gender.fromValue(getGenderFromRadio()));
+			animal.setDateOfBirth(birthDate);
+			animal.setAdditionalInfo(additionalInfo);
+			animal.setAnimalType(animalType);
+			animal.setPatron(patron);
+			animal.setRoom(room);
+			animal.setImage(image);
 
 			// Validate and save or process the object
 			if (validateAnimal(animal)) {
-				// Save or perform operations with animalDTO
 				dtoManager.saveAnimal(animal);
 			} else {
 				JOptionPane.showMessageDialog(null, "Please fill all required fields correctly.", "Validation Error",
@@ -568,14 +568,18 @@ public class AnimalViewPanel extends ShelterPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dialog.dispose();
-                updateIncidentList();
             }
         });
         
         panel.getSaveButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dialog.dispose();
+            	IncidentDTO incident = panel.getIncident();
+            	if(incident != null) {
+            		dtoManager.saveIncident(incident);
+            		dialog.dispose();
+                    updateIncidentList();
+            	}
             }
         });
 
@@ -602,14 +606,18 @@ public class AnimalViewPanel extends ShelterPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dialog.dispose();
-                updateIncidentList();
             }
         });
         
         panel.saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dialog.dispose();
+            	ExaminationDTO incident = panel.getExamination();
+            	if(incident != null) {
+            		dtoManager.saveExamination(incident);
+            		dialog.dispose();
+                    updateExaminationList();
+            	}
             }
         });
 

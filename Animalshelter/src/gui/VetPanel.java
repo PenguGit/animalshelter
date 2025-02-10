@@ -128,7 +128,7 @@ public class VetPanel extends ShelterPanel {
 
 		buttonLayoutPanel.setLayout(new BoxLayout(buttonLayoutPanel, BoxLayout.X_AXIS));
 		add(buttonLayoutPanel, BorderLayout.PAGE_END);
-		editButton = new ShelterButton("Edit");
+		editButton = new ShelterButton("Bearbeiten");
 		editButton.addActionListener((ActionEvent _) -> {
 			onEditButtonPressed();
 		});
@@ -137,7 +137,7 @@ public class VetPanel extends ShelterPanel {
 		buttonLayoutPanel.add(editButton);
 		buttonLayoutPanel.add(Box.createHorizontalGlue());
 
-		deleteButton = new ShelterButton("Delete");
+		deleteButton = new ShelterButton("Löschen");
 		deleteButton.addActionListener((ActionEvent _) -> {
 			onDeleteButtonPressed();
 		});
@@ -146,7 +146,7 @@ public class VetPanel extends ShelterPanel {
 		buttonLayoutPanel.add(deleteButton);
 		buttonLayoutPanel.add(Box.createHorizontalGlue());
 
-		cancelButton = new ShelterButton("Cancel");
+		cancelButton = new ShelterButton("Abbrechen");
 		cancelButton.addActionListener((ActionEvent _) -> {
 			onCancelButtonPressed();
 		});
@@ -155,7 +155,7 @@ public class VetPanel extends ShelterPanel {
 		buttonLayoutPanel.add(cancelButton);
 		buttonLayoutPanel.add(Box.createHorizontalGlue());
 
-		saveButton = new ShelterButton("Save");
+		saveButton = new ShelterButton("Speichern");
 		saveButton.addActionListener((ActionEvent _) -> {
 			onSaveButtonPressed();
 		});
@@ -164,7 +164,7 @@ public class VetPanel extends ShelterPanel {
 		buttonLayoutPanel.add(saveButton);
 		buttonLayoutPanel.add(Box.createHorizontalGlue());
 
-		newButton = new ShelterButton("New");
+		newButton = new ShelterButton("Neu");
 		newButton.addActionListener((ActionEvent _) -> {
 			onNewButtonPressed();
 		});
@@ -200,7 +200,6 @@ public class VetPanel extends ShelterPanel {
 		if(selectedItem == null) {
 			return;
 		}
-		System.out.println("Deleting!");
 		dtoManager.deleteVet(selectedItem);
 		
 		personList.clearSelection();

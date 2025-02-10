@@ -9,9 +9,13 @@ import java.awt.event.ActionEvent;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 
 import bl.DTOManager;
 import bl.entities.AnimalDTO;
+import bl.entities.CaretakerDTO;
+import bl.entities.ExaminationDTO;
+import bl.entities.IncidentDTO;
 import bl.entities.VetDTO;
 import gui.animalview.ShelterBirthdateTextField;
 
@@ -71,18 +75,12 @@ public class ExaminationPopupPanel extends ShelterPanel {
         gbc.gridy = 5;
         gbc.gridx = 1;
         cancelButton = new ShelterButton("Cancel");
-        cancelButton.addActionListener((ActionEvent _) -> {
-        	onCancelButtonPressed();
-		});
         
         add(cancelButton, gbc);
         
         gbc.gridx = 2;
         gbc.anchor = GridBagConstraints.EAST;
         saveButton = new ShelterButton("Save");
-        saveButton.addActionListener((ActionEvent _) -> {
-			onSaveButtonPressed();
-		});
         
         add(saveButton, gbc);
 	}
@@ -100,14 +98,18 @@ public class ExaminationPopupPanel extends ShelterPanel {
         add(field, gbc);
     }
 	
-	
-	
-	private void onCancelButtonPressed() {
-		
+	private boolean validateForm() {
+		return !titleTextField.getText().isBlank() && !descriptionTextField.getText().isBlank() && !dateField.getText().isBlank()
+				&& animalComboBox.getSelectedItem() != null && vetComboBox.getSelectedItem() != null;
 	}
 	
-	private void onSaveButtonPressed() {
-		
+	public ExaminationDTO getExamination() {
+		if(!validateForm()) {
+			JOptionPane.showMessageDialog(null, "Please fill all required fields correctly.", "Validation Error",
+					JOptionPane.ERROR_MESSAGE);
+			return null;
+		}
+		return new ExaminationDTO(titleTextField.getText(), dateField.getDate(), descriptionTextField.getText(), (VetDTO)vetComboBox.getSelectedItem(), (AnimalDTO)animalComboBox.getSelectedItem());
 	}
 }
 
