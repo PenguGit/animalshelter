@@ -260,7 +260,6 @@ public class AnimalViewPanel extends ShelterPanel {
 		adoptionButton = new ShelterButton("Adoptieren");
 		adoptionButton.setVisible(false);
 		saveButton = new ShelterButton(SAVE_BUTTON);
-		saveButton.setVisible(false);
 		deleteButton = new ShelterButton(DELETE_BUTTON);
 		deleteButton.setVisible(false);
 		
@@ -405,46 +404,23 @@ public class AnimalViewPanel extends ShelterPanel {
 
 	// Assuming AnimalDTO is defined with relevant fields and constructor
 	public void saveAnimal() {
+		String name = nameField.getText().trim();
+		LocalDate birthDate = birthDateField.getDate();
+		String additionalInfo = additionalInfoArea.getText().trim();
+
+		// Get selected patron from ComboBox (if any)
+		PatronDTO patron = (PatronDTO) patronComboBox.getSelectedItem();
+		AnimalTypeDTO animalType = (AnimalTypeDTO) animalTypeComboBox.getSelectedItem();
+		RoomDTO room = (RoomDTO) roomComboBox.getSelectedItem();
+		
+		byte[] image;
+		image = null;
+		
 		if (animal == null) {
-
-			String name = nameField.getText().trim();
-			LocalDate birthDate = birthDateField.getDate();
-			String additionalInfo = additionalInfoArea.getText().trim();
-
-			// Get selected patron from ComboBox (if any)
-			PatronDTO patron = (PatronDTO) patronComboBox.getSelectedItem();
-			AnimalTypeDTO animalType = (AnimalTypeDTO) animalTypeComboBox.getSelectedItem();
-			RoomDTO room = (RoomDTO) roomComboBox.getSelectedItem();
-
-			byte[] image;
-			image = null;
-
 			animal = new AnimalDTO(name, AnimalDTO.Gender.fromValue(getGenderFromRadio()), birthDate, additionalInfo, animalType, patron,
 					room, image);
-
-			// Validate and save or process the object
-			if (validateAnimal(animal)) {
-				dtoManager.saveAnimal(animal);
-				refreshListModel(animalListModel, dtoManager.loadAnimals());
-				clearForm();
-			} else {
-				JOptionPane.showMessageDialog(null, "Please fill all required fields correctly.", "Validation Error",
-						JOptionPane.ERROR_MESSAGE);
-			}
 		}
 		else {
-			String name = nameField.getText().trim();
-			LocalDate birthDate = birthDateField.getDate();
-			String additionalInfo = additionalInfoArea.getText().trim();
-
-			// Get selected patron from ComboBox (if any)
-			PatronDTO patron = (PatronDTO) patronComboBox.getSelectedItem();
-			AnimalTypeDTO animalType = (AnimalTypeDTO) animalTypeComboBox.getSelectedItem();
-			RoomDTO room = (RoomDTO) roomComboBox.getSelectedItem();
-
-			byte[] image;
-			image = null;
-
 			animal.setName(name);
 			animal.setGender(AnimalDTO.Gender.fromValue(getGenderFromRadio()));
 			animal.setDateOfBirth(birthDate);
@@ -453,16 +429,16 @@ public class AnimalViewPanel extends ShelterPanel {
 			animal.setPatron(patron);
 			animal.setRoom(room);
 			animal.setImage(image);
-
-			// Validate and save or process the object
-			if (validateAnimal(animal)) {
-				dtoManager.saveAnimal(animal);
-				refreshListModel(animalListModel, dtoManager.loadAnimals());
-				clearForm();
-			} else {
-				JOptionPane.showMessageDialog(null, "Please fill all required fields correctly.", "Validation Error",
-						JOptionPane.ERROR_MESSAGE);
-			}
+		}
+		
+		// Validate and save or process the object
+		if (validateAnimal(animal)) {
+			dtoManager.saveAnimal(animal);
+			refreshListModel(animalListModel, dtoManager.loadAnimals());
+			clearForm();
+		} else {
+			JOptionPane.showMessageDialog(null, "Please fill all required fields correctly.", "Validation Error",
+					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -569,7 +545,6 @@ public class AnimalViewPanel extends ShelterPanel {
 			
 			addIncidentButton.setEnabled(selectedAnimal != null);
 			addExaminationButton.setEnabled(selectedAnimal != null);
-			saveButton.setVisible(selectedAnimal != null);
 			deleteButton.setVisible(selectedAnimal != null);
 			adoptionButton.setVisible(selectedAnimal != null);
 		}
