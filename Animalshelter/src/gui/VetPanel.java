@@ -305,7 +305,9 @@ public class VetPanel extends ShelterPanel {
 		lastNameTextField.setText("");
 		emailTextField.setText("");
 		phoneTextField.setText("");
-		personList.setSelectedIndex(-1);
+		isInEditMode = false;
+		isInCreateMode = false;
+		personList.clearSelection();
 	}
 }
 
