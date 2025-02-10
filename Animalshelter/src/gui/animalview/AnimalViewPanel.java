@@ -285,21 +285,18 @@ public class AnimalViewPanel extends ShelterPanel {
 
 	private void initLists() {
 		// Create main list panel
-		ShelterPanel listPanel = new ShelterPanel();
-		listPanel.setLayout(new BorderLayout());
 
 		// Add side list to the main panel
-		initSideList(listPanel);
+		initSideList();
 
 		// Create and add right panel with incidents and examinations
 		ShelterPanel rightPanel = createRightPanel();
-		listPanel.add(rightPanel, BorderLayout.EAST);
 
 		// Add list panel to the main container
-		add(listPanel, BorderLayout.EAST);
+		add(rightPanel, BorderLayout.EAST);
 	}
 
-	private void initSideList(ShelterPanel listPanel) {
+	private void initSideList() {
 		animalListModel = new DefaultListModel<>();
 		animalListModel.addAll(dtoManager.loadAnimals());
 		animalList = new ShelterList<AnimalDTO>(animalListModel);
@@ -595,9 +592,8 @@ public class AnimalViewPanel extends ShelterPanel {
 			return;
 		}
 		
-		incidentListModel = new DefaultListModel<>();
+		incidentListModel.clear();
 		incidentListModel.addAll(dtoManager.loadIncidentsByAnimalId(animal.getId()));
-		incidentList.setModel(incidentListModel);
 	}
 	
 	private void onNewExaminationButtonPressed() {
@@ -645,8 +641,7 @@ public class AnimalViewPanel extends ShelterPanel {
 			return;
 		}
 		
-		examinationListModel = new DefaultListModel<>();
+		examinationListModel.clear();
 		examinationListModel.addAll(dtoManager.loadExaminationsByAnimalId(animal.getId()));
-		examinationList.setModel(examinationListModel);
 	}
 }

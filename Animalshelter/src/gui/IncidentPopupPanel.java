@@ -109,7 +109,7 @@ public class IncidentPopupPanel extends ShelterPanel {
     }
 	
 	private boolean validateForm() {
-		return !titleTextField.getText().isBlank() && !descriptionTextField.getText().isBlank() && !dateField.getText().isBlank() && caretakerComboBox.getSelectedItem() != null;
+		return !titleTextField.getText().isBlank() && !descriptionTextField.getText().isBlank() && dateField.getDate() != null && caretakerComboBox.getSelectedItem() != null;
 	}
 	
 	public IncidentDTO getIncident() {

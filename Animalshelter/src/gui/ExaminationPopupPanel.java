@@ -99,7 +99,7 @@ public class ExaminationPopupPanel extends ShelterPanel {
     }
 	
 	private boolean validateForm() {
-		return !titleTextField.getText().isBlank() && !descriptionTextField.getText().isBlank() && !dateField.getText().isBlank() && vetComboBox.getSelectedItem() != null;
+		return !titleTextField.getText().isBlank() && !descriptionTextField.getText().isBlank() && dateField.getDate() != null && vetComboBox.getSelectedItem() != null;
 	}
 	
 	public ExaminationDTO getExamination() {
