@@ -7,18 +7,22 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.ButtonModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 import bl.DTOManager;
 import bl.entities.AnimalDTO;
@@ -28,6 +32,8 @@ import bl.entities.ExaminationDTO;
 import bl.entities.IncidentDTO;
 import bl.entities.PatronDTO;
 import bl.entities.RoomDTO;
+import gui.ExaminationPopupPanel;
+import gui.IncidentPopupPanel;
 import gui.PersonListCellRenderer;
 import gui.ShelterButton;
 import gui.ShelterComboBox;
@@ -52,6 +58,7 @@ public class AnimalViewPanel extends ShelterPanel {
 	DefaultComboBoxModel<PatronDTO> patronComboBoxModel;
 	
 	private ShelterButton addIncidentButton;
+	private ShelterButton addExaminationButton;
 	private ShelterButton saveButton;
 	private ShelterButton deleteButton;
 	private ShelterButton adoptionButton;
@@ -300,14 +307,13 @@ public class AnimalViewPanel extends ShelterPanel {
 
 	private ShelterPanel createRightPanel() {
 		ShelterPanel rightPanel = new ShelterPanel();
-		rightPanel.setLayout(new BorderLayout());
+		rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
 		// Add incident section
-		rightPanel.add(createIncidentPanel(), BorderLayout.NORTH);
-		rightPanel.add(new JScrollPane(incidentList), BorderLayout.CENTER);
+		rightPanel.add(createIncidentPanel());
 
 		// Add examination section
-		rightPanel.add(createExaminationPanel(), BorderLayout.SOUTH);
+		rightPanel.add(createExaminationPanel());
 
 		return rightPanel;
 	}
@@ -315,22 +321,31 @@ public class AnimalViewPanel extends ShelterPanel {
 	private ShelterPanel createIncidentPanel() {
 		// Create incident header panel
 		ShelterPanel incidentPanel = new ShelterPanel();
-		incidentPanel.setLayout(new BoxLayout(incidentPanel, BoxLayout.X_AXIS));
-		incidentPanel.add(Box.createHorizontalGlue());
-		incidentPanel.setBackground(Color.MAGENTA);
+		incidentPanel.setLayout(new BorderLayout());
 
+		ShelterPanel incidentHeaderPanel = new ShelterPanel();
+		incidentHeaderPanel.setLayout(new BoxLayout(incidentHeaderPanel, BoxLayout.X_AXIS));
+		incidentHeaderPanel.setBackground(Color.MAGENTA);
+		incidentPanel.add(incidentHeaderPanel, BorderLayout.NORTH);
+		
 		// Create and style components
-		ShelterLabel incidentLabel = new ShelterLabel("Incidents:");
+		ShelterLabel incidentLabel = new ShelterLabel("Vorkommnisse:");
 		incidentListModel = new DefaultListModel<>();
 		incidentListModel.addAll(dtoManager.loadIncidents()); // TODO Something bad here?
 		incidentList = new ShelterList<IncidentDTO>(incidentListModel);
 		incidentList.setCellRenderer(new PersonListCellRenderer());
 		incidentList.setFont(FONT_LIST);
 		addIncidentButton = new ShelterButton("+");
+		addIncidentButton.setFocusable(false);
+		addIncidentButton.addActionListener((ActionEvent _) -> {
+			onNewIncidentButtonPressed();
+		});
 
 		// Add components to panel
-		incidentPanel.add(incidentLabel);
-		incidentPanel.add(addIncidentButton);
+		incidentHeaderPanel.add(incidentLabel);
+		incidentHeaderPanel.add(Box.createHorizontalGlue());
+		incidentHeaderPanel.add(addIncidentButton);
+		incidentPanel.add(new JScrollPane(incidentList), BorderLayout.CENTER);
 
 		return incidentPanel;
 	}
@@ -338,18 +353,29 @@ public class AnimalViewPanel extends ShelterPanel {
 	private ShelterPanel createExaminationPanel() {
 		ShelterPanel examinationPanel = new ShelterPanel();
 		examinationPanel.setLayout(new BorderLayout());
-		examinationPanel.setBackground(Color.CYAN);
 
+		ShelterPanel examinationHeaderPanel = new ShelterPanel();
+		examinationHeaderPanel.setLayout(new BoxLayout(examinationHeaderPanel, BoxLayout.X_AXIS));
+		examinationHeaderPanel.setBackground(Color.CYAN);
+		examinationPanel.add(examinationHeaderPanel, BorderLayout.NORTH);
+		
 		// Create and style components
-		ShelterLabel examinationLabel = new ShelterLabel("Examination:");
+		ShelterLabel examinationLabel = new ShelterLabel("Untersuchungen:");
 		examinationListModel = new DefaultListModel<>();
 		examinationListModel.addAll(dtoManager.loadExaminations()); // TODO Something bad here?
 		examinationList = new ShelterList<ExaminationDTO>(examinationListModel);
 		examinationList.setCellRenderer(new PersonListCellRenderer());
 		examinationList.setFont(FONT_LIST);
-
+		addExaminationButton = new ShelterButton("+");
+		addExaminationButton.setFocusable(false);
+		addExaminationButton.addActionListener((ActionEvent _) -> {
+			onNewExaminationButtonPressed();
+		});
+		
 		// Add components to panel
-		examinationPanel.add(examinationLabel, BorderLayout.NORTH);
+		examinationHeaderPanel.add(examinationLabel);
+		examinationHeaderPanel.add(Box.createHorizontalGlue());
+		examinationHeaderPanel.add(addExaminationButton);
 		examinationPanel.add(new JScrollPane(examinationList), BorderLayout.CENTER);
 
 		return examinationPanel;
@@ -507,4 +533,71 @@ public class AnimalViewPanel extends ShelterPanel {
 		}
 	}
 
+	private void onNewIncidentButtonPressed() {
+		JDialog dialog = new JDialog((JFrame)SwingUtilities.getWindowAncestor(this), "Neues Vorkommnis", true);
+        dialog.setSize(200, 150);
+        dialog.setLocationRelativeTo(this);
+        dialog.setResizable(false);
+
+        IncidentPopupPanel panel = new IncidentPopupPanel();
+        dialog.add(panel);
+
+        panel.getCancelButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dialog.dispose();
+                updateIncidentList();
+            }
+        });
+        
+        panel.getSaveButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dialog.dispose();
+            }
+        });
+
+        dialog.pack();
+        dialog.setVisible(true);
+	}
+	
+	private void updateIncidentList() {
+		incidentListModel = new DefaultListModel<>();
+		incidentListModel.addAll(dtoManager.loadIncidents());
+		incidentList.setModel(incidentListModel);
+	}
+	
+	private void onNewExaminationButtonPressed() {
+		JDialog dialog = new JDialog((JFrame)SwingUtilities.getWindowAncestor(this), "Neue Untersuchung", true);
+        dialog.setSize(200, 150);
+        dialog.setLocationRelativeTo(this);
+        dialog.setResizable(false);
+
+        ExaminationPopupPanel panel = new ExaminationPopupPanel();
+        dialog.add(panel);
+
+        panel.cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dialog.dispose();
+                updateIncidentList();
+            }
+        });
+        
+        panel.saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dialog.dispose();
+            }
+        });
+
+        dialog.pack();
+        dialog.setVisible(true);
+	}
+	
+	private void updateExaminationList() {
+		examinationListModel = new DefaultListModel<>();
+		examinationListModel.addAll(dtoManager.loadExaminations());
+		examinationList.setModel(examinationListModel);
+	}
 }

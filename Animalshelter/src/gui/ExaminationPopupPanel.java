@@ -12,10 +12,10 @@ import javax.swing.JComponent;
 
 import bl.DTOManager;
 import bl.entities.AnimalDTO;
-import bl.entities.CaretakerDTO;
+import bl.entities.VetDTO;
 import gui.animalview.ShelterBirthdateTextField;
 
-public class IncidentPopupPanel extends ShelterPanel {
+public class ExaminationPopupPanel extends ShelterPanel {
 	private DTOManager dtoManager;
 	
 	private GridBagConstraints gbc = new GridBagConstraints();
@@ -24,12 +24,12 @@ public class IncidentPopupPanel extends ShelterPanel {
 	private ShelterTextField descriptionTextField;
 	private ShelterBirthdateTextField dateField;
 	private ShelterComboBox<AnimalDTO> animalComboBox;
-	private ShelterComboBox<CaretakerDTO> caretakerComboBox;
+	private ShelterComboBox<VetDTO> vetComboBox;
 	
-	private ShelterButton cancelButton;
-	private ShelterButton saveButton;
+	public ShelterButton cancelButton;
+	public ShelterButton saveButton;
 	
-	public IncidentPopupPanel() {
+	public ExaminationPopupPanel() {
 		dtoManager = new DTOManager();
 
 		setLayout(new GridBagLayout());
@@ -54,11 +54,11 @@ public class IncidentPopupPanel extends ShelterPanel {
 		animalComboBox.setRenderer(new PersonListCellRenderer());
 		animalComboBox.setPreferredSize(new Dimension(250, 30));
 		
-		DefaultComboBoxModel<CaretakerDTO> caretakerComboBoxModel = new DefaultComboBoxModel<>();
-		caretakerComboBoxModel.addAll(dtoManager.loadCaretakers());
-		caretakerComboBox = new ShelterComboBox<CaretakerDTO>(caretakerComboBoxModel);
-		caretakerComboBox.setRenderer(new PersonListCellRenderer());
-		caretakerComboBox.setPreferredSize(new Dimension(250, 30));
+		DefaultComboBoxModel<VetDTO> vetComboBoxModel = new DefaultComboBoxModel<>();
+		vetComboBoxModel.addAll(dtoManager.loadVets());
+		vetComboBox = new ShelterComboBox<VetDTO>(vetComboBoxModel);
+		vetComboBox.setRenderer(new PersonListCellRenderer());
+		vetComboBox.setPreferredSize(new Dimension(250, 30));
 		
 		gbc.insets = new Insets(10, 10, 10, 10);
         gbc.anchor = GridBagConstraints.WEST;
@@ -66,7 +66,7 @@ public class IncidentPopupPanel extends ShelterPanel {
         addLabelAndField(gbc, "Beschreibung:", descriptionTextField, 1);
         addLabelAndField(gbc, "Datum:", dateField, 2);
         addLabelAndField(gbc, "Tier:", animalComboBox, 3);
-        addLabelAndField(gbc, "Pfleger:", caretakerComboBox, 4);
+        addLabelAndField(gbc, "Arzt:", vetComboBox, 4);
         
         gbc.gridy = 5;
         gbc.gridx = 1;
@@ -87,16 +87,6 @@ public class IncidentPopupPanel extends ShelterPanel {
         add(saveButton, gbc);
 	}
 	
-	
-	
-	public ShelterButton getCancelButton() {
-		return cancelButton;
-	}
-
-	public ShelterButton getSaveButton() {
-		return saveButton;
-	}
-
 	private void addLabelAndField(GridBagConstraints gbc, String labelText, JComponent field, int yPos) {
         ShelterLabel label = new ShelterLabel(labelText);
 

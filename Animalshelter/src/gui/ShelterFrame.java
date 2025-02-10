@@ -80,11 +80,8 @@ public class ShelterFrame extends JFrame implements GUIConstants {
 //        	onNavigationButtonPressed(e, "adoptions", "Adoption");
 //        });
         
-        startPagePanel.adoptionsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                openDialog();
-            }
+        startPagePanel.adoptionsButton.addActionListener((ActionEvent e) -> {
+        	onNavigationButtonPressed(e, "adoptions", "Paten");
         });
         
         startPagePanel.patronsButton.addActionListener((ActionEvent e) -> {
@@ -107,8 +104,7 @@ public class ShelterFrame extends JFrame implements GUIConstants {
         PlaceholderPanel roomsPlaceholderPanel = new PlaceholderPanel("Räume");
         cardPanel.add(roomsPlaceholderPanel, "rooms");
         
-//        PlaceholderPanel adoptionsPlaceholderPanel = new PlaceholderPanel("Adoption");
-        IncidentPopupPanel adoptionsPlaceholderPanel = new IncidentPopupPanel();
+        PlaceholderPanel adoptionsPlaceholderPanel = new PlaceholderPanel("Adoption");
         cardPanel.add(adoptionsPlaceholderPanel, "adoptions");
         
         PatronPanel patronPanel = new PatronPanel();
@@ -125,32 +121,6 @@ public class ShelterFrame extends JFrame implements GUIConstants {
 		pack();
 		setVisible(true);
 	}
-
-	private void openDialog() {
-        JDialog dialog = new JDialog(this, "Dialog", true);
-        dialog.setSize(200, 150);
-        dialog.setLocationRelativeTo(this);
-
-        IncidentPopupPanel panel = new IncidentPopupPanel();
-        dialog.add(panel);
-
-        panel.cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dialog.dispose();
-            }
-        });
-        
-        panel.saveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dialog.dispose();
-            }
-        });
-
-        dialog.pack();
-        dialog.setVisible(true);
-    }
 	
 	private void onNavigationButtonPressed(ActionEvent e, String name, String title) {
 		backButton.setVisible(!name.equals("start"));
