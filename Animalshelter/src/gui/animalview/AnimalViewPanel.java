@@ -49,7 +49,8 @@ public class AnimalViewPanel extends ShelterPanel {
 	DefaultListModel<AnimalDTO> animalListModel;
 	DefaultListModel<IncidentDTO> incidentListModel;
 	DefaultListModel<ExaminationDTO> examinationListModel;
-
+	DefaultComboBoxModel<PatronDTO> patronComboBoxModel;
+	
 	private ShelterButton addIncidentButton;
 	private ShelterButton saveButton;
 	private ShelterButton deleteButton;
@@ -126,9 +127,9 @@ public class AnimalViewPanel extends ShelterPanel {
 		panel.setBackground(Color.GRAY);
 
 		ShelterLabel patronLabel = new ShelterLabel("Pate: ");
-		DefaultComboBoxModel<PatronDTO> boxModel = new DefaultComboBoxModel<>();
-		boxModel.addAll(dtoManager.loadPatrons());
-		patronComboBox = new ShelterComboBox<>(boxModel);
+		patronComboBoxModel = new DefaultComboBoxModel<>();
+		patronComboBoxModel.addAll(dtoManager.loadPatrons());
+		patronComboBox = new ShelterComboBox<>(patronComboBoxModel);
 		patronComboBox.setRenderer(new PersonListCellRenderer());
 
 		panel.add(patronLabel);
@@ -358,6 +359,13 @@ public class AnimalViewPanel extends ShelterPanel {
 		model.clear();
 		model.addAll(newItems);
 	}
+	
+	public static <T> void refreshBoxModel(DefaultComboBoxModel<T> model, ArrayList<T> newItems) {
+        model.removeAllElements(); // Clear existing items
+        for (T item : newItems) {
+            model.addElement(item);
+        }
+    }
 
 	// Assuming AnimalDTO is defined with relevant fields and constructor
 	public void saveAnimal() {
@@ -470,6 +478,7 @@ public class AnimalViewPanel extends ShelterPanel {
 
 	public void loadAnimal(AnimalDTO animal) {
 		this.animal = animal;
+		refreshBoxModel(patronComboBoxModel, dtoManager.loadPatrons());
 		// Populate text fields
 		nameField.setText(animal.getName());
 		birthDateField.setDate(animal.getDateOfBirth());
