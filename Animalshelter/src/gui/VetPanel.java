@@ -234,7 +234,7 @@ public class VetPanel extends ShelterPanel {
 		}
 		
 		if(activePerson == null) {
-			activePerson = new VetDTO(lastNameTextField.getText(), firstNameTextField.getText(), emailTextField.getText(), phoneTextField.getText());
+			activePerson = new VetDTO(lastNameTextField.getText(), firstNameTextField.getText(), phoneTextField.getText(), emailTextField.getText());
 		}
 		else {
 			activePerson.setFirstName(firstNameTextField.getText());

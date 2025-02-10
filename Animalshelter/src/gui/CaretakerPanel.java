@@ -234,7 +234,7 @@ public class CaretakerPanel extends ShelterPanel {
 		}
 		
 		if(activePerson == null) {
-			activePerson = new CaretakerDTO(lastNameTextField.getText(), firstNameTextField.getText(), emailTextField.getText(), phoneTextField.getText());
+			activePerson = new CaretakerDTO(lastNameTextField.getText(), firstNameTextField.getText(), phoneTextField.getText(), emailTextField.getText());
 		}
 		else {
 			activePerson.setFirstName(firstNameTextField.getText());

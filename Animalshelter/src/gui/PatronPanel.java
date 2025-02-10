@@ -234,7 +234,7 @@ public class PatronPanel extends ShelterPanel {
 		}
 		
 		if(activePerson == null) {
-			activePerson = new PatronDTO(lastNameTextField.getText(), firstNameTextField.getText(), emailTextField.getText(), phoneTextField.getText());
+			activePerson = new PatronDTO(lastNameTextField.getText(), firstNameTextField.getText(), phoneTextField.getText(), emailTextField.getText());
 		}
 		else {
 			activePerson.setFirstName(firstNameTextField.getText());
