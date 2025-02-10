@@ -7,7 +7,6 @@ import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -20,124 +19,133 @@ import gui.startpage.StartpagePanel;
 public class ShelterFrame extends JFrame implements GUIConstants {
 	DTOManager dtoManager;
 	CardLayout cardLayout;
-	
+
 	AnimalViewPanel animalViewPanel;
 	RoomsPanel roomsPanel;
-	
+
 	ShelterPanel mainPanel;
 	ShelterPanel topBarPanel;
 	ShelterButton backButton;
 	ShelterLabel titleLabel;
 	ShelterPanel cardPanel;
-	
+	private PatronPanel patronPanel;
+	private CaretakerPanel caretakerPanel;
+	private VetPanel vetPanel;
+
 	public ShelterFrame() throws HeadlessException {
 		super(APP_TITEL);
 		dtoManager = new DTOManager();
-		
+
 		setBounds(FRAME_BOUNDS);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		mainPanel = new ShelterPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-		
+
 		add(mainPanel);
-		
+
 		topBarPanel = new ShelterPanel();
 		topBarPanel.setLayout(new BoxLayout(topBarPanel, BoxLayout.X_AXIS));
 		topBarPanel.setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
 		mainPanel.add(topBarPanel);
-		
+
 		backButton = new ShelterButton("<");
 		backButton.setFocusable(false);
 		backButton.setVisible(false);
 		backButton.setAlignmentX(Component.LEFT_ALIGNMENT);
 		backButton.addActionListener((ActionEvent _) -> {
-        	onNavigationButtonPressed("start", GREETING);
-        });
-        topBarPanel.add(backButton);
-		
-        topBarPanel.add(Box.createRigidArea(new Dimension(16, 0)));
-        
-        titleLabel = new ShelterLabel(GREETING);
-        titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        topBarPanel.add(titleLabel);
+			onNavigationButtonPressed("start", GREETING);
+		});
+		topBarPanel.add(backButton);
 
-        topBarPanel.add(Box.createHorizontalGlue());
+		topBarPanel.add(Box.createRigidArea(new Dimension(16, 0)));
+
+		titleLabel = new ShelterLabel(GREETING);
+		titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		topBarPanel.add(titleLabel);
+
+		topBarPanel.add(Box.createHorizontalGlue());
 
 		cardLayout = new CardLayout();
-        
-        cardPanel = new ShelterPanel();
+
+		cardPanel = new ShelterPanel();
 		cardPanel.setLayout(cardLayout);
-		
-        StartpagePanel startPagePanel = new StartpagePanel();
-        
-        startPagePanel.animalsButton.addActionListener((ActionEvent _) -> {
-        	onNavigationButtonPressed("animals", "Tiere");
-        });
-        
-        startPagePanel.roomsButton.addActionListener((ActionEvent _) -> {
-        	onNavigationButtonPressed("rooms", "Räume");
-        });
-        
-        startPagePanel.adoptionsButton.addActionListener((ActionEvent _) -> {
-        	onNavigationButtonPressed("adoptions", "Adoptionen");
-        });
-        
-        startPagePanel.patronsButton.addActionListener((ActionEvent _) -> {
-        	onNavigationButtonPressed("patrons", "Paten");
-        });
-        
-        startPagePanel.caretakersButton.addActionListener((ActionEvent _) -> {
-        	onNavigationButtonPressed("caretakers", "Pfleger");
-        });
-        
-        startPagePanel.vetsButton.addActionListener((ActionEvent _) -> {
-        	onNavigationButtonPressed("vets", "Ärzte");
-        });
-        
-        cardPanel.add(startPagePanel, "start");
-        
-        animalViewPanel = new AnimalViewPanel();
-        cardPanel.add(animalViewPanel, "animals");
-        
-        roomsPanel = new RoomsPanel();
-        
-        roomsPanel.getAnimalsList().addMouseListener(new MouseAdapter() {
-		    public void mouseClicked(MouseEvent evt) {
-		        if (evt.getClickCount() == 2) {
-		        	onNavigationButtonPressed("animals", "Tiere");
-		        	animalViewPanel.selectAnimalById(roomsPanel.getAnimalsList().getSelectedValue().getId());
-		        }
-		    }
+
+		StartpagePanel startPagePanel = new StartpagePanel();
+
+		startPagePanel.animalsButton.addActionListener((ActionEvent _) -> {
+			onNavigationButtonPressed("animals", "Tiere");
 		});
-        
-        cardPanel.add(roomsPanel, "rooms");
-        
-        PlaceholderPanel adoptionsPlaceholderPanel = new PlaceholderPanel("Adoption");
-        cardPanel.add(adoptionsPlaceholderPanel, "adoptions");
-        
-        PatronPanel patronPanel = new PatronPanel();
-        cardPanel.add(patronPanel, "patrons");
-        
-        CaretakerPanel caretakerPanel = new CaretakerPanel();
-        cardPanel.add(caretakerPanel, "caretakers");
-        
-        VetPanel vetPanel = new VetPanel();
-        cardPanel.add(vetPanel, "vets");
-		
-        mainPanel.add(cardPanel);
-		
+
+		startPagePanel.roomsButton.addActionListener((ActionEvent _) -> {
+			onNavigationButtonPressed("rooms", "Räume");
+		});
+
+		startPagePanel.adoptionsButton.addActionListener((ActionEvent _) -> {
+			onNavigationButtonPressed("adoptions", "Adoptionen");
+
+		});
+
+		startPagePanel.patronsButton.addActionListener((ActionEvent _) -> {
+			onNavigationButtonPressed("patrons", "Paten");
+		});
+
+		startPagePanel.caretakersButton.addActionListener((ActionEvent _) -> {
+			onNavigationButtonPressed("caretakers", "Pfleger");
+		});
+
+		startPagePanel.vetsButton.addActionListener((ActionEvent _) -> {
+			onNavigationButtonPressed("vets", "Ärzte");
+		});
+
+		cardPanel.add(startPagePanel, "start");
+
+		animalViewPanel = new AnimalViewPanel();
+		cardPanel.add(animalViewPanel, "animals");
+
+		roomsPanel = new RoomsPanel();
+
+		roomsPanel.getAnimalsList().addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent evt) {
+				if (evt.getClickCount() == 2) {
+					onNavigationButtonPressed("animals", "Tiere");
+					animalViewPanel.selectAnimalById(roomsPanel.getAnimalsList().getSelectedValue().getId());
+				}
+			}
+		});
+
+		cardPanel.add(roomsPanel, "rooms");
+
+		PlaceholderPanel adoptionsPlaceholderPanel = new PlaceholderPanel("Adoption");
+		cardPanel.add(adoptionsPlaceholderPanel, "adoptions");
+
+		patronPanel = new PatronPanel();
+		cardPanel.add(patronPanel, "patrons");
+
+		caretakerPanel = new CaretakerPanel();
+		cardPanel.add(caretakerPanel, "caretakers");
+
+		vetPanel = new VetPanel();
+		cardPanel.add(vetPanel, "vets");
+
+		mainPanel.add(cardPanel);
+
 		pack();
 		setVisible(true);
 	}
-	
+
 	private void onNavigationButtonPressed(String name, String title) {
 		backButton.setVisible(!name.equals("start"));
-		if(name.equals("animals")) {
+		if (name.equals("animals")) {
 			animalViewPanel.clearForm();
-		}
-		else if(name.equals("rooms")) {
+		} else if (name.equals("rooms")) {
 			roomsPanel.updateRoomsListData();
+		} else if (name.equals("patrons")) {
+			patronPanel.clear();
+		} else if (name.equals("caretakers")) {
+			caretakerPanel.clear();
+		} else if (name.equals("vets")) {
+			vetPanel.clear();
 		}
 		titleLabel.setText(title);
 		cardLayout.show(cardPanel, name);
