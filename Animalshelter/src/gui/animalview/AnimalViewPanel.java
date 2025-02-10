@@ -23,6 +23,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
 
 import bl.DTOManager;
 import bl.entities.AnimalDTO;
@@ -62,6 +63,7 @@ public class AnimalViewPanel extends ShelterPanel {
 	private ShelterButton saveButton;
 	private ShelterButton deleteButton;
 	private ShelterButton adoptionButton;
+	private ShelterButton newButton;
 
 	private ShelterComboBox<AnimalTypeDTO> animalTypeComboBox;
 	private ShelterComboBox<RoomDTO> roomComboBox;
@@ -81,7 +83,6 @@ public class AnimalViewPanel extends ShelterPanel {
 
 	private ShelterImagePanel imagePanel;
 	private ButtonGroup genderButtonGroup;
-	private ShelterButton clearButton;
 	
 
 	public AnimalViewPanel() {
@@ -254,12 +255,15 @@ public class AnimalViewPanel extends ShelterPanel {
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 		buttonPanel.add(Box.createHorizontalGlue());
 
-		clearButton = new ShelterButton("Neu");
+		newButton = new ShelterButton("Neu");
 		adoptionButton = new ShelterButton("Adoptieren");
+		adoptionButton.setVisible(false);
 		saveButton = new ShelterButton("Speichern");
+		saveButton.setVisible(false);
 		deleteButton = new ShelterButton("Löschen");
-
-		clearButton.addActionListener(_ -> {
+		deleteButton.setVisible(false);
+		
+		newButton.addActionListener(_ -> {
 			clearForm();
 		});
 		
@@ -271,7 +275,7 @@ public class AnimalViewPanel extends ShelterPanel {
 			deleteAnimal();
 		});
 
-		buttonPanel.add(clearButton);
+		buttonPanel.add(newButton);
 		buttonPanel.add(adoptionButton);
 		buttonPanel.add(saveButton);
 		buttonPanel.add(deleteButton);
@@ -301,14 +305,8 @@ public class AnimalViewPanel extends ShelterPanel {
 		animalList = new ShelterList<AnimalDTO>(animalListModel);
 		animalList.setCellRenderer(new PersonListCellRenderer());
 		animalList.setFont(FONT_LIST);
-		animalList.addListSelectionListener(e -> {
-			if (!e.getValueIsAdjusting()) {
-				AnimalDTO selectedAnimal = animalList.getSelectedValue();
-
-				if (selectedAnimal != null) {
-					loadAnimal(selectedAnimal);
-				}
-			}
+		animalList.addListSelectionListener((ListSelectionEvent e) -> {
+			onAnimalListSelectionChanged(e);
 		});
 		JScrollPane sideListScrollPane = new JScrollPane(animalList);
 		sideListScrollPane.setPreferredSize(new Dimension(250, 300));
@@ -347,6 +345,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		incidentList.setFont(FONT_LIST);
 		addIncidentButton = new ShelterButton("+");
 		addIncidentButton.setFocusable(false);
+		addIncidentButton.setEnabled(false);
 		addIncidentButton.addActionListener((ActionEvent _) -> {
 			onNewIncidentButtonPressed();
 		});
@@ -377,6 +376,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		examinationList.setFont(FONT_LIST);
 		addExaminationButton = new ShelterButton("+");
 		addExaminationButton.setFocusable(false);
+		addExaminationButton.setEnabled(false);
 		addExaminationButton.addActionListener((ActionEvent _) -> {
 			onNewExaminationButtonPressed();
 		});
@@ -492,6 +492,8 @@ public class AnimalViewPanel extends ShelterPanel {
 		examinationListModel.clear();
 		genderButtonGroup.clearSelection();
 		animal = null;
+		
+		animalList.clearSelection();
 	}
 
 	// Example validation logic
@@ -555,14 +557,36 @@ public class AnimalViewPanel extends ShelterPanel {
 			}
 		}
 	}
+	
+	private void onAnimalListSelectionChanged(ListSelectionEvent e) {
+		if (!e.getValueIsAdjusting()) {
+			AnimalDTO selectedAnimal = animalList.getSelectedValue();
+
+			if (selectedAnimal != null) {
+				loadAnimal(selectedAnimal);
+			}
+			
+			addIncidentButton.setEnabled(selectedAnimal != null);
+			addExaminationButton.setEnabled(selectedAnimal != null);
+			saveButton.setVisible(selectedAnimal != null);
+			deleteButton.setVisible(selectedAnimal != null);
+			adoptionButton.setVisible(selectedAnimal != null);
+		}
+	}
 
 	private void onNewIncidentButtonPressed() {
+		animal = animalList.getSelectedValue();
+		
+		if(animal == null) {
+			return;
+		}
+		
 		JDialog dialog = new JDialog((JFrame)SwingUtilities.getWindowAncestor(this), "Neues Vorkommnis", true);
         dialog.setSize(200, 150);
         dialog.setLocationRelativeTo(this);
         dialog.setResizable(false);
 
-        IncidentPopupPanel panel = new IncidentPopupPanel();
+        IncidentPopupPanel panel = new IncidentPopupPanel(animal);
         dialog.add(panel);
 
         panel.getCancelButton().addActionListener(new ActionListener() {
@@ -589,24 +613,30 @@ public class AnimalViewPanel extends ShelterPanel {
 	}
 	
 	private void updateIncidentList() {
-		AnimalDTO selectedAnimal = animalList.getSelectedValue();
+		animal = animalList.getSelectedValue();
 		
-		if(selectedAnimal == null) {
+		if(animal == null) {
 			return;
 		}
 		
 		incidentListModel = new DefaultListModel<>();
-		incidentListModel.addAll(dtoManager.loadIncidentsByAnimalId(selectedAnimal.getId()));
+		incidentListModel.addAll(dtoManager.loadIncidentsByAnimalId(animal.getId()));
 		incidentList.setModel(incidentListModel);
 	}
 	
 	private void onNewExaminationButtonPressed() {
+		animal = animalList.getSelectedValue();
+		
+		if(animal == null) {
+			return;
+		}
+		
 		JDialog dialog = new JDialog((JFrame)SwingUtilities.getWindowAncestor(this), "Neue Untersuchung", true);
         dialog.setSize(200, 150);
         dialog.setLocationRelativeTo(this);
         dialog.setResizable(false);
 
-        ExaminationPopupPanel panel = new ExaminationPopupPanel();
+        ExaminationPopupPanel panel = new ExaminationPopupPanel(animal);
         dialog.add(panel);
 
         panel.cancelButton.addActionListener(new ActionListener() {
@@ -633,14 +663,14 @@ public class AnimalViewPanel extends ShelterPanel {
 	}
 	
 	private void updateExaminationList() {
-		AnimalDTO selectedAnimal = animalList.getSelectedValue();
+		animal = animalList.getSelectedValue();
 		
-		if(selectedAnimal == null) {
+		if(animal == null) {
 			return;
 		}
 		
 		examinationListModel = new DefaultListModel<>();
-		examinationListModel.addAll(dtoManager.loadExaminationsByAnimalId(selectedAnimal.getId()));
+		examinationListModel.addAll(dtoManager.loadExaminationsByAnimalId(animal.getId()));
 		examinationList.setModel(examinationListModel);
 	}
 }

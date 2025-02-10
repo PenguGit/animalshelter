@@ -24,13 +24,17 @@ public class IncidentPopupPanel extends ShelterPanel {
 	private ShelterTextField titleTextField;
 	private ShelterTextField descriptionTextField;
 	private ShelterBirthdateTextField dateField;
-	private ShelterComboBox<AnimalDTO> animalComboBox;
+	private ShelterLabel animalLabel;
 	private ShelterComboBox<CaretakerDTO> caretakerComboBox;
 	
 	private ShelterButton cancelButton;
 	private ShelterButton saveButton;
 	
-	public IncidentPopupPanel() {
+	private AnimalDTO animal;
+	
+	public IncidentPopupPanel(AnimalDTO animal) {
+		this.animal = animal;
+		
 		dtoManager = new DTOManager();
 
 		setLayout(new GridBagLayout());
@@ -51,9 +55,8 @@ public class IncidentPopupPanel extends ShelterPanel {
 		
 		DefaultComboBoxModel<AnimalDTO> animalComboBoxModel = new DefaultComboBoxModel<>();
 		animalComboBoxModel.addAll(dtoManager.loadAnimals());
-		animalComboBox = new ShelterComboBox<AnimalDTO>(animalComboBoxModel);
-		animalComboBox.setRenderer(new PersonListCellRenderer());
-		animalComboBox.setPreferredSize(new Dimension(250, 30));
+		animalLabel = new ShelterLabel(animal.getName());
+		animalLabel.setPreferredSize(new Dimension(250, 30));
 		
 		DefaultComboBoxModel<CaretakerDTO> caretakerComboBoxModel = new DefaultComboBoxModel<>();
 		caretakerComboBoxModel.addAll(dtoManager.loadCaretakers());
@@ -66,7 +69,7 @@ public class IncidentPopupPanel extends ShelterPanel {
         addLabelAndField(gbc, "Bezeichnung:", titleTextField, 0);
         addLabelAndField(gbc, "Beschreibung:", descriptionTextField, 1);
         addLabelAndField(gbc, "Datum:", dateField, 2);
-        addLabelAndField(gbc, "Tier:", animalComboBox, 3);
+        addLabelAndField(gbc, "Tier:", animalLabel, 3);
         addLabelAndField(gbc, "Pfleger:", caretakerComboBox, 4);
         
         gbc.gridy = 5;
@@ -106,8 +109,7 @@ public class IncidentPopupPanel extends ShelterPanel {
     }
 	
 	private boolean validateForm() {
-		return !titleTextField.getText().isBlank() && !descriptionTextField.getText().isBlank() && !dateField.getText().isBlank()
-				&& animalComboBox.getSelectedItem() != null && caretakerComboBox.getSelectedItem() != null;
+		return !titleTextField.getText().isBlank() && !descriptionTextField.getText().isBlank() && !dateField.getText().isBlank() && caretakerComboBox.getSelectedItem() != null;
 	}
 	
 	public IncidentDTO getIncident() {
@@ -116,7 +118,7 @@ public class IncidentPopupPanel extends ShelterPanel {
 					JOptionPane.ERROR_MESSAGE);
 			return null;
 		}
-		return new IncidentDTO(titleTextField.getText(), dateField.getDate(), descriptionTextField.getText(), (CaretakerDTO)caretakerComboBox.getSelectedItem(), (AnimalDTO)animalComboBox.getSelectedItem());
+		return new IncidentDTO(titleTextField.getText(), dateField.getDate(), descriptionTextField.getText(), (CaretakerDTO)caretakerComboBox.getSelectedItem(), animal);
 	}
 }
 

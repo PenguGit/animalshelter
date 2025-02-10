@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
@@ -13,9 +12,7 @@ import javax.swing.JOptionPane;
 
 import bl.DTOManager;
 import bl.entities.AnimalDTO;
-import bl.entities.CaretakerDTO;
 import bl.entities.ExaminationDTO;
-import bl.entities.IncidentDTO;
 import bl.entities.VetDTO;
 import gui.animalview.ShelterBirthdateTextField;
 
@@ -27,13 +24,17 @@ public class ExaminationPopupPanel extends ShelterPanel {
 	private ShelterTextField titleTextField;
 	private ShelterTextField descriptionTextField;
 	private ShelterBirthdateTextField dateField;
-	private ShelterComboBox<AnimalDTO> animalComboBox;
+	private ShelterLabel animalLabel;
 	private ShelterComboBox<VetDTO> vetComboBox;
 	
 	public ShelterButton cancelButton;
 	public ShelterButton saveButton;
 	
-	public ExaminationPopupPanel() {
+	private AnimalDTO animal;
+	
+	public ExaminationPopupPanel(AnimalDTO animal) {
+		this.animal = animal;
+		
 		dtoManager = new DTOManager();
 
 		setLayout(new GridBagLayout());
@@ -54,9 +55,8 @@ public class ExaminationPopupPanel extends ShelterPanel {
 		
 		DefaultComboBoxModel<AnimalDTO> animalComboBoxModel = new DefaultComboBoxModel<>();
 		animalComboBoxModel.addAll(dtoManager.loadAnimals());
-		animalComboBox = new ShelterComboBox<AnimalDTO>(animalComboBoxModel);
-		animalComboBox.setRenderer(new PersonListCellRenderer());
-		animalComboBox.setPreferredSize(new Dimension(250, 30));
+		animalLabel = new ShelterLabel(animal.getName());
+		animalLabel.setPreferredSize(new Dimension(250, 30));
 		
 		DefaultComboBoxModel<VetDTO> vetComboBoxModel = new DefaultComboBoxModel<>();
 		vetComboBoxModel.addAll(dtoManager.loadVets());
@@ -69,7 +69,7 @@ public class ExaminationPopupPanel extends ShelterPanel {
         addLabelAndField(gbc, "Bezeichnung:", titleTextField, 0);
         addLabelAndField(gbc, "Beschreibung:", descriptionTextField, 1);
         addLabelAndField(gbc, "Datum:", dateField, 2);
-        addLabelAndField(gbc, "Tier:", animalComboBox, 3);
+        addLabelAndField(gbc, "Tier:", animalLabel, 3);
         addLabelAndField(gbc, "Arzt:", vetComboBox, 4);
         
         gbc.gridy = 5;
@@ -99,8 +99,7 @@ public class ExaminationPopupPanel extends ShelterPanel {
     }
 	
 	private boolean validateForm() {
-		return !titleTextField.getText().isBlank() && !descriptionTextField.getText().isBlank() && !dateField.getText().isBlank()
-				&& animalComboBox.getSelectedItem() != null && vetComboBox.getSelectedItem() != null;
+		return !titleTextField.getText().isBlank() && !descriptionTextField.getText().isBlank() && !dateField.getText().isBlank() && vetComboBox.getSelectedItem() != null;
 	}
 	
 	public ExaminationDTO getExamination() {
@@ -109,7 +108,7 @@ public class ExaminationPopupPanel extends ShelterPanel {
 					JOptionPane.ERROR_MESSAGE);
 			return null;
 		}
-		return new ExaminationDTO(titleTextField.getText(), dateField.getDate(), descriptionTextField.getText(), (VetDTO)vetComboBox.getSelectedItem(), (AnimalDTO)animalComboBox.getSelectedItem());
+		return new ExaminationDTO(titleTextField.getText(), dateField.getDate(), descriptionTextField.getText(), (VetDTO)vetComboBox.getSelectedItem(), animal);
 	}
 }
 
