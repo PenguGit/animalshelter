@@ -72,14 +72,14 @@ public class ExaminationPopupPanel extends ShelterPanel {
         addLabelAndField(gbc, "Tier:", animalLabel, 3);
         addLabelAndField(gbc, "Arzt:", vetComboBox, 4);
         
+        gbc.gridwidth = 1;
         gbc.gridy = 5;
-        gbc.gridx = 1;
+        gbc.gridx = 0;
         cancelButton = new ShelterButton(CANCEL_BUTTON);
         
         add(cancelButton, gbc);
         
-        gbc.gridx = 2;
-        gbc.anchor = GridBagConstraints.EAST;
+        gbc.gridx = 1;
         saveButton = new ShelterButton(SAVE_BUTTON);
         
         add(saveButton, gbc);
