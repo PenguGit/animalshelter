@@ -1,6 +1,7 @@
 package bl;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import bl.entities.AdopterDTO;
 import bl.entities.AdoptionDTO;
@@ -152,12 +153,20 @@ public class DTOManager {
 	    return DataObjectMapper.getExaminationDTOFromExamination(DataManager.getInstance().loadEntityById(Examination.class, id));
 	}
 
-	public ArrayList<ExaminationDTO> loadExaminations() {
+	private ArrayList<ExaminationDTO> loadExaminations() {
 	    ArrayList<ExaminationDTO> examinationDTOs = new ArrayList<>();
 	    for (Examination examination : DataManager.getInstance().loadEntities(Examination.class)) {
 	        examinationDTOs.add(DataObjectMapper.getExaminationDTOFromExamination(examination));
 	    }
 	    return examinationDTOs;
+	}
+	
+	public ArrayList<ExaminationDTO> loadExaminationsByAnimalId(int id) {
+	    return new ArrayList<ExaminationDTO>(
+	    		loadExaminations()
+	    			.stream()
+	    			.filter(e -> e.getAnimal().getId() == id)
+	    			.collect(Collectors.toList()));
 	}
 
 	public void deleteExamination(ExaminationDTO examinationDTO) {
@@ -175,12 +184,20 @@ public class DTOManager {
 	    return DataObjectMapper.getIncidentDTOFromIncident(DataManager.getInstance().loadEntityById(Incident.class, id));
 	}
 
-	public ArrayList<IncidentDTO> loadIncidents() {
+	private ArrayList<IncidentDTO> loadIncidents() {
 	    ArrayList<IncidentDTO> incidentDTOs = new ArrayList<>();
 	    for (Incident incident : DataManager.getInstance().loadEntities(Incident.class)) {
 	        incidentDTOs.add(DataObjectMapper.getIncidentDTOFromIncident(incident));
 	    }
 	    return incidentDTOs;
+	}
+	
+	public ArrayList<IncidentDTO> loadIncidentsByAnimalId(int id) {
+	    return new ArrayList<IncidentDTO>(
+	    		loadIncidents()
+	    			.stream()
+	    			.filter(e -> e.getAnimal().getId() == id)
+	    			.collect(Collectors.toList()));
 	}
 
 	public void deleteIncident(IncidentDTO incidentDTO) {

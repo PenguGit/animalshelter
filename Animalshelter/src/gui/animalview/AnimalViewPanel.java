@@ -342,7 +342,6 @@ public class AnimalViewPanel extends ShelterPanel {
 		// Create and style components
 		ShelterLabel incidentLabel = new ShelterLabel("Vorkommnisse:");
 		incidentListModel = new DefaultListModel<>();
-		incidentListModel.addAll(dtoManager.loadIncidents()); // TODO Something bad here?
 		incidentList = new ShelterList<IncidentDTO>(incidentListModel);
 		incidentList.setCellRenderer(new PersonListCellRenderer());
 		incidentList.setFont(FONT_LIST);
@@ -373,7 +372,6 @@ public class AnimalViewPanel extends ShelterPanel {
 		// Create and style components
 		ShelterLabel examinationLabel = new ShelterLabel("Untersuchungen:");
 		examinationListModel = new DefaultListModel<>();
-		examinationListModel.addAll(dtoManager.loadExaminations()); // TODO Something bad here?
 		examinationList = new ShelterList<ExaminationDTO>(examinationListModel);
 		examinationList.setCellRenderer(new PersonListCellRenderer());
 		examinationList.setFont(FONT_LIST);
@@ -420,18 +418,18 @@ public class AnimalViewPanel extends ShelterPanel {
 			byte[] image;
 			image = null;
 
-			animal = new AnimalDTO(name, AnimalDTO.Gender.fromValue(0), birthDate, additionalInfo, animalType, patron,
+			animal = new AnimalDTO(name, AnimalDTO.Gender.fromValue(getGenderFromRadio()), birthDate, additionalInfo, animalType, patron,
 					room, image);
 
 			// Validate and save or process the object
 			if (validateAnimal(animal)) {
 				dtoManager.saveAnimal(animal);
+				refreshListModel(animalListModel, dtoManager.loadAnimals());
+				clearForm();
 			} else {
 				JOptionPane.showMessageDialog(null, "Please fill all required fields correctly.", "Validation Error",
 						JOptionPane.ERROR_MESSAGE);
 			}
-			refreshListModel(animalListModel, dtoManager.loadAnimals());
-			clearForm();
 		}
 		else {
 			String name = nameField.getText().trim();
@@ -458,12 +456,12 @@ public class AnimalViewPanel extends ShelterPanel {
 			// Validate and save or process the object
 			if (validateAnimal(animal)) {
 				dtoManager.saveAnimal(animal);
+				refreshListModel(animalListModel, dtoManager.loadAnimals());
+				clearForm();
 			} else {
 				JOptionPane.showMessageDialog(null, "Please fill all required fields correctly.", "Validation Error",
 						JOptionPane.ERROR_MESSAGE);
 			}
-			refreshListModel(animalListModel, dtoManager.loadAnimals());
-			clearForm();
 		}
 	}
 
@@ -499,7 +497,7 @@ public class AnimalViewPanel extends ShelterPanel {
 	// Example validation logic
 	private boolean validateAnimal(AnimalDTO animalDTO) {
 		return !animalDTO.getName().isEmpty() && animalDTO.getDateOfBirth() != null && animalDTO.getRoom() != null
-				&& animalDTO.getGender() != null && animalDTO.getAnimalType() != null;
+				&& animalDTO.getGender() != null && animalDTO.getAnimalType() != null && getGenderFromRadio() >= 0;
 	}
 	
 	
@@ -540,6 +538,9 @@ public class AnimalViewPanel extends ShelterPanel {
 		if (animal.getPatron() != null) {
 			selectComboBoxItemById(patronComboBox, animal.getPatron());
 		}
+		
+		updateIncidentList();
+		updateExaminationList();
 	}
 
 	// Utility method to select an item in a ComboBox by ID
@@ -588,8 +589,14 @@ public class AnimalViewPanel extends ShelterPanel {
 	}
 	
 	private void updateIncidentList() {
+		AnimalDTO selectedAnimal = animalList.getSelectedValue();
+		
+		if(selectedAnimal == null) {
+			return;
+		}
+		
 		incidentListModel = new DefaultListModel<>();
-		incidentListModel.addAll(dtoManager.loadIncidents());
+		incidentListModel.addAll(dtoManager.loadIncidentsByAnimalId(selectedAnimal.getId()));
 		incidentList.setModel(incidentListModel);
 	}
 	
@@ -626,8 +633,14 @@ public class AnimalViewPanel extends ShelterPanel {
 	}
 	
 	private void updateExaminationList() {
+		AnimalDTO selectedAnimal = animalList.getSelectedValue();
+		
+		if(selectedAnimal == null) {
+			return;
+		}
+		
 		examinationListModel = new DefaultListModel<>();
-		examinationListModel.addAll(dtoManager.loadExaminations());
+		examinationListModel.addAll(dtoManager.loadExaminationsByAnimalId(selectedAnimal.getId()));
 		examinationList.setModel(examinationListModel);
 	}
 }
