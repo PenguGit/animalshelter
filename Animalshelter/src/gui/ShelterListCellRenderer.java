@@ -12,7 +12,7 @@ import bl.entities.IncidentDTO;
 import bl.entities.PersonDTO;
 import bl.entities.RoomDTO;
 
-public class PersonListCellRenderer extends DefaultListCellRenderer {
+public class ShelterListCellRenderer extends DefaultListCellRenderer {
 	@Override
     public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);

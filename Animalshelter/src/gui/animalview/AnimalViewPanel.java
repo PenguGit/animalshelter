@@ -35,7 +35,7 @@ import bl.entities.PatronDTO;
 import bl.entities.RoomDTO;
 import gui.ExaminationPopupPanel;
 import gui.IncidentPopupPanel;
-import gui.PersonListCellRenderer;
+import gui.ShelterListCellRenderer;
 import gui.ShelterButton;
 import gui.ShelterComboBox;
 import gui.ShelterImagePanel;
@@ -139,7 +139,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		patronComboBoxModel = new DefaultComboBoxModel<>();
 		patronComboBoxModel.addAll(dtoManager.loadPatrons());
 		patronComboBox = new ShelterComboBox<>(patronComboBoxModel);
-		patronComboBox.setRenderer(new PersonListCellRenderer());
+		patronComboBox.setRenderer(new ShelterListCellRenderer());
 
 		panel.add(patronLabel);
 		panel.add(patronComboBox);
@@ -179,12 +179,12 @@ public class AnimalViewPanel extends ShelterPanel {
 		DefaultComboBoxModel<RoomDTO> roomBoxModel = new DefaultComboBoxModel<>();
 		roomBoxModel.addAll(dtoManager.loadRooms());
 		roomComboBox = new ShelterComboBox<>(roomBoxModel);
-		roomComboBox.setRenderer(new PersonListCellRenderer());
+		roomComboBox.setRenderer(new ShelterListCellRenderer());
 
 		DefaultComboBoxModel<AnimalTypeDTO> animalTypeBoxModel = new DefaultComboBoxModel<>();
 		animalTypeBoxModel.addAll(dtoManager.loadAnimalTypes());
 		animalTypeComboBox = new ShelterComboBox<>(animalTypeBoxModel);
-		animalTypeComboBox.setRenderer(new PersonListCellRenderer());
+		animalTypeComboBox.setRenderer(new ShelterListCellRenderer());
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(5, 5, 5, 5);
@@ -298,8 +298,6 @@ public class AnimalViewPanel extends ShelterPanel {
 		animalListModel = new DefaultListModel<>();
 		animalListModel.addAll(dtoManager.loadAnimals());
 		animalList = new ShelterList<AnimalDTO>(animalListModel);
-		animalList.setCellRenderer(new PersonListCellRenderer());
-		animalList.setFont(FONT_LIST);
 		animalList.addListSelectionListener((ListSelectionEvent e) -> {
 			onAnimalListSelectionChanged(e);
 		});
@@ -336,8 +334,6 @@ public class AnimalViewPanel extends ShelterPanel {
 		ShelterLabel incidentLabel = new ShelterLabel("Vorkommnisse:");
 		incidentListModel = new DefaultListModel<>();
 		incidentList = new ShelterList<IncidentDTO>(incidentListModel);
-		incidentList.setCellRenderer(new PersonListCellRenderer());
-		incidentList.setFont(FONT_LIST);
 		addIncidentButton = new ShelterButton("+");
 		addIncidentButton.setFocusable(false);
 		addIncidentButton.setEnabled(false);
@@ -369,8 +365,6 @@ public class AnimalViewPanel extends ShelterPanel {
 		ShelterLabel examinationLabel = new ShelterLabel("Untersuchungen:");
 		examinationListModel = new DefaultListModel<>();
 		examinationList = new ShelterList<ExaminationDTO>(examinationListModel);
-		examinationList.setCellRenderer(new PersonListCellRenderer());
-		examinationList.setFont(FONT_LIST);
 		addExaminationButton = new ShelterButton("+");
 		addExaminationButton.setFocusable(false);
 		addExaminationButton.setEnabled(false);
@@ -640,5 +634,16 @@ public class AnimalViewPanel extends ShelterPanel {
 		
 		examinationListModel.clear();
 		examinationListModel.addAll(dtoManager.loadExaminationsByAnimalId(animal.getId()));
+	}
+	
+	public void selectAnimalById(int id) {
+		for(int i = 0; i < animalListModel.getSize(); i++) {
+			AnimalDTO animal = animalListModel.getElementAt(i);
+			if(animal.getId() == id) {
+				animalList.setSelectedIndex(i);
+				return;
+			}
+		}
+		animalList.setSelectedIndex(-1);
 	}
 }

@@ -67,7 +67,7 @@ public class CaretakerPanel extends ShelterPanel {
 		personListModel  = new DefaultListModel<PersonDTO>();
 		personListModel.addAll(dtoManager.loadCaretakers());
 		personList = new ShelterList<PersonDTO>(personListModel);
-		personList.setCellRenderer(new PersonListCellRenderer());
+		personList.setCellRenderer(new ShelterListCellRenderer());
 		personList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		personList.setSelectedIndex(-1);
 

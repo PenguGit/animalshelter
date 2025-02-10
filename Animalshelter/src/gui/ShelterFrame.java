@@ -5,12 +5,12 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 import bl.DTOManager;
@@ -22,6 +22,7 @@ public class ShelterFrame extends JFrame implements GUIConstants {
 	CardLayout cardLayout;
 	
 	AnimalViewPanel animalViewPanel;
+	RoomsPanel roomsPanel;
 	
 	ShelterPanel mainPanel;
 	ShelterPanel topBarPanel;
@@ -50,8 +51,8 @@ public class ShelterFrame extends JFrame implements GUIConstants {
 		backButton.setFocusable(false);
 		backButton.setVisible(false);
 		backButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-		backButton.addActionListener((ActionEvent e) -> {
-        	onNavigationButtonPressed(e, "start", GREETING);
+		backButton.addActionListener((ActionEvent _) -> {
+        	onNavigationButtonPressed("start", GREETING);
         });
         topBarPanel.add(backButton);
 		
@@ -70,32 +71,28 @@ public class ShelterFrame extends JFrame implements GUIConstants {
 		
         StartpagePanel startPagePanel = new StartpagePanel();
         
-        startPagePanel.animalsButton.addActionListener((ActionEvent e) -> {
-        	onNavigationButtonPressed(e, "animals", "Tiere");
+        startPagePanel.animalsButton.addActionListener((ActionEvent _) -> {
+        	onNavigationButtonPressed("animals", "Tiere");
         });
         
-        startPagePanel.roomsButton.addActionListener((ActionEvent e) -> {
-        	onNavigationButtonPressed(e, "rooms", "Räume");
+        startPagePanel.roomsButton.addActionListener((ActionEvent _) -> {
+        	onNavigationButtonPressed("rooms", "Räume");
         });
         
-//        startPagePanel.adoptionsButton.addActionListener((ActionEvent e) -> {
-//        	onNavigationButtonPressed(e, "adoptions", "Adoption");
-//        });
-        
-        startPagePanel.adoptionsButton.addActionListener((ActionEvent e) -> {
-        	onNavigationButtonPressed(e, "adoptions", "Paten");
+        startPagePanel.adoptionsButton.addActionListener((ActionEvent _) -> {
+        	onNavigationButtonPressed("adoptions", "Adoptionen");
         });
         
-        startPagePanel.patronsButton.addActionListener((ActionEvent e) -> {
-        	onNavigationButtonPressed(e, "patrons", "Paten");
+        startPagePanel.patronsButton.addActionListener((ActionEvent _) -> {
+        	onNavigationButtonPressed("patrons", "Paten");
         });
         
-        startPagePanel.caretakersButton.addActionListener((ActionEvent e) -> {
-        	onNavigationButtonPressed(e, "caretakers", "Pfleger");
+        startPagePanel.caretakersButton.addActionListener((ActionEvent _) -> {
+        	onNavigationButtonPressed("caretakers", "Pfleger");
         });
         
-        startPagePanel.vetsButton.addActionListener((ActionEvent e) -> {
-        	onNavigationButtonPressed(e, "vets", "Ärzte");
+        startPagePanel.vetsButton.addActionListener((ActionEvent _) -> {
+        	onNavigationButtonPressed("vets", "Ärzte");
         });
         
         cardPanel.add(startPagePanel, "start");
@@ -103,8 +100,18 @@ public class ShelterFrame extends JFrame implements GUIConstants {
         animalViewPanel = new AnimalViewPanel();
         cardPanel.add(animalViewPanel, "animals");
         
-        PlaceholderPanel roomsPlaceholderPanel = new PlaceholderPanel("Räume");
-        cardPanel.add(roomsPlaceholderPanel, "rooms");
+        roomsPanel = new RoomsPanel();
+        
+        roomsPanel.getAnimalsList().addMouseListener(new MouseAdapter() {
+		    public void mouseClicked(MouseEvent evt) {
+		        if (evt.getClickCount() == 2) {
+		        	onNavigationButtonPressed("animals", "Tiere");
+		        	animalViewPanel.selectAnimalById(roomsPanel.getAnimalsList().getSelectedValue().getId());
+		        }
+		    }
+		});
+        
+        cardPanel.add(roomsPanel, "rooms");
         
         PlaceholderPanel adoptionsPlaceholderPanel = new PlaceholderPanel("Adoption");
         cardPanel.add(adoptionsPlaceholderPanel, "adoptions");
@@ -124,10 +131,13 @@ public class ShelterFrame extends JFrame implements GUIConstants {
 		setVisible(true);
 	}
 	
-	private void onNavigationButtonPressed(ActionEvent e, String name, String title) {
+	private void onNavigationButtonPressed(String name, String title) {
 		backButton.setVisible(!name.equals("start"));
 		if(name.equals("animals")) {
 			animalViewPanel.clearForm();
+		}
+		else if(name.equals("rooms")) {
+			roomsPanel.updateRoomsListData();
 		}
 		titleLabel.setText(title);
 		cardLayout.show(cardPanel, name);

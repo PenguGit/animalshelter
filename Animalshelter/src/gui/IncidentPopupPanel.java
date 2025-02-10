@@ -61,7 +61,7 @@ public class IncidentPopupPanel extends ShelterPanel {
 		DefaultComboBoxModel<CaretakerDTO> caretakerComboBoxModel = new DefaultComboBoxModel<>();
 		caretakerComboBoxModel.addAll(dtoManager.loadCaretakers());
 		caretakerComboBox = new ShelterComboBox<CaretakerDTO>(caretakerComboBoxModel);
-		caretakerComboBox.setRenderer(new PersonListCellRenderer());
+		caretakerComboBox.setRenderer(new ShelterListCellRenderer());
 		caretakerComboBox.setPreferredSize(new Dimension(250, 30));
 		
 		gbc.insets = new Insets(10, 10, 10, 10);

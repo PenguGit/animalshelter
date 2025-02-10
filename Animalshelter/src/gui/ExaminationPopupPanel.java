@@ -61,7 +61,7 @@ public class ExaminationPopupPanel extends ShelterPanel {
 		DefaultComboBoxModel<VetDTO> vetComboBoxModel = new DefaultComboBoxModel<>();
 		vetComboBoxModel.addAll(dtoManager.loadVets());
 		vetComboBox = new ShelterComboBox<VetDTO>(vetComboBoxModel);
-		vetComboBox.setRenderer(new PersonListCellRenderer());
+		vetComboBox.setRenderer(new ShelterListCellRenderer());
 		vetComboBox.setPreferredSize(new Dimension(250, 30));
 		
 		gbc.insets = new Insets(10, 10, 10, 10);
