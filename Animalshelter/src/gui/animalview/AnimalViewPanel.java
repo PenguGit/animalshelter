@@ -81,6 +81,7 @@ public class AnimalViewPanel extends ShelterPanel {
 
 	private ShelterImagePanel imagePanel;
 	private ButtonGroup genderButtonGroup;
+	private ShelterButton clearButton;
 	
 
 	public AnimalViewPanel() {
@@ -98,7 +99,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		outputPanel.setLayout(new BorderLayout());
 
 		// Create and arrange the three main components
-		ShelterImagePanel imagePanel = new ShelterImagePanel(dtoManager.loadAnimalById(3).getImage());
+		ShelterImagePanel imagePanel = new ShelterImagePanel(new byte[] {});
 		ShelterPanel additionalInfoPanel = createAdditionalInfoPanel();
 
 		// Arrange components in the center panel
@@ -253,14 +254,24 @@ public class AnimalViewPanel extends ShelterPanel {
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 		buttonPanel.add(Box.createHorizontalGlue());
 
+		clearButton = new ShelterButton("Neu");
 		adoptionButton = new ShelterButton("Adoptieren");
 		saveButton = new ShelterButton("Speichern");
 		deleteButton = new ShelterButton("Löschen");
 
-		saveButton.addActionListener(e -> {
+		clearButton.addActionListener(_ -> {
+			clearForm();
+		});
+		
+		saveButton.addActionListener(_ -> {
 			saveAnimal();
 		});
+		
+		deleteButton.addActionListener(_ -> {
+			deleteAnimal();
+		});
 
+		buttonPanel.add(clearButton);
 		buttonPanel.add(adoptionButton);
 		buttonPanel.add(saveButton);
 		buttonPanel.add(deleteButton);
@@ -456,6 +467,17 @@ public class AnimalViewPanel extends ShelterPanel {
 		}
 	}
 
+	public void deleteAnimal() {
+		if(animal == null) {
+			return;
+		}
+		
+		dtoManager.deleteAnimal(animal);
+		
+		refreshListModel(animalListModel, dtoManager.loadAnimals());
+		clearForm();
+	}
+	
 	public void clearForm() {
 		// Clear text fields
 		nameField.setText("");
