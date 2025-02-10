@@ -106,7 +106,6 @@ public class DataManager {
 	    }
 	
 	public static void main(String[] args) {
-//		String imagePathStr = "C:\\Users\\MaximillianKempen\\Documents\\lmao.png";
 //		Path imagePath = Path.of(imagePathStr);
 //		try {
 //			byte[] lule = imageToByteArrayJava9(imagePath);
