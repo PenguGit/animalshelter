@@ -8,6 +8,13 @@ public interface GUIConstants {
 	public static final String FONT_SANS = "Comic Sans MS";
 	
 	public static final String APP_TITEL = "Beim kleinen Dackel";
+	
+	public static final String SAVE_BUTTON = "Speichern";
+	public static final String DELETE_BUTTON = "Löschen";
+	public static final String NEW_BUTTON = "Neu";
+	public static final String EDIT_BUTTON = "Bearbeiten";
+	public static final String CANCEL_BUTTON = "Abbrechen";
+	
 	public static final Rectangle FRAME_BOUNDS = new Rectangle(600, 100, 800, 400);
 	public static final String GREETING = "Wilkommen im Tierheim 'Beim kleinen Dackel'!";
 

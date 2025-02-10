@@ -74,13 +74,13 @@ public class IncidentPopupPanel extends ShelterPanel {
         
         gbc.gridy = 5;
         gbc.gridx = 1;
-        cancelButton = new ShelterButton("Cancel");
+        cancelButton = new ShelterButton(CANCEL_BUTTON);
         
         add(cancelButton, gbc);
         
         gbc.gridx = 2;
         gbc.anchor = GridBagConstraints.EAST;
-        saveButton = new ShelterButton("Save");
+        saveButton = new ShelterButton(SAVE_BUTTON);
         
         add(saveButton, gbc);
 	}

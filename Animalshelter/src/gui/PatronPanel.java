@@ -128,7 +128,7 @@ public class PatronPanel extends ShelterPanel {
 
 		buttonLayoutPanel.setLayout(new BoxLayout(buttonLayoutPanel, BoxLayout.X_AXIS));
 		add(buttonLayoutPanel, BorderLayout.PAGE_END);
-		editButton = new ShelterButton("Bearbeiten");
+		editButton = new ShelterButton(EDIT_BUTTON);
 		editButton.addActionListener((ActionEvent _) -> {
 			onEditButtonPressed();
 		});
@@ -137,7 +137,7 @@ public class PatronPanel extends ShelterPanel {
 		buttonLayoutPanel.add(editButton);
 		buttonLayoutPanel.add(Box.createHorizontalGlue());
 
-		deleteButton = new ShelterButton("Löschen");
+		deleteButton = new ShelterButton(DELETE_BUTTON);
 		deleteButton.addActionListener((ActionEvent _) -> {
 			onDeleteButtonPressed();
 		});
@@ -146,7 +146,7 @@ public class PatronPanel extends ShelterPanel {
 		buttonLayoutPanel.add(deleteButton);
 		buttonLayoutPanel.add(Box.createHorizontalGlue());
 
-		cancelButton = new ShelterButton("Abbrechen");
+		cancelButton = new ShelterButton(CANCEL_BUTTON);
 		cancelButton.addActionListener((ActionEvent _) -> {
 			onCancelButtonPressed();
 		});
@@ -155,7 +155,7 @@ public class PatronPanel extends ShelterPanel {
 		buttonLayoutPanel.add(cancelButton);
 		buttonLayoutPanel.add(Box.createHorizontalGlue());
 
-		saveButton = new ShelterButton("Speichern");
+		saveButton = new ShelterButton(SAVE_BUTTON);
 		saveButton.addActionListener((ActionEvent _) -> {
 			onSaveButtonPressed();
 		});
@@ -164,7 +164,7 @@ public class PatronPanel extends ShelterPanel {
 		buttonLayoutPanel.add(saveButton);
 		buttonLayoutPanel.add(Box.createHorizontalGlue());
 
-		newButton = new ShelterButton("Neu");
+		newButton = new ShelterButton(NEW_BUTTON);
 		newButton.addActionListener((ActionEvent _) -> {
 			onNewButtonPressed();
 		});

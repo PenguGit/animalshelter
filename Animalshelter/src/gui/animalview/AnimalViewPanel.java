@@ -255,12 +255,13 @@ public class AnimalViewPanel extends ShelterPanel {
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 		buttonPanel.add(Box.createHorizontalGlue());
 
-		newButton = new ShelterButton("Neu");
+		newButton = new ShelterButton(NEW_BUTTON);
+		
 		adoptionButton = new ShelterButton("Adoptieren");
 		adoptionButton.setVisible(false);
-		saveButton = new ShelterButton("Speichern");
+		saveButton = new ShelterButton(SAVE_BUTTON);
 		saveButton.setVisible(false);
-		deleteButton = new ShelterButton("Löschen");
+		deleteButton = new ShelterButton(DELETE_BUTTON);
 		deleteButton.setVisible(false);
 		
 		newButton.addActionListener(_ -> {
