@@ -21,6 +21,8 @@ public class ShelterFrame extends JFrame implements GUIConstants {
 	DTOManager dtoManager;
 	CardLayout cardLayout;
 	
+	AnimalViewPanel animalViewPanel;
+	
 	ShelterPanel mainPanel;
 	ShelterPanel topBarPanel;
 	ShelterButton backButton;
@@ -98,7 +100,7 @@ public class ShelterFrame extends JFrame implements GUIConstants {
         
         cardPanel.add(startPagePanel, "start");
         
-        AnimalViewPanel animalViewPanel = new AnimalViewPanel();
+        animalViewPanel = new AnimalViewPanel();
         cardPanel.add(animalViewPanel, "animals");
         
         PlaceholderPanel roomsPlaceholderPanel = new PlaceholderPanel("Räume");
@@ -124,6 +126,9 @@ public class ShelterFrame extends JFrame implements GUIConstants {
 	
 	private void onNavigationButtonPressed(ActionEvent e, String name, String title) {
 		backButton.setVisible(!name.equals("start"));
+		if(name.equals("animals")) {
+			animalViewPanel.clearForm();
+		}
 		titleLabel.setText(title);
 		cardLayout.show(cardPanel, name);
 	}

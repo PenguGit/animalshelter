@@ -488,7 +488,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		roomComboBox.setSelectedIndex(-1);
 		patronComboBox.setSelectedIndex(-1);
 		animalTypeComboBox.setSelectedIndex(-1);
-
+		
 		incidentListModel.clear();
 		examinationListModel.clear();
 		genderButtonGroup.clearSelection();
