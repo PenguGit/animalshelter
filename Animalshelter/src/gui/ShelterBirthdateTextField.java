@@ -1,4 +1,4 @@
-package gui.animalview;
+package gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -9,8 +9,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 import javax.swing.UIManager;
-
-import gui.ShelterTextField;
 
 public class ShelterBirthdateTextField extends ShelterTextField {
 

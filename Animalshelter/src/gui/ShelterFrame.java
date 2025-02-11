@@ -13,8 +13,14 @@ import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 
 import bl.DTOManager;
+import gui.adoptions.AdoptionsPanel;
 import gui.animalview.AnimalViewPanel;
+import gui.persons.CaretakerPanel;
+import gui.persons.PatronPanel;
+import gui.persons.VetPanel;
+import gui.rooms.RoomsPanel;
 import gui.startpage.StartpagePanel;
+import gui.util.GUIConstants;
 
 public class ShelterFrame extends JFrame implements GUIConstants {
 	DTOManager dtoManager;

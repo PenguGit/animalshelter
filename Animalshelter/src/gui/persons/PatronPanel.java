@@ -1,4 +1,4 @@
-package gui;
+package gui.persons;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -18,6 +18,12 @@ import javax.swing.event.ListSelectionEvent;
 import bl.DTOManager;
 import bl.entities.PatronDTO;
 import bl.entities.PersonDTO;
+import gui.ShelterButton;
+import gui.ShelterLabel;
+import gui.ShelterList;
+import gui.ShelterListCellRenderer;
+import gui.ShelterPanel;
+import gui.ShelterTextField;
 
 public class PatronPanel extends ShelterPanel {
 	private boolean isInEditMode = false;

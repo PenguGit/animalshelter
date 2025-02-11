@@ -1,4 +1,4 @@
-package gui;
+package gui.persons;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -16,10 +16,16 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 
 import bl.DTOManager;
-import bl.entities.VetDTO;
+import bl.entities.CaretakerDTO;
 import bl.entities.PersonDTO;
+import gui.ShelterButton;
+import gui.ShelterLabel;
+import gui.ShelterList;
+import gui.ShelterListCellRenderer;
+import gui.ShelterPanel;
+import gui.ShelterTextField;
 
-public class VetPanel extends ShelterPanel {
+public class CaretakerPanel extends ShelterPanel {
 	private boolean isInEditMode = false;
 	private boolean isInCreateMode = false;
 	
@@ -48,7 +54,7 @@ public class VetPanel extends ShelterPanel {
 	private ShelterButton saveButton;
 	private ShelterButton newButton;
 
-	public VetPanel() {
+	public CaretakerPanel() {
 		dtoManager = new DTOManager();
 
 		setLayout(new BorderLayout());
@@ -65,7 +71,7 @@ public class VetPanel extends ShelterPanel {
 
 	private void initializeListComponents() {
 		personListModel  = new DefaultListModel<PersonDTO>();
-		personListModel.addAll(dtoManager.loadVets());
+		personListModel.addAll(dtoManager.loadCaretakers());
 		personList = new ShelterList<PersonDTO>(personListModel);
 		personList.setCellRenderer(new ShelterListCellRenderer());
 		personList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -196,11 +202,11 @@ public class VetPanel extends ShelterPanel {
 	}
 
 	private void onDeleteButtonPressed() {
-		VetDTO selectedItem = (VetDTO)personList.getSelectedValue();
+		CaretakerDTO selectedItem = (CaretakerDTO)personList.getSelectedValue();
 		if(selectedItem == null) {
 			return;
 		}
-		dtoManager.deleteVet(selectedItem);
+		dtoManager.deleteCaretaker(selectedItem);
 		
 		personList.clearSelection();
 		isInEditMode = false;
@@ -219,7 +225,7 @@ public class VetPanel extends ShelterPanel {
 	}
 
 	private void onSaveButtonPressed() {
-		VetDTO activePerson = (VetDTO)personList.getSelectedValue();
+		CaretakerDTO activePerson = (CaretakerDTO)personList.getSelectedValue();
 		if(firstNameTextField.getText().isBlank()) {
 			return;
 		}
@@ -234,7 +240,7 @@ public class VetPanel extends ShelterPanel {
 		}
 		
 		if(activePerson == null) {
-			activePerson = new VetDTO(lastNameTextField.getText(), firstNameTextField.getText(), phoneTextField.getText(), emailTextField.getText());
+			activePerson = new CaretakerDTO(lastNameTextField.getText(), firstNameTextField.getText(), phoneTextField.getText(), emailTextField.getText());
 		}
 		else {
 			activePerson.setFirstName(firstNameTextField.getText());
@@ -243,7 +249,7 @@ public class VetPanel extends ShelterPanel {
 			activePerson.setPhoneNumber(phoneTextField.getText());
 		}
 		
-		dtoManager.saveVet(activePerson);
+		dtoManager.saveCaretaker(activePerson);
 		
 		personList.clearSelection();
 		isInEditMode = false;
@@ -278,7 +284,7 @@ public class VetPanel extends ShelterPanel {
 		emailTextField.setEnabled(isInEditMode || isInCreateMode);
 		phoneTextField.setEnabled(isInEditMode || isInCreateMode);
 		
-		VetDTO selectedItem = (VetDTO)personList.getSelectedValue();
+		CaretakerDTO selectedItem = (CaretakerDTO)personList.getSelectedValue();
 		if(selectedItem == null || isInCreateMode) {
 			firstNameTextField.setText("");
 			lastNameTextField.setText("");
@@ -295,7 +301,7 @@ public class VetPanel extends ShelterPanel {
 	
 	public void updateTableData() {
 		personListModel  = new DefaultListModel<PersonDTO>();
-		personListModel.addAll(dtoManager.loadVets());
+		personListModel.addAll(dtoManager.loadCaretakers());
 		personList.setModel(personListModel);
 		personList.setSelectedIndex(-1);
 	}

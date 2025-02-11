@@ -2,6 +2,8 @@ package gui;
 
 import javax.swing.JTextArea;
 
+import gui.util.GUIConstants;
+
 public class ShelterTextArea extends JTextArea implements GUIConstants {
 	
 	/**

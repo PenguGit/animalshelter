@@ -1,4 +1,4 @@
-package gui;
+package gui.adoptions;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -13,7 +13,11 @@ import bl.DTOManager;
 import bl.entities.AdopterDTO;
 import bl.entities.AdoptionDTO;
 import bl.entities.AnimalDTO;
-import gui.animalview.ShelterBirthdateTextField;
+import gui.ShelterBirthdateTextField;
+import gui.ShelterButton;
+import gui.ShelterLabel;
+import gui.ShelterPanel;
+import gui.ShelterTextField;
 
 public class AdoptionPopupPanel extends ShelterPanel {
 	private DTOManager dtoManager;

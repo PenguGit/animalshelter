@@ -2,6 +2,8 @@ package gui;
 
 import javax.swing.JLabel;
 
+import gui.util.GUIConstants;
+
 public class ShelterLabel extends JLabel implements GUIConstants {
 
 	public ShelterLabel() {

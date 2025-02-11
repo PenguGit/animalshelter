@@ -8,6 +8,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
+import gui.util.GUIConstants;
+
 public class ShelterTextField extends JTextField implements GUIConstants {
 	private final int MAX_LENGTH = 45;
 	

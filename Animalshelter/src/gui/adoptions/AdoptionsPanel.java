@@ -1,4 +1,4 @@
-package gui;
+package gui.adoptions;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -17,6 +17,10 @@ import javax.swing.event.ListSelectionEvent;
 import bl.DTOManager;
 import bl.entities.AdopterDTO;
 import bl.entities.AdoptionDTO;
+import gui.ShelterLabel;
+import gui.ShelterList;
+import gui.ShelterListCellRenderer;
+import gui.ShelterPanel;
 
 public class AdoptionsPanel extends ShelterPanel {
 	private ShelterList<AdoptionDTO> animalsList;

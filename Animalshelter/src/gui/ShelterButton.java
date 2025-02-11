@@ -2,6 +2,8 @@ package gui;
 
 import javax.swing.JButton;
 
+import gui.util.GUIConstants;
+
 public class ShelterButton extends JButton implements GUIConstants {
 
 	public ShelterButton() {

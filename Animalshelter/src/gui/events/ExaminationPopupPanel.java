@@ -1,4 +1,4 @@
-package gui;
+package gui.events;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -14,7 +14,13 @@ import bl.DTOManager;
 import bl.entities.AnimalDTO;
 import bl.entities.ExaminationDTO;
 import bl.entities.VetDTO;
-import gui.animalview.ShelterBirthdateTextField;
+import gui.ShelterBirthdateTextField;
+import gui.ShelterButton;
+import gui.ShelterComboBox;
+import gui.ShelterLabel;
+import gui.ShelterListCellRenderer;
+import gui.ShelterPanel;
+import gui.ShelterTextField;
 
 public class ExaminationPopupPanel extends ShelterPanel {
 	private DTOManager dtoManager;

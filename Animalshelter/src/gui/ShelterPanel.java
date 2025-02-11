@@ -4,6 +4,8 @@ import java.awt.FlowLayout;
 
 import javax.swing.JPanel;
 
+import gui.util.GUIConstants;
+
 
 public class ShelterPanel extends JPanel implements GUIConstants {
 

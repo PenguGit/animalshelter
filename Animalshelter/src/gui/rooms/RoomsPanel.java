@@ -1,4 +1,4 @@
-package gui;
+package gui.rooms;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -15,6 +15,9 @@ import javax.swing.event.ListSelectionEvent;
 import bl.DTOManager;
 import bl.entities.AnimalDTO;
 import bl.entities.RoomDTO;
+import gui.ShelterList;
+import gui.ShelterListCellRenderer;
+import gui.ShelterPanel;
 
 public class RoomsPanel extends ShelterPanel {
 	private ShelterList<RoomDTO> roomsList;

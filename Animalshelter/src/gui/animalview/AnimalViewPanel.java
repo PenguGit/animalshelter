@@ -41,8 +41,7 @@ import bl.entities.ExaminationDTO;
 import bl.entities.IncidentDTO;
 import bl.entities.PatronDTO;
 import bl.entities.RoomDTO;
-import gui.ExaminationPopupPanel;
-import gui.IncidentPopupPanel;
+import gui.ShelterBirthdateTextField;
 import gui.ShelterButton;
 import gui.ShelterComboBox;
 import gui.ShelterImagePanel;
@@ -53,6 +52,8 @@ import gui.ShelterPanel;
 import gui.ShelterRadioButton;
 import gui.ShelterTextArea;
 import gui.ShelterTextField;
+import gui.events.ExaminationPopupPanel;
+import gui.events.IncidentPopupPanel;
 
 public class AnimalViewPanel extends ShelterPanel {
 	DTOManager dtoManager;

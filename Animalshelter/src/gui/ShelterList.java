@@ -5,6 +5,7 @@ import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 
 import bl.entities.EntityDTO;
+import gui.util.GUIConstants;
 
 public class ShelterList<E extends EntityDTO> extends JList<E> implements GUIConstants {
 	public ShelterList(ListModel<E> dataModel) {

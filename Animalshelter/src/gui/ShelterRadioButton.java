@@ -2,6 +2,8 @@ package gui;
 
 import javax.swing.JRadioButton;
 
+import gui.util.GUIConstants;
+
 public class ShelterRadioButton extends JRadioButton implements GUIConstants {
 	
 	public ShelterRadioButton() {

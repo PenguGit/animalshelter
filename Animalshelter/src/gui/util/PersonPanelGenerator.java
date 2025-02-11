@@ -1,4 +1,4 @@
-package util;
+package gui.util;
 
 import java.io.FileWriter;
 import java.nio.file.Files;
@@ -18,13 +18,13 @@ public class PersonPanelGenerator {
 	public static void generatePersonPanelClasses() {
 		String[] classNames = {"VetPanel", "PatronPanel"};
 		
-		String filePath = "src/gui/CaretakerPanel.java";
+		String filePath = "src/gui/persons/CaretakerPanel.java";
 		
 		try {
             String sourceCode = new String(Files.readAllBytes(Paths.get(filePath)));;
             
             for(String className: classNames) {
-            	FileWriter writer = new FileWriter("src/gui/" + className + ".java");
+            	FileWriter writer = new FileWriter("src/gui/persons/" + className + ".java");
                 writer.write(
             		sourceCode
                 		.replaceAll("CaretakerPanel", className)
@@ -38,7 +38,7 @@ public class PersonPanelGenerator {
                 JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
                 StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
 
-                Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects("src/gui/" + className + ".java");
+                Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects("src/gui/persons/" + className + ".java");
                 Iterable<String> options = Arrays.asList("-d", "bin");
 
                 compiler.getTask(null, fileManager, null, options, null, compilationUnits).call();
