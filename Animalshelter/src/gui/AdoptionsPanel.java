@@ -57,7 +57,7 @@ public class AdoptionsPanel extends ShelterPanel {
 		animalsListModel.addAll(dtoManager.loadAdoptions());
 		animalsList = new ShelterList<AdoptionDTO>(animalsListModel);
 		animalsList.setCellRenderer(new ShelterListCellRenderer());
-		animalsList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		animalsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
 		animalsList.addListSelectionListener((ListSelectionEvent e) -> {
 			onAnimalsListSelectionChanged(e);

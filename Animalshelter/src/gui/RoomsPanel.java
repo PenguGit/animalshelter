@@ -49,7 +49,7 @@ public class RoomsPanel extends ShelterPanel {
 		roomsList = new ShelterList<RoomDTO>(roomsListModel);
 		updateRoomsListData();
 		roomsList.setCellRenderer(new ShelterListCellRenderer());
-		roomsList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		roomsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		roomsList.addListSelectionListener((ListSelectionEvent e) -> {
 			onRoomsListSelectionChanged(e);
@@ -64,7 +64,7 @@ public class RoomsPanel extends ShelterPanel {
 		animalsListModel  = new DefaultListModel<AnimalDTO>();
 		animalsList = new ShelterList<AnimalDTO>(animalsListModel);
 		animalsList.setCellRenderer(new ShelterListCellRenderer());
-		animalsList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		animalsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
 		JScrollPane animalsScrollPane = new JScrollPane(animalsList);
 		animalsScrollPane.setPreferredSize(new Dimension(400, 0));
