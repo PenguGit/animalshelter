@@ -114,8 +114,8 @@ public class ShelterFrame extends JFrame implements GUIConstants {
 		roomsPanel.getAnimalsList().addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent evt) {
 				if (evt.getClickCount() == 2) {
-					animalViewPanel.selectAnimalById(roomsPanel.getAnimalsList().getSelectedValue().getId());
 					onNavigationButtonPressed("animals", "Tiere");
+					animalViewPanel.selectAnimalById(roomsPanel.getAnimalsList().getSelectedValue().getId());
 				}
 			}
 		});
