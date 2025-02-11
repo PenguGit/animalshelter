@@ -1,4 +1,4 @@
-package gui;
+package util;
 
 import java.io.FileWriter;
 import java.nio.file.Files;

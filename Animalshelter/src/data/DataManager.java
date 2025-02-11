@@ -101,8 +101,4 @@ public class DataManager {
 		}
 	}
 	
-	public static byte[] imageToByteArrayJava9(Path imagePath) throws IOException{
-	      return Files.readAllBytes(imagePath);
-	    }
-	
 }

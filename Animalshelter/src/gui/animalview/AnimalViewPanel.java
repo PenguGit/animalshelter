@@ -2,6 +2,7 @@ package gui.animalview;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -9,6 +10,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -20,15 +24,18 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import bl.DTOManager;
 import bl.entities.AnimalDTO;
 import bl.entities.AnimalTypeDTO;
+import bl.entities.CaretakerDTO;
 import bl.entities.EntityDTO;
 import bl.entities.ExaminationDTO;
 import bl.entities.IncidentDTO;
@@ -36,12 +43,12 @@ import bl.entities.PatronDTO;
 import bl.entities.RoomDTO;
 import gui.ExaminationPopupPanel;
 import gui.IncidentPopupPanel;
-import gui.ShelterListCellRenderer;
 import gui.ShelterButton;
 import gui.ShelterComboBox;
 import gui.ShelterImagePanel;
 import gui.ShelterLabel;
 import gui.ShelterList;
+import gui.ShelterListCellRenderer;
 import gui.ShelterPanel;
 import gui.ShelterRadioButton;
 import gui.ShelterTextArea;
@@ -58,43 +65,48 @@ public class AnimalViewPanel extends ShelterPanel {
 	DefaultListModel<IncidentDTO> incidentListModel;
 	DefaultListModel<ExaminationDTO> examinationListModel;
 	DefaultComboBoxModel<PatronDTO> patronComboBoxModel;
-	
+
 	private ShelterButton addIncidentButton;
 	private ShelterButton addExaminationButton;
 	private ShelterButton saveButton;
-	private ShelterButton deleteButton;
+	// private ShelterButton deleteButton;
 	private ShelterButton adoptionButton;
 	private ShelterButton newButton;
+	private ShelterButton uploadImageButton;
+	private ShelterButton editButton;
+	private ShelterButton cancelButton;
 
 	private ShelterComboBox<AnimalTypeDTO> animalTypeComboBox;
 	private ShelterComboBox<RoomDTO> roomComboBox;
 	private ShelterComboBox<PatronDTO> patronComboBox;
-	
+
 	private ArrayList<ShelterRadioButton> radioButtonList;
 
 	private ShelterTextField nameField;
-	private ShelterLabel nameLabel;
 	private ShelterBirthdateTextField birthDateField;
-	private ShelterLabel birthDateLabel;
-	private ShelterLabel animalTypeLabel;
 
-	private ShelterTextField additionalInfoField;
 	private ShelterLabel additionalInfoLabel;
 	private ShelterTextArea additionalInfoArea;
 
 	private ShelterImagePanel imagePanel;
 	private ButtonGroup genderButtonGroup;
-	
+
+	private JFileChooser fileChooser;
+
+	private boolean isInEditMode;
+	private boolean isInCreateMode;
 
 	public AnimalViewPanel() {
 		setLayout(new BorderLayout());
 		dtoManager = new DTOManager();
-		
+		fileChooser = new JFileChooser();
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		
+
 		initOutput();
 		initInput();
 		initLists();
+		changeButtonState();
+		changeFormState();
 	}
 
 	private void initOutput() {
@@ -103,11 +115,10 @@ public class AnimalViewPanel extends ShelterPanel {
 		outputPanel.setLayout(new BorderLayout());
 
 		// Create and arrange the three main components
-		ShelterImagePanel imagePanel = new ShelterImagePanel(new byte[] {});
 		ShelterPanel additionalInfoPanel = createAdditionalInfoPanel();
 
 		// Arrange components in the center panel
-		ShelterPanel centerPanel = createCenterPanel(imagePanel);
+		ShelterPanel centerPanel = createCenterPanel();
 
 		// Add all components to the output panel
 		outputPanel.add(additionalInfoPanel, BorderLayout.SOUTH);
@@ -121,7 +132,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		ShelterPanel panel = new ShelterPanel();
 		panel.setLayout(new BorderLayout());
 		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		
+
 		additionalInfoLabel = new ShelterLabel("Zusätzliche Info: ");
 		additionalInfoArea = new ShelterTextArea(5, 20);
 		panel.add(additionalInfoLabel, BorderLayout.NORTH);
@@ -149,7 +160,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		return panel;
 	}
 
-	private ShelterPanel createCenterPanel(ShelterImagePanel imagePanel) {
+	private ShelterPanel createCenterPanel() {
 		ShelterPanel centerPanel = new ShelterPanel();
 		centerPanel.setLayout(new GridBagLayout());
 		centerPanel.setBackground(Color.LIGHT_GRAY);
@@ -159,22 +170,23 @@ public class AnimalViewPanel extends ShelterPanel {
 		ShelterPanel genderPanel = new ShelterPanel(new FlowLayout(FlowLayout.LEFT, 2, 2));
 
 		genderPanel.setBackground(centerPanel.getBackground());
-		
+
 		radioButtonList = new ArrayList<>();
-		
+
 		ShelterRadioButton maleRadioButton = new ShelterRadioButton("M");
 		ShelterRadioButton femaleRadioButton = new ShelterRadioButton("W");
 		ShelterRadioButton unknownRadioButton = new ShelterRadioButton("N/A");
 		maleRadioButton.setBackground(centerPanel.getBackground());
 		femaleRadioButton.setBackground(centerPanel.getBackground());
 		unknownRadioButton.setBackground(centerPanel.getBackground());
+
 		genderButtonGroup.add(maleRadioButton);
 		genderButtonGroup.add(femaleRadioButton);
 		genderButtonGroup.add(unknownRadioButton);
 		genderPanel.add(maleRadioButton);
 		genderPanel.add(femaleRadioButton);
 		genderPanel.add(unknownRadioButton);
-		
+
 		radioButtonList.add(maleRadioButton);
 		radioButtonList.add(femaleRadioButton);
 		radioButtonList.add(unknownRadioButton);
@@ -189,6 +201,19 @@ public class AnimalViewPanel extends ShelterPanel {
 		animalTypeComboBox = new ShelterComboBox<>(animalTypeBoxModel);
 		animalTypeComboBox.setRenderer(new ShelterListCellRenderer());
 
+		imagePanel = new ShelterImagePanel(null);
+		uploadImageButton = new ShelterButton("Bild Hochladen");
+		uploadImageButton.addActionListener(_ -> {
+			try {
+				byte[] imageAsByteArray = imageToByteArray(getPathFromFileChooser());
+				animal.setImage(imageAsByteArray);
+				imagePanel.setImageData(imageAsByteArray);
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(null, "Error bitte noch einmal versuchen.", "Validation Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		});
+
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(5, 5, 5, 5);
 		gbc.fill = GridBagConstraints.HORIZONTAL; // Important for consistent width
@@ -196,10 +221,14 @@ public class AnimalViewPanel extends ShelterPanel {
 		// Image Panel
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.gridheight = 3; // Span 3 rows
+		gbc.gridheight = 2; // Span 3 rows
 		centerPanel.add(imagePanel, gbc);
 
 		gbc.gridheight = 1; // Reset gridheight
+
+		gbc.gridy = 2;
+
+		centerPanel.add(uploadImageButton, gbc);
 
 		// Name Label
 		gbc.gridx = 1;
@@ -259,29 +288,42 @@ public class AnimalViewPanel extends ShelterPanel {
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 		newButton = new ShelterButton(NEW_BUTTON);
-		
+		cancelButton = new ShelterButton(CANCEL_BUTTON);
+		cancelButton.setVisible(false);
+		editButton = new ShelterButton(EDIT_BUTTON);
+		editButton.setVisible(false);
 		adoptionButton = new ShelterButton("Adoptieren");
 		adoptionButton.setVisible(false);
 		saveButton = new ShelterButton(SAVE_BUTTON);
-		deleteButton = new ShelterButton(DELETE_BUTTON);
-		deleteButton.setVisible(false);
-		
-		newButton.addActionListener(_ -> {
-			clearForm();
+		saveButton.setVisible(false);
+
+		cancelButton.addActionListener(_ -> {
+			onCancelButtonPressed();
 		});
-		
+		editButton.addActionListener(_ -> {
+			onEditButtonPressed();
+		});
+
+		newButton.addActionListener(_ -> {
+			onNewButtonPressed();
+		});
+
 		saveButton.addActionListener(_ -> {
 			saveAnimal();
 		});
-		
-		deleteButton.addActionListener(_ -> {
-			deleteAnimal();
-		});
 
-		buttonPanel.add(newButton);
+//		deleteButton = new ShelterButton(DELETE_BUTTON);
+//		deleteButton.setVisible(false);
+//		deleteButton.addActionListener(_ -> {
+//			deleteAnimal();
+//		});
+//		buttonPanel.add(deleteButton);
+
 		buttonPanel.add(adoptionButton);
+		buttonPanel.add(cancelButton);
+		buttonPanel.add(editButton);
+		buttonPanel.add(newButton);
 		buttonPanel.add(saveButton);
-		buttonPanel.add(deleteButton);
 
 		add(buttonPanel, BorderLayout.SOUTH);
 	}
@@ -332,7 +374,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		incidentHeaderPanel.setLayout(new BoxLayout(incidentHeaderPanel, BoxLayout.X_AXIS));
 		incidentHeaderPanel.setBackground(Color.MAGENTA);
 		incidentPanel.add(incidentHeaderPanel, BorderLayout.NORTH);
-		
+
 		// Create and style components
 		ShelterLabel incidentLabel = new ShelterLabel("Vorkommnisse:");
 		incidentListModel = new DefaultListModel<>();
@@ -363,7 +405,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		examinationHeaderPanel.setLayout(new BoxLayout(examinationHeaderPanel, BoxLayout.X_AXIS));
 		examinationHeaderPanel.setBackground(Color.CYAN);
 		examinationPanel.add(examinationHeaderPanel, BorderLayout.NORTH);
-		
+
 		// Create and style components
 		ShelterLabel examinationLabel = new ShelterLabel("Untersuchungen:");
 		examinationListModel = new DefaultListModel<>();
@@ -374,7 +416,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		addExaminationButton.addActionListener((ActionEvent _) -> {
 			onNewExaminationButtonPressed();
 		});
-		
+
 		// Add components to panel
 		examinationHeaderPanel.add(examinationLabel);
 		examinationHeaderPanel.add(Box.createHorizontalGlue());
@@ -386,118 +428,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		return examinationPanel;
 	}
 
-	public static <T> void refreshListModel(DefaultListModel<T> model, ArrayList<T> newItems) {
-		model.clear();
-		model.addAll(newItems);
-	}
-	
-	public static <T> void refreshBoxModel(DefaultComboBoxModel<T> model, ArrayList<T> newItems) {
-        model.removeAllElements(); // Clear existing items
-        for (T item : newItems) {
-            model.addElement(item);
-        }
-    }
-
-	// Assuming AnimalDTO is defined with relevant fields and constructor
-	public void saveAnimal() {
-		String name = nameField.getText().trim();
-		LocalDate birthDate = birthDateField.getDate();
-		String additionalInfo = additionalInfoArea.getText().trim();
-
-		// Get selected patron from ComboBox (if any)
-		PatronDTO patron = (PatronDTO) patronComboBox.getSelectedItem();
-		AnimalTypeDTO animalType = (AnimalTypeDTO) animalTypeComboBox.getSelectedItem();
-		RoomDTO room = (RoomDTO) roomComboBox.getSelectedItem();
-		
-		byte[] image;
-		image = null;
-		
-		if (animal == null) {
-			animal = new AnimalDTO(name, AnimalDTO.Gender.fromValue(getGenderFromRadio()), birthDate, additionalInfo, animalType, patron,
-					room, image);
-		}
-		else {
-			animal.setName(name);
-			animal.setGender(AnimalDTO.Gender.fromValue(getGenderFromRadio()));
-			animal.setDateOfBirth(birthDate);
-			animal.setAdditionalInfo(additionalInfo);
-			animal.setAnimalType(animalType);
-			animal.setPatron(patron);
-			animal.setRoom(room);
-			animal.setImage(image);
-		}
-		
-		// Validate and save or process the object
-		if (validateAnimal(animal)) {
-			dtoManager.saveAnimal(animal);
-			refreshListModel(animalListModel, dtoManager.loadAnimals());
-			clearForm();
-		} else {
-			JOptionPane.showMessageDialog(null, "Please fill all required fields correctly.", "Validation Error",
-					JOptionPane.ERROR_MESSAGE);
-		}
-	}
-
-	public void deleteAnimal() {
-		if(animal == null) {
-			return;
-		}
-		
-		dtoManager.deleteAnimal(animal);
-		
-		refreshListModel(animalListModel, dtoManager.loadAnimals());
-		clearForm();
-	}
-	
-	public void clearForm() {
-		// Clear text fields
-		nameField.setText("");
-		birthDateField.setText("");
-		additionalInfoArea.setText("");
-		
-		// Reset combo boxes
-		roomComboBox.setSelectedIndex(-1);
-		patronComboBox.setSelectedIndex(-1);
-		animalTypeComboBox.setSelectedIndex(-1);
-		
-		incidentListModel.clear();
-		examinationListModel.clear();
-		genderButtonGroup.clearSelection();
-		animal = null;
-		
-		animalList.clearSelection();
-	}
-
-	// Example validation logic
-	private boolean validateAnimal(AnimalDTO animalDTO) {
-		return !animalDTO.getName().isEmpty() && animalDTO.getDateOfBirth() != null && animalDTO.getRoom() != null
-				&& animalDTO.getGender() != null && animalDTO.getAnimalType() != null && getGenderFromRadio() >= 0;
-	}
-	
-	
-    private int getGenderFromRadio() {
-        if (genderButtonGroup.getSelection() != null) {
-            for (int i = 0; i < radioButtonList.size(); i++) {
-                if (radioButtonList.get(i).isSelected()) {
-                    return i;
-                }
-            }
-        }
-        return -1;
-    }
-
-    
-    private void setRadioFromGender() {
-        for (int i = 0; i < radioButtonList.size(); i++) {
-            if (animal.getGender().getValue() == i) {
-                radioButtonList.get(i).setSelected(true);
-            }
-        }
-    }
-    
-
-	public void loadAnimal(AnimalDTO animal) {
-		this.animal = animal;
+	public void fillForm() {
 		refreshBoxModel(patronComboBoxModel, dtoManager.loadPatrons());
 		// Populate text fields
 		nameField.setText(animal.getName());
@@ -512,12 +443,233 @@ public class AnimalViewPanel extends ShelterPanel {
 		if (animal.getPatron() != null) {
 			selectComboBoxItemById(patronComboBox, animal.getPatron());
 		}
-		
+		imagePanel.clearImageData();
+		if (animal.getImage() != null) {
+			imagePanel.setImageData(animal.getImage());
+		}
+
 		updateIncidentList();
 		updateExaminationList();
 	}
 
-	// Utility method to select an item in a ComboBox by ID
+	public void saveAnimal() {
+		String name = nameField.getText().trim();
+		LocalDate birthDate = birthDateField.getDate();
+		String additionalInfo = additionalInfoArea.getText().trim();
+
+		// Get selected patron from ComboBox (if any)
+		PatronDTO patron = (PatronDTO) patronComboBox.getSelectedItem();
+		AnimalTypeDTO animalType = (AnimalTypeDTO) animalTypeComboBox.getSelectedItem();
+		RoomDTO room = (RoomDTO) roomComboBox.getSelectedItem();
+
+		animal.setName(name);
+		animal.setGender(AnimalDTO.Gender.fromValue(getGenderFromRadio()));
+		animal.setDateOfBirth(birthDate);
+		animal.setAdditionalInfo(additionalInfo);
+		animal.setAnimalType(animalType);
+		animal.setPatron(patron);
+		animal.setRoom(room);
+
+		// Validate and save or process the object
+		if (validateAnimal(animal)) {
+			dtoManager.saveAnimal(animal);
+			refreshListModel(animalListModel, dtoManager.loadAnimals());
+			clearForm();
+			isInEditMode = false;
+			isInCreateMode = false;
+			changeButtonState();
+			changeFormState();
+		} else {
+			JOptionPane.showMessageDialog(null, "Please fill all required fields correctly.", "Validation Error",
+					JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+//	public void deleteAnimal() {
+//		if (animal == null) {
+//			return;
+//		}
+//
+//		dtoManager.deleteAnimal(animal);
+//
+//		refreshListModel(animalListModel, dtoManager.loadAnimals());
+//		clearForm();
+//	}
+
+	public void selectAnimalById(int id) {
+		for (int i = 0; i < animalListModel.getSize(); i++) {
+			AnimalDTO animal = animalListModel.getElementAt(i);
+			if (animal.getId() == id) {
+				animalList.setSelectedIndex(i);
+				return;
+			}
+		}
+		animalList.setSelectedIndex(-1);
+	}
+
+	private void onAnimalListSelectionChanged(ListSelectionEvent e) {
+
+		if (!e.getValueIsAdjusting() && animalList.isEnabled()) {
+			animal = animalList.getSelectedValue();
+
+			if (animal != null) {
+				fillForm();
+			}
+
+			changeButtonState();
+			changeFormState();
+		}
+	}
+
+	private void onNewIncidentButtonPressed() {
+
+		JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Neues Vorkommnis", true);
+		dialog.setSize(200, 150);
+		dialog.setLocationRelativeTo(this);
+		dialog.setResizable(false);
+
+		IncidentPopupPanel panel = new IncidentPopupPanel(animal);
+		dialog.add(panel);
+
+		panel.getCancelButton().addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dialog.dispose();
+			}
+		});
+
+		panel.getSaveButton().addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				IncidentDTO incident = panel.getIncident();
+				if (incident != null) {
+					dtoManager.saveIncident(incident);
+					dialog.dispose();
+					updateIncidentList();
+				}
+			}
+		});
+
+		dialog.pack();
+		dialog.setVisible(true);
+	}
+
+	private void onNewExaminationButtonPressed() {
+
+		JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Neue Untersuchung", true);
+		dialog.setSize(200, 150);
+		dialog.setLocationRelativeTo(this);
+		dialog.setResizable(false);
+
+		ExaminationPopupPanel panel = new ExaminationPopupPanel(animal);
+		dialog.add(panel);
+
+		panel.cancelButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dialog.dispose();
+			}
+		});
+
+		panel.saveButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ExaminationDTO incident = panel.getExamination();
+				if (incident != null) {
+					dtoManager.saveExamination(incident);
+					dialog.dispose();
+					updateExaminationList();
+				}
+			}
+		});
+
+		dialog.pack();
+		dialog.setVisible(true);
+	}
+
+	public byte[] imageToByteArray(Path imagePath) throws IOException {
+		return Files.readAllBytes(imagePath);
+	}
+
+	private boolean validateAnimal(AnimalDTO animalDTO) {
+		return !animalDTO.getName().isEmpty() && animalDTO.getDateOfBirth() != null && animalDTO.getRoom() != null
+				&& animalDTO.getGender() != null && animalDTO.getAnimalType() != null && getGenderFromRadio() >= 0;
+	}
+
+	private void updateIncidentList() {
+		animal = animalList.getSelectedValue();
+
+		if (animal == null) {
+			return;
+		}
+
+		incidentListModel.clear();
+		incidentListModel.addAll(dtoManager.loadIncidentsByAnimalId(animal.getId()));
+	}
+
+	private void updateExaminationList() {
+		animal = animalList.getSelectedValue();
+
+		if (animal == null) {
+			return;
+		}
+
+		examinationListModel.clear();
+		examinationListModel.addAll(dtoManager.loadExaminationsByAnimalId(animal.getId()));
+	}
+
+	private Path getPathFromFileChooser() {
+		fileChooser.setAcceptAllFileFilterUsed(false);
+		fileChooser.setDialogTitle("Wähle eine Bild-Datei aus.");
+		FileNameExtensionFilter pictureExtensionFilter = new FileNameExtensionFilter("Nur Bild Dateien", "jpg", "png",
+				"bmp", "jpeg");
+		fileChooser.addChoosableFileFilter(pictureExtensionFilter);
+
+		if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+			return fileChooser.getSelectedFile().toPath();
+		}
+		return null;
+	}
+
+	private int getGenderFromRadio() {
+		if (genderButtonGroup.getSelection() != null) {
+			for (int i = 0; i < radioButtonList.size(); i++) {
+				if (radioButtonList.get(i).isSelected()) {
+					return i;
+				}
+			}
+		}
+		return -1;
+	}
+
+	private void setRadioFromGender() {
+		for (int i = 0; i < radioButtonList.size(); i++) {
+			if (animal.getGender().getValue() == i) {
+				radioButtonList.get(i).setSelected(true);
+			}
+		}
+	}
+
+	public void clearForm() {
+		// Clear text fields
+		nameField.setText("");
+		birthDateField.setText("");
+		additionalInfoArea.setText("");
+
+		// Reset combo boxes
+		roomComboBox.setSelectedIndex(-1);
+		patronComboBox.setSelectedIndex(-1);
+		animalTypeComboBox.setSelectedIndex(-1);
+
+		incidentListModel.clear();
+		examinationListModel.clear();
+		genderButtonGroup.clearSelection();
+		imagePanel.clearImageData();
+		animal = null;
+
+		animalList.clearSelection();
+	}
+
 	private <T extends EntityDTO> void selectComboBoxItemById(JComboBox<T> comboBox, T entity) {
 		if (entity == null)
 			return;
@@ -529,124 +681,65 @@ public class AnimalViewPanel extends ShelterPanel {
 			}
 		}
 	}
-	
-	private void onAnimalListSelectionChanged(ListSelectionEvent e) {
-		if (!e.getValueIsAdjusting()) {
-			animal = animalList.getSelectedValue();
 
-			if (animal != null) {
-				loadAnimal(animal);
-			}
-			
-			addIncidentButton.setEnabled(animal != null);
-			addExaminationButton.setEnabled(animal != null);
-			deleteButton.setVisible(animal != null);
-			adoptionButton.setVisible(animal != null);
+	public static <T> void refreshListModel(DefaultListModel<T> model, ArrayList<T> newItems) {
+		model.clear();
+		model.addAll(newItems);
+	}
+
+	public static <T> void refreshBoxModel(DefaultComboBoxModel<T> model, ArrayList<T> newItems) {
+		model.removeAllElements();
+		for (T item : newItems) {
+			model.addElement(item);
 		}
 	}
 
-	private void onNewIncidentButtonPressed() {
-		if(animal == null) {
-			return;
-		}
-		
-		JDialog dialog = new JDialog((JFrame)SwingUtilities.getWindowAncestor(this), "Neues Vorkommnis", true);
-        dialog.setSize(200, 150);
-        dialog.setLocationRelativeTo(this);
-        dialog.setResizable(false);
-
-        IncidentPopupPanel panel = new IncidentPopupPanel(animal);
-        dialog.add(panel);
-
-        panel.getCancelButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dialog.dispose();
-            }
-        });
-        
-        panel.getSaveButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	IncidentDTO incident = panel.getIncident();
-            	if(incident != null) {
-            		dtoManager.saveIncident(incident);
-            		dialog.dispose();
-                    updateIncidentList();
-            	}
-            }
-        });
-
-        dialog.pack();
-        dialog.setVisible(true);
+	private void onNewButtonPressed() {
+		clearForm();
+		isInEditMode = false;
+		isInCreateMode = true;
+		changeButtonState();
+		changeFormState();
+		animal = new AnimalDTO();
 	}
-	
-	private void updateIncidentList() {
-		animal = animalList.getSelectedValue();
-		
-		if(animal == null) {
-			return;
-		}
-		
-		incidentListModel.clear();
-		incidentListModel.addAll(dtoManager.loadIncidentsByAnimalId(animal.getId()));
-	}
-	
-	private void onNewExaminationButtonPressed() {
-		if(animal == null) {
-			return;
-		}
-		
-		JDialog dialog = new JDialog((JFrame)SwingUtilities.getWindowAncestor(this), "Neue Untersuchung", true);
-        dialog.setSize(200, 150);
-        dialog.setLocationRelativeTo(this);
-        dialog.setResizable(false);
 
-        ExaminationPopupPanel panel = new ExaminationPopupPanel(animal);
-        dialog.add(panel);
-
-        panel.cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dialog.dispose();
-            }
-        });
-        
-        panel.saveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	ExaminationDTO incident = panel.getExamination();
-            	if(incident != null) {
-            		dtoManager.saveExamination(incident);
-            		dialog.dispose();
-                    updateExaminationList();
-            	}
-            }
-        });
-
-        dialog.pack();
-        dialog.setVisible(true);
+	private void onCancelButtonPressed() {
+		isInEditMode = false;
+		isInCreateMode = false;
+		changeButtonState();
+		changeFormState();
 	}
-	
-	private void updateExaminationList() {
-		animal = animalList.getSelectedValue();
-		
-		if(animal == null) {
-			return;
-		}
-		
-		examinationListModel.clear();
-		examinationListModel.addAll(dtoManager.loadExaminationsByAnimalId(animal.getId()));
+
+	private void onEditButtonPressed() {
+		isInEditMode = true;
+		isInCreateMode = false;
+		changeButtonState();
+		changeFormState();
 	}
-	
-	public void selectAnimalById(int id) {
-		for(int i = 0; i < animalListModel.getSize(); i++) {
-			AnimalDTO animal = animalListModel.getElementAt(i);
-			if(animal.getId() == id) {
-				animalList.setSelectedIndex(i);
-				return;
-			}
+
+	public void changeButtonState() {
+		boolean isValidAnimal = animal != null && animal.getId() > 0;
+		animalList.setEnabled(!isInEditMode && !isInCreateMode);
+		editButton.setVisible(!isInEditMode && !isInCreateMode && isValidAnimal);
+		cancelButton.setVisible(isInEditMode || isInCreateMode);
+		saveButton.setVisible(isInEditMode || isInCreateMode);
+		newButton.setVisible(!isInEditMode && !isInCreateMode);
+		addIncidentButton.setEnabled(!isInCreateMode && isValidAnimal);
+		addExaminationButton.setEnabled(!isInCreateMode && isValidAnimal);
+		adoptionButton.setVisible(!isInEditMode && !isInCreateMode && isValidAnimal);
+//		deleteButton.setVisible(!isInEditMode && !isInCreateMode);
+	}
+
+	public void changeFormState() {
+		nameField.setEnabled(isInEditMode || isInCreateMode);
+		birthDateField.setEnabled(isInEditMode || isInCreateMode);
+		additionalInfoArea.setEnabled(isInEditMode || isInCreateMode);
+		for (ShelterRadioButton rb : radioButtonList) {
+			rb.setEnabled(isInEditMode || isInCreateMode);
 		}
-		animalList.setSelectedIndex(-1);
+		animalTypeComboBox.setEnabled(isInEditMode || isInCreateMode);
+		patronComboBox.setEnabled(isInEditMode || isInCreateMode);
+		roomComboBox.setEnabled(isInEditMode || isInCreateMode);
+		uploadImageButton.setEnabled(isInEditMode || isInCreateMode);
 	}
 }
