@@ -71,13 +71,13 @@ public class AdoptionPopupPanel extends ShelterPanel {
         gbc.anchor = GridBagConstraints.WEST;
         addLabelAndField(gbc, "Vorname:", firstNameTextField, 0);
         addLabelAndField(gbc, "Nachname:", lastNameTextField, 1);
-        addLabelAndField(gbc, "E-Mail:", emailTextField, 1);
-        addLabelAndField(gbc, "Telefon-Nr.:", phoneTextField, 1);
-        addLabelAndField(gbc, "Datum:", dateField, 2);
-        addLabelAndField(gbc, "Tier:", animalLabel, 3);
+        addLabelAndField(gbc, "E-Mail:", emailTextField, 2);
+        addLabelAndField(gbc, "Telefon-Nr.:", phoneTextField, 3);
+        addLabelAndField(gbc, "Datum:", dateField, 4);
+        addLabelAndField(gbc, "Tier:", animalLabel, 5);
         
         gbc.gridwidth = 1;
-        gbc.gridy = 5;
+        gbc.gridy = 6;
         gbc.gridx = 0;
         cancelButton = new ShelterButton(CANCEL_BUTTON);
         

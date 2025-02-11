@@ -4,12 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 
 import gui.ShelterButton;
-import gui.ShelterLabel;
 import gui.ShelterPanel;
 
 public class StartpagePanel extends ShelterPanel {

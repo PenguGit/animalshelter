@@ -35,7 +35,7 @@ public class DTOManager {
 	 */
 	public void saveAdopter(AdopterDTO adopterDTO) {
 		Adopter adopter = DataObjectMapper.getAdopterFromAdopterDTO(adopterDTO);
-		DataManager.getInstance().saveEntity(adopter);
+		adopterDTO.setId(DataManager.getInstance().saveEntity(adopter));
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class DTOManager {
 	 */
 	public void saveAdoption(AdoptionDTO adoptionDTO) {
 	    Adoption adoption = DataObjectMapper.getAdoptionFromAdoptionDTO(adoptionDTO);
-	    DataManager.getInstance().saveEntity(adoption);
+	    adoptionDTO.setId(DataManager.getInstance().saveEntity(adoption));
 	}
 
 	/**
@@ -115,7 +115,7 @@ public class DTOManager {
 	 */
 	public void saveAnimal(AnimalDTO animalDTO) {
 	    Animal animal = DataObjectMapper.getAnimalFromAnimalDTO(animalDTO);
-	    DataManager.getInstance().saveEntity(animal);
+	    animalDTO.setId(DataManager.getInstance().saveEntity(animal));
 	}
 	
 	/**
@@ -184,7 +184,7 @@ public class DTOManager {
 	 */
 	public void saveAnimalType(AnimalTypeDTO animalTypeDTO) {
 	    AnimalType animalType = DataObjectMapper.getAnimalTypeFromAnimalTypeDTO(animalTypeDTO);
-	    DataManager.getInstance().saveEntity(animalType);
+	    animalTypeDTO.setId(DataManager.getInstance().saveEntity(animalType));
 	}
 
 	/**
@@ -224,7 +224,7 @@ public class DTOManager {
 	 */
 	public void saveCaretaker(CaretakerDTO caretakerDTO) {
 	    Caretaker caretaker = DataObjectMapper.getCaretakerFromCaretakerDTO(caretakerDTO);
-	    DataManager.getInstance().saveEntity(caretaker);
+	    caretakerDTO.setId(DataManager.getInstance().saveEntity(caretaker));
 	}
 
 	/**
@@ -264,7 +264,7 @@ public class DTOManager {
 	 */
 	public void saveExamination(ExaminationDTO examinationDTO) {
 	    Examination examination = DataObjectMapper.getExaminationFromExaminationDTO(examinationDTO);
-	    DataManager.getInstance().saveEntity(examination);
+	    examinationDTO.setId(DataManager.getInstance().saveEntity(examination));
 	}
 
 	/**
@@ -317,7 +317,7 @@ public class DTOManager {
 	 */
 	public void saveIncident(IncidentDTO incidentDTO) {
 	    Incident incident = DataObjectMapper.getIncidentFromIncidentDTO(incidentDTO);
-	    DataManager.getInstance().saveEntity(incident);
+	    incidentDTO.setId(DataManager.getInstance().saveEntity(incident));
 	}
 
 	/**
@@ -370,7 +370,7 @@ public class DTOManager {
 	 */
 	public void savePatron(PatronDTO patronDTO) {
 	    Patron patron = DataObjectMapper.getPatronFromPatronDTO(patronDTO);
-	    DataManager.getInstance().saveEntity(patron);
+	    patronDTO.setId(DataManager.getInstance().saveEntity(patron));
 	}
 
 	/**
@@ -410,7 +410,7 @@ public class DTOManager {
 	 */
 	public void saveRoom(RoomDTO roomDTO) {
 	    Room room = DataObjectMapper.getRoomFromRoomDTO(roomDTO);
-	    DataManager.getInstance().saveEntity(room);
+	    roomDTO.setId(DataManager.getInstance().saveEntity(room));
 	}
 
 	/**
@@ -450,7 +450,7 @@ public class DTOManager {
 	 */
 	public void saveVet(VetDTO vetDTO) {
 	    Vet vet = DataObjectMapper.getVetFromVetDTO(vetDTO);
-	    DataManager.getInstance().saveEntity(vet);
+	    vetDTO.setId(DataManager.getInstance().saveEntity(vet));
 	}
 
 	/**

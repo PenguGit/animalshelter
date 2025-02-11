@@ -2,7 +2,6 @@ package gui.animalview;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -33,9 +32,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import bl.DTOManager;
+import bl.entities.AdoptionDTO;
 import bl.entities.AnimalDTO;
 import bl.entities.AnimalTypeDTO;
-import bl.entities.CaretakerDTO;
 import bl.entities.EntityDTO;
 import bl.entities.ExaminationDTO;
 import bl.entities.IncidentDTO;
@@ -52,6 +51,7 @@ import gui.ShelterPanel;
 import gui.ShelterRadioButton;
 import gui.ShelterTextArea;
 import gui.ShelterTextField;
+import gui.adoptions.AdoptionPopupPanel;
 import gui.events.ExaminationPopupPanel;
 import gui.events.IncidentPopupPanel;
 
@@ -289,26 +289,30 @@ public class AnimalViewPanel extends ShelterPanel {
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 		newButton = new ShelterButton(NEW_BUTTON);
-		cancelButton = new ShelterButton(CANCEL_BUTTON);
-		cancelButton.setVisible(false);
-		editButton = new ShelterButton(EDIT_BUTTON);
-		editButton.setVisible(false);
-		adoptionButton = new ShelterButton("Adoptieren");
-		adoptionButton.setVisible(false);
-		saveButton = new ShelterButton(SAVE_BUTTON);
-		saveButton.setVisible(false);
-
-		cancelButton.addActionListener(_ -> {
-			onCancelButtonPressed();
-		});
-		editButton.addActionListener(_ -> {
-			onEditButtonPressed();
-		});
-
 		newButton.addActionListener(_ -> {
 			onNewButtonPressed();
 		});
-
+		
+		cancelButton = new ShelterButton(CANCEL_BUTTON);
+		cancelButton.setVisible(false);
+		cancelButton.addActionListener(_ -> {
+			onCancelButtonPressed();
+		});
+		
+		editButton = new ShelterButton(EDIT_BUTTON);
+		editButton.setVisible(false);
+		editButton.addActionListener(_ -> {
+			onEditButtonPressed();
+		});
+		
+		adoptionButton = new ShelterButton("Adoptieren");
+		adoptionButton.setVisible(false);
+		adoptionButton.addActionListener(_ -> {
+			onAdoptionButtonPressed();
+		});
+		
+		saveButton = new ShelterButton(SAVE_BUTTON);
+		saveButton.setVisible(false);
 		saveButton.addActionListener(_ -> {
 			saveAnimal();
 		});
@@ -342,7 +346,7 @@ public class AnimalViewPanel extends ShelterPanel {
 
 	private void initSideList() {
 		animalListModel = new DefaultListModel<>();
-		animalListModel.addAll(dtoManager.loadAnimals());
+		animalListModel.addAll(dtoManager.loadAnimalsNotAdopted());
 		animalList = new ShelterList<AnimalDTO>(animalListModel);
 		animalList.addListSelectionListener((ListSelectionEvent e) -> {
 			onAnimalListSelectionChanged(e);
@@ -474,7 +478,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		// Validate and save or process the object
 		if (validateAnimal(animal)) {
 			dtoManager.saveAnimal(animal);
-			refreshListModel(animalListModel, dtoManager.loadAnimals());
+			refreshListModel(animalListModel, dtoManager.loadAnimalsNotAdopted());
 			clearForm();
 			isInEditMode = false;
 			isInCreateMode = false;
@@ -493,7 +497,7 @@ public class AnimalViewPanel extends ShelterPanel {
 //
 //		dtoManager.deleteAnimal(animal);
 //
-//		refreshListModel(animalListModel, dtoManager.loadAnimals());
+//		refreshListModel(animalListModel, dtoManager.loadAnimalsNotAdopted());
 //		clearForm();
 //	}
 
@@ -588,6 +592,41 @@ public class AnimalViewPanel extends ShelterPanel {
 		dialog.setVisible(true);
 	}
 
+	private void onAdoptionButtonPressed() {
+
+		JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Tier adoptieren", true);
+		dialog.setSize(200, 150);
+		dialog.setLocationRelativeTo(this);
+		dialog.setResizable(false);
+
+		AdoptionPopupPanel panel = new AdoptionPopupPanel(animal);
+		dialog.add(panel);
+
+		panel.cancelButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dialog.dispose();
+			}
+		});
+
+		panel.saveButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AdoptionDTO adoption = panel.getAdoption();
+				if (adoption != null) {
+					dtoManager.saveAdopter(adoption.getAdopter());
+					System.out.println(adoption.getAdopter().getId());
+					dtoManager.saveAdoption(adoption);
+					dialog.dispose();
+					refreshListModel(animalListModel, dtoManager.loadAnimalsNotAdopted());
+				}
+			}
+		});
+
+		dialog.pack();
+		dialog.setVisible(true);
+	}
+	
 	public byte[] imageToByteArray(Path imagePath) throws IOException {
 		return Files.readAllBytes(imagePath);
 	}

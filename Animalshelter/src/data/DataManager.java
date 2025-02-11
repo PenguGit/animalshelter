@@ -34,7 +34,8 @@ public class DataManager {
 		return instance;
 	}
 	
-	public void saveEntity(Entity entity) {
+	public int saveEntity(Entity entity) {
+		int newId = -1;
 		try (Connection connection = DriverManager.getConnection(Constants.DB_URL, Constants.DB_USER, Constants.DB_PASSWORD)){
 			boolean isUpdate = entity.getId() > 0;
 			PreparedStatement statement = isUpdate ? entity.getSqlUpdateStatement(connection) : entity.getSqlInsertStatement(connection);
@@ -43,6 +44,7 @@ public class DataManager {
 				ResultSet rs = statement.getGeneratedKeys();
 				if(rs.next()) {
 					entity.setId(rs.getInt(1));
+					newId = rs.getInt(1);
 				}
 				rs.close();
 			}
@@ -50,6 +52,8 @@ public class DataManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
+		return newId;
 	}
 	
 	public <T extends Entity> T loadEntityById(Class<T> entityType, int id) {
