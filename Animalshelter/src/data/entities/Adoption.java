@@ -19,8 +19,8 @@ public class Adoption extends Entity {
 		this.id = resultSet.getInt("adoption.id");
 		this.date = resultSet.getDate("adoption.date");
 		
-		this.adopter = DataManager.getInstance().loadEntityById(Adopter.class, resultSet.getInt("animal.adopter_id"));
-		this.animal = DataManager.getInstance().loadEntityById(Animal.class, resultSet.getInt("animal.animal_id"));
+		this.adopter = DataManager.getInstance().loadEntityById(Adopter.class, resultSet.getInt("adoption.adopter_id"));
+		this.animal = DataManager.getInstance().loadEntityById(Animal.class, resultSet.getInt("adoption.animal_id"));
 	}
 	
 	public Adoption(Date date, Adopter adopter, Animal animal) {

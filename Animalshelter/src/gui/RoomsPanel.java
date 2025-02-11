@@ -82,7 +82,7 @@ public class RoomsPanel extends ShelterPanel {
 	public void updateRoomsListData() {
 		roomsListModel.clear();
 		roomsListModel.addAll(dtoManager.loadRooms());
-		roomsList.setSelectedIndex(-1);
+		roomsList.clearSelection();
 		animals = dtoManager.loadAnimals();
 	}
 	

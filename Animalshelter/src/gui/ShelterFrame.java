@@ -22,6 +22,7 @@ public class ShelterFrame extends JFrame implements GUIConstants {
 
 	AnimalViewPanel animalViewPanel;
 	RoomsPanel roomsPanel;
+	AdoptionsPanel adoptionsPanel;
 
 	ShelterPanel mainPanel;
 	ShelterPanel topBarPanel;
@@ -83,7 +84,6 @@ public class ShelterFrame extends JFrame implements GUIConstants {
 
 		startPagePanel.adoptionsButton.addActionListener((ActionEvent _) -> {
 			onNavigationButtonPressed("adoptions", "Adoptionen");
-
 		});
 
 		startPagePanel.patronsButton.addActionListener((ActionEvent _) -> {
@@ -108,16 +108,16 @@ public class ShelterFrame extends JFrame implements GUIConstants {
 		roomsPanel.getAnimalsList().addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent evt) {
 				if (evt.getClickCount() == 2) {
-					onNavigationButtonPressed("animals", "Tiere");
 					animalViewPanel.selectAnimalById(roomsPanel.getAnimalsList().getSelectedValue().getId());
+					onNavigationButtonPressed("animals", "Tiere");
 				}
 			}
 		});
 
 		cardPanel.add(roomsPanel, "rooms");
 
-		PlaceholderPanel adoptionsPlaceholderPanel = new PlaceholderPanel("Adoption");
-		cardPanel.add(adoptionsPlaceholderPanel, "adoptions");
+		adoptionsPanel = new AdoptionsPanel();
+		cardPanel.add(adoptionsPanel, "adoptions");
 
 		patronPanel = new PatronPanel();
 		cardPanel.add(patronPanel, "patrons");
