@@ -5,7 +5,7 @@ import java.awt.Font;
 import java.awt.Rectangle;
 
 public interface GUIConstants {
-	public static final String FONT_SANS = "Comic Sans MS";
+	public static final String FONT_SANS = "Calibri";
 	
 	public static final String APP_TITEL = "Beim kleinen Dackel";
 	

@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -88,8 +89,10 @@ public class AnimalViewPanel extends ShelterPanel {
 	public AnimalViewPanel() {
 		setLayout(new BorderLayout());
 		dtoManager = new DTOManager();
+		
+		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		
 		initOutput();
-		setBackground(Color.DARK_GRAY);
 		initInput();
 		initLists();
 	}
@@ -117,8 +120,8 @@ public class AnimalViewPanel extends ShelterPanel {
 	private ShelterPanel createAdditionalInfoPanel() {
 		ShelterPanel panel = new ShelterPanel();
 		panel.setLayout(new BorderLayout());
-		panel.setBackground(new Color(245, 245, 245));
-
+		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		
 		additionalInfoLabel = new ShelterLabel("Zusätzliche Info: ");
 		additionalInfoArea = new ShelterTextArea(5, 20);
 		panel.add(additionalInfoLabel, BorderLayout.NORTH);
@@ -133,7 +136,6 @@ public class AnimalViewPanel extends ShelterPanel {
 	private ShelterPanel createPatronPanel() {
 		ShelterPanel panel = new ShelterPanel();
 		panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-		panel.setBackground(Color.GRAY);
 
 		ShelterLabel patronLabel = new ShelterLabel("Pate: ");
 		patronComboBoxModel = new DefaultComboBoxModel<>();
@@ -151,6 +153,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		ShelterPanel centerPanel = new ShelterPanel();
 		centerPanel.setLayout(new GridBagLayout());
 		centerPanel.setBackground(Color.LIGHT_GRAY);
+		centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 		genderButtonGroup = new ButtonGroup();
 		ShelterPanel genderPanel = new ShelterPanel(new FlowLayout(FlowLayout.LEFT, 2, 2));
@@ -251,9 +254,9 @@ public class AnimalViewPanel extends ShelterPanel {
 
 	private void initInput() {
 		ShelterPanel buttonPanel = new ShelterPanel();
-		buttonPanel.setBackground(new Color(230, 230, 230));
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 		buttonPanel.add(Box.createHorizontalGlue());
+		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 		newButton = new ShelterButton(NEW_BUTTON);
 		
