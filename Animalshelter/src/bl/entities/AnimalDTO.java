@@ -67,6 +67,10 @@ public class AnimalDTO extends EntityDTO {
 		this.image = image;
 	}
 	
+	public AnimalDTO() {
+		super();
+	}
+
 	public String getName() {
 		return name;
 	}
