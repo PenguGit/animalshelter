@@ -86,7 +86,6 @@ public class AnimalViewPanel extends ShelterPanel {
 	private ShelterTextField nameField;
 	private ShelterBirthdateTextField birthDateField;
 
-	private ShelterLabel additionalInfoLabel;
 	private ShelterTextArea additionalInfoArea;
 
 	private ShelterImagePanel imagePanel;
@@ -111,56 +110,8 @@ public class AnimalViewPanel extends ShelterPanel {
 	}
 
 	private void initOutput() {
-		// Main output panel setup
-		ShelterPanel outputPanel = new ShelterPanel();
-		outputPanel.setLayout(new BorderLayout());
-
-		// Create and arrange the three main components
-		ShelterPanel additionalInfoPanel = createAdditionalInfoPanel();
-
-		// Arrange components in the center panel
 		ShelterPanel centerPanel = createCenterPanel();
-
-		// Add all components to the output panel
-		outputPanel.add(additionalInfoPanel, BorderLayout.SOUTH);
-		outputPanel.add(centerPanel, BorderLayout.CENTER);
-
-		// Add output panel to the main container
-		add(outputPanel, BorderLayout.CENTER);
-	}
-
-	private ShelterPanel createAdditionalInfoPanel() {
-		ShelterPanel panel = new ShelterPanel();
-		panel.setLayout(new BorderLayout());
-		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-		additionalInfoLabel = new ShelterLabel("Zusätzliche Info: ");
-		additionalInfoArea = new ShelterTextArea(5, 20);
-		additionalInfoArea.setLineWrap(true);
-		additionalInfoArea.setWrapStyleWord(true);
-		panel.add(additionalInfoLabel, BorderLayout.NORTH);
-		panel.add(new JScrollPane(additionalInfoArea), BorderLayout.WEST);
-
-		// Add patron section
-		panel.add(createPatronPanel(), BorderLayout.SOUTH);
-
-		return panel;
-	}
-
-	private ShelterPanel createPatronPanel() {
-		ShelterPanel panel = new ShelterPanel();
-		panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-
-		ShelterLabel patronLabel = new ShelterLabel("Pate: ");
-		patronComboBoxModel = new DefaultComboBoxModel<>();
-		patronComboBoxModel.addAll(dtoManager.loadPatrons());
-		patronComboBox = new ShelterComboBox<>(patronComboBoxModel);
-		patronComboBox.setRenderer(new ShelterListCellRenderer());
-
-		panel.add(patronLabel);
-		panel.add(patronComboBox);
-
-		return panel;
+		add(centerPanel, BorderLayout.CENTER);
 	}
 
 	private ShelterPanel createCenterPanel() {
@@ -210,9 +161,18 @@ public class AnimalViewPanel extends ShelterPanel {
 			onUploadImageButtonPressed();
 		});
 
+		additionalInfoArea = new ShelterTextArea(5, 20);
+		additionalInfoArea.setLineWrap(true);
+		additionalInfoArea.setWrapStyleWord(true);
+		
+		patronComboBoxModel = new DefaultComboBoxModel<>();
+		patronComboBoxModel.addAll(dtoManager.loadPatrons());
+		patronComboBox = new ShelterComboBox<>(patronComboBoxModel);
+		patronComboBox.setRenderer(new ShelterListCellRenderer());
+		
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(5, 5, 5, 5);
-		gbc.fill = GridBagConstraints.HORIZONTAL; // Important for consistent width
+		gbc.fill = GridBagConstraints.BOTH; // Important for consistent width
 
 		// Image Panel
 		gbc.gridx = 0;
@@ -232,8 +192,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		centerPanel.add(new ShelterLabel("Name: "), gbc);
 
 		// Name Field
-		gbc.gridx = 2; // Next column
-		gbc.gridy = 0;
+		gbc.gridx = 2;
 		centerPanel.add(nameField = new ShelterTextField(15), gbc);
 
 		// Birthdate Label
@@ -243,7 +202,6 @@ public class AnimalViewPanel extends ShelterPanel {
 
 		// Birthdate Field
 		gbc.gridx = 2;
-		gbc.gridy = 1;
 		centerPanel.add(birthDateField = new ShelterBirthdateTextField(), gbc);
 
 		// Gender Label
@@ -253,7 +211,6 @@ public class AnimalViewPanel extends ShelterPanel {
 
 		// Gender Field
 		gbc.gridx = 2;
-		gbc.gridy = 2;
 		centerPanel.add(genderPanel, gbc);
 
 		gbc.gridx = 0;
@@ -261,7 +218,6 @@ public class AnimalViewPanel extends ShelterPanel {
 		centerPanel.add(new ShelterLabel("Typ: "), gbc);
 
 		gbc.gridx = 1;
-		gbc.gridy = 3;
 		centerPanel.add(animalTypeComboBox, gbc);
 
 		gbc.gridx = 0;
@@ -270,10 +226,25 @@ public class AnimalViewPanel extends ShelterPanel {
 
 		// Room Combobox Field
 		gbc.gridx = 1;
-		gbc.gridy = 4;
-
 		centerPanel.add(roomComboBox, gbc);
+		
+		gbc.gridx = 0;
+		gbc.gridy = 5;
+		centerPanel.add(new ShelterLabel("Zusätzliche Info: "), gbc);
+		
+		gbc.gridy = 6;
+		gbc.gridheight = 3;
+		gbc.gridwidth = 3;
+		centerPanel.add(new JScrollPane(additionalInfoArea), gbc);
 
+		gbc.gridwidth = 1;
+		gbc.gridx = 0;
+		gbc.gridy = 9;
+		centerPanel.add(new ShelterLabel("Pate: "), gbc);
+
+		gbc.gridx = 1;
+		centerPanel.add(patronComboBox, gbc);
+		
 		return centerPanel;
 	}
 
@@ -329,13 +300,10 @@ public class AnimalViewPanel extends ShelterPanel {
 	}
 
 	private void initLists() {
-		// Add side list to the main panel
 		initSideList();
 
-		// Create and add right panel with incidents and examinations
 		ShelterPanel rightPanel = createRightPanel();
 
-		// Add list panel to the main container
 		add(rightPanel, BorderLayout.EAST);
 	}
 
@@ -356,15 +324,12 @@ public class AnimalViewPanel extends ShelterPanel {
 		ShelterPanel rightPanel = new ShelterPanel();
 		rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
-		// Add incident section
 		rightPanel.add(createIncidentPanel());
-
-		// Add examination section
 		rightPanel.add(createExaminationPanel());
 
 		return rightPanel;
 	}
-
+	
 	private ShelterPanel createIncidentPanel() {
 		// Create incident header panel
 		ShelterPanel incidentPanel = new ShelterPanel();
@@ -442,6 +407,9 @@ public class AnimalViewPanel extends ShelterPanel {
 		// Select the matching patron in the ComboBox if available
 		if (animal.getPatron() != null) {
 			selectComboBoxItemById(patronComboBox, animal.getPatron());
+		}
+		else {
+			patronComboBox.setSelectedIndex(-1);
 		}
 		imagePanel.clearImageData();
 		if (animal.getImage() != null) {
@@ -588,7 +556,6 @@ public class AnimalViewPanel extends ShelterPanel {
 	}
 
 	private void onAdoptionButtonPressed() {
-
 		JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Tier adoptieren", true);
 		dialog.setSize(200, 150);
 		dialog.setLocationRelativeTo(this);
