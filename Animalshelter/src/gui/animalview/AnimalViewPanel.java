@@ -136,6 +136,8 @@ public class AnimalViewPanel extends ShelterPanel {
 
 		additionalInfoLabel = new ShelterLabel("Zusätzliche Info: ");
 		additionalInfoArea = new ShelterTextArea(5, 20);
+		additionalInfoArea.setLineWrap(true);
+		additionalInfoArea.setWrapStyleWord(true);
 		panel.add(additionalInfoLabel, BorderLayout.NORTH);
 		panel.add(new JScrollPane(additionalInfoArea), BorderLayout.WEST);
 
@@ -205,14 +207,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		imagePanel = new ShelterImagePanel(null);
 		uploadImageButton = new ShelterButton("Bild Hochladen");
 		uploadImageButton.addActionListener(_ -> {
-			try {
-				byte[] imageAsByteArray = imageToByteArray(getPathFromFileChooser());
-				animal.setImage(imageAsByteArray);
-				imagePanel.setImageData(imageAsByteArray);
-			} catch (IOException e) {
-				JOptionPane.showMessageDialog(null, "Error bitte noch einmal versuchen.", "Validation Error",
-						JOptionPane.ERROR_MESSAGE);
-			}
+			onUploadImageButtonPressed();
 		});
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -452,9 +447,9 @@ public class AnimalViewPanel extends ShelterPanel {
 		if (animal.getImage() != null) {
 			imagePanel.setImageData(animal.getImage());
 		}
-
-		updateIncidentList();
-		updateExaminationList();
+		
+		refreshListModel(incidentListModel, dtoManager.loadIncidentsByAnimalId(animal.getId()));
+		refreshListModel(examinationListModel, dtoManager.loadExaminationsByAnimalId(animal.getId()));
 	}
 
 	public void saveAnimal() {
@@ -550,7 +545,7 @@ public class AnimalViewPanel extends ShelterPanel {
 				if (incident != null) {
 					dtoManager.saveIncident(incident);
 					dialog.dispose();
-					updateIncidentList();
+					refreshListModel(incidentListModel, dtoManager.loadIncidentsByAnimalId(animal.getId()));
 				}
 			}
 		});
@@ -583,7 +578,7 @@ public class AnimalViewPanel extends ShelterPanel {
 				if (incident != null) {
 					dtoManager.saveExamination(incident);
 					dialog.dispose();
-					updateExaminationList();
+					refreshListModel(examinationListModel, dtoManager.loadExaminationsByAnimalId(animal.getId()));
 				}
 			}
 		});
@@ -634,28 +629,6 @@ public class AnimalViewPanel extends ShelterPanel {
 	private boolean validateAnimal(AnimalDTO animalDTO) {
 		return !animalDTO.getName().isEmpty() && animalDTO.getDateOfBirth() != null && animalDTO.getRoom() != null
 				&& animalDTO.getGender() != null && animalDTO.getAnimalType() != null && getGenderFromRadio() >= 0;
-	}
-
-	private void updateIncidentList() {
-		animal = animalList.getSelectedValue();
-
-		if (animal == null) {
-			return;
-		}
-
-		incidentListModel.clear();
-		incidentListModel.addAll(dtoManager.loadIncidentsByAnimalId(animal.getId()));
-	}
-
-	private void updateExaminationList() {
-		animal = animalList.getSelectedValue();
-
-		if (animal == null) {
-			return;
-		}
-
-		examinationListModel.clear();
-		examinationListModel.addAll(dtoManager.loadExaminationsByAnimalId(animal.getId()));
 	}
 
 	private Path getPathFromFileChooser() {
@@ -733,7 +706,7 @@ public class AnimalViewPanel extends ShelterPanel {
 			model.addElement(item);
 		}
 	}
-
+	
 	private void onNewButtonPressed() {
 		clearForm();
 		isInEditMode = false;
@@ -755,6 +728,17 @@ public class AnimalViewPanel extends ShelterPanel {
 		isInCreateMode = false;
 		changeButtonState();
 		changeFormState();
+	}
+	
+	private void onUploadImageButtonPressed() {
+		try {
+			byte[] imageAsByteArray = imageToByteArray(getPathFromFileChooser());
+			animal.setImage(imageAsByteArray);
+			imagePanel.setImageData(imageAsByteArray);
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, "Error bitte noch einmal versuchen.", "Validation Error",
+					JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	public void changeButtonState() {
