@@ -1,23 +1,14 @@
 package data;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
-import data.entities.Animal;
-import data.entities.AnimalType;
 import data.entities.Entity;
-import data.entities.Patron;
-import data.entities.Room;
 import util.Constants;
 
 public class DataManager {

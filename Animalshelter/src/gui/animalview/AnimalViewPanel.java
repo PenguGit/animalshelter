@@ -93,9 +93,13 @@ public class AnimalViewPanel extends ShelterPanel {
 
 	private JFileChooser fileChooser;
 
-	private boolean isInEditMode;
-	private boolean isInCreateMode;
-
+	private enum Mode {
+		NONE,
+		SELECTED,
+		EDIT,
+		CREATE
+	}
+	
 	public AnimalViewPanel() {
 		setLayout(new BorderLayout());
 		dtoManager = new DTOManager();
@@ -105,8 +109,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		initOutput();
 		initInput();
 		initLists();
-		changeButtonState();
-		changeFormState();
+		changeFormState(Mode.NONE);
 	}
 
 	private void initOutput() {
@@ -443,10 +446,7 @@ public class AnimalViewPanel extends ShelterPanel {
 			dtoManager.saveAnimal(animal);
 			refreshListModel(animalListModel, dtoManager.loadAnimalsNotAdopted());
 			clearForm();
-			isInEditMode = false;
-			isInCreateMode = false;
-			changeButtonState();
-			changeFormState();
+			changeFormState(Mode.NONE);
 		} else {
 			JOptionPane.showMessageDialog(null, "Please fill all required fields correctly.", "Validation Error",
 					JOptionPane.ERROR_MESSAGE);
@@ -484,8 +484,7 @@ public class AnimalViewPanel extends ShelterPanel {
 				fillForm();
 			}
 
-			changeButtonState();
-			changeFormState();
+			changeFormState(Mode.SELECTED);
 		}
 	}
 
@@ -676,25 +675,21 @@ public class AnimalViewPanel extends ShelterPanel {
 	
 	private void onNewButtonPressed() {
 		clearForm();
-		isInEditMode = false;
-		isInCreateMode = true;
-		changeButtonState();
-		changeFormState();
+		changeFormState(Mode.CREATE);
 		animal = new AnimalDTO();
 	}
 
 	private void onCancelButtonPressed() {
-		isInEditMode = false;
-		isInCreateMode = false;
-		changeButtonState();
-		changeFormState();
+		if(animalList.getSelectedValue() == null) {
+			changeFormState(Mode.NONE);
+		}
+		else {
+			changeFormState(Mode.SELECTED);
+		}
 	}
 
 	private void onEditButtonPressed() {
-		isInEditMode = true;
-		isInCreateMode = false;
-		changeButtonState();
-		changeFormState();
+		changeFormState(Mode.EDIT);
 	}
 	
 	private void onUploadImageButtonPressed() {
@@ -707,30 +702,27 @@ public class AnimalViewPanel extends ShelterPanel {
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}
-
-	public void changeButtonState() {
+	
+	private void changeFormState(Mode mode) {
 		boolean isValidAnimal = animal != null && animal.getId() > 0;
-		animalList.setEnabled(!isInEditMode && !isInCreateMode);
-		editButton.setVisible(!isInEditMode && !isInCreateMode && isValidAnimal);
-		cancelButton.setVisible(isInEditMode || isInCreateMode);
-		saveButton.setVisible(isInEditMode || isInCreateMode);
-		newButton.setVisible(!isInEditMode && !isInCreateMode);
-		addIncidentButton.setEnabled(!isInCreateMode && isValidAnimal);
-		addExaminationButton.setEnabled(!isInCreateMode && isValidAnimal);
-		adoptionButton.setVisible(!isInEditMode && !isInCreateMode && isValidAnimal);
-//		deleteButton.setVisible(!isInEditMode && !isInCreateMode);
-	}
-
-	public void changeFormState() {
-		nameField.setEnabled(isInEditMode || isInCreateMode);
-		birthDateField.setEnabled(isInEditMode || isInCreateMode);
-		additionalInfoArea.setEnabled(isInEditMode || isInCreateMode);
+		animalList.setEnabled(mode == Mode.NONE || mode == Mode.SELECTED);
+		editButton.setVisible(mode == Mode.SELECTED && isValidAnimal);
+		cancelButton.setVisible(mode == Mode.EDIT || mode == Mode.CREATE);
+		saveButton.setVisible(mode == Mode.EDIT || mode == Mode.CREATE);
+		newButton.setVisible(mode == Mode.NONE || mode == Mode.SELECTED);
+		addIncidentButton.setEnabled(mode == Mode.SELECTED || mode == Mode.EDIT && isValidAnimal);
+		addExaminationButton.setEnabled(mode == Mode.SELECTED || mode == Mode.EDIT && isValidAnimal);
+		adoptionButton.setVisible(mode == Mode.SELECTED && isValidAnimal);
+		
+		nameField.setEnabled(mode == Mode.EDIT || mode == Mode.CREATE);
+		birthDateField.setEnabled(mode == Mode.EDIT || mode == Mode.CREATE);
+		additionalInfoArea.setEnabled(mode == Mode.EDIT || mode == Mode.CREATE);
 		for (ShelterRadioButton rb : radioButtonList) {
-			rb.setEnabled(isInEditMode || isInCreateMode);
+			rb.setEnabled(mode == Mode.EDIT || mode == Mode.CREATE);
 		}
-		animalTypeComboBox.setEnabled(isInEditMode || isInCreateMode);
-		patronComboBox.setEnabled(isInEditMode || isInCreateMode);
-		roomComboBox.setEnabled(isInEditMode || isInCreateMode);
-		uploadImageButton.setEnabled(isInEditMode || isInCreateMode);
+		animalTypeComboBox.setEnabled(mode == Mode.EDIT || mode == Mode.CREATE);
+		patronComboBox.setEnabled(mode == Mode.EDIT || mode == Mode.CREATE);
+		roomComboBox.setEnabled(mode == Mode.EDIT || mode == Mode.CREATE);
+		uploadImageButton.setEnabled(mode == Mode.EDIT || mode == Mode.CREATE);
 	}
 }
