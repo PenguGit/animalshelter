@@ -99,10 +99,29 @@ public class AnimalViewPanel extends ShelterPanel {
 
 	private JFileChooser fileChooser;
 
+	/**
+	 * The current mode of the AnimalViewPanel, used to determine control states.
+	 * {@link #NONE}
+	 * {@link #SELECTED}
+	 * {@link #EDIT}
+	 * {@link #CREATE}
+	 */
 	private enum Mode {
+		/**
+		 * The default mode, with nothing selected or being edited.
+		 */
 		NONE,
+		/**
+		 * Some animal is selected but not being edited.
+		 */
 		SELECTED,
+		/**
+		 * The currently selected animal is being edited.
+		 */
 		EDIT,
+		/**
+		 * A new animal was created and is being edited.
+		 */
 		CREATE
 	}
 	
@@ -769,6 +788,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		animal = null;
 
 		animalList.clearSelection();
+		changeFormState(Mode.NONE);
 	}
 	
 	/**
@@ -867,22 +887,94 @@ public class AnimalViewPanel extends ShelterPanel {
 	}
 	
 	/**
-     * Changes the state of the form components (text fields, combo boxes, buttons etc.)
+	 * Changes the state of the form components (text fields, combo boxes, buttons etc.)
      * based on the mode being passed in.
-     */
+	 * @param mode The mode determining the state of each control.
+	 */
 	private void changeFormState(Mode mode) {
-		boolean isValidAnimal = animal != null && animal.getId() > 0;
-		animalList.setEnabled(mode == Mode.NONE || mode == Mode.SELECTED);
-		editButton.setVisible(mode == Mode.SELECTED && isValidAnimal);
-		cancelButton.setVisible(mode == Mode.EDIT || mode == Mode.CREATE);
-		saveButton.setVisible(mode == Mode.EDIT || mode == Mode.CREATE);
-		newButton.setVisible(mode == Mode.NONE || mode == Mode.SELECTED);
-		addIncidentButton.setEnabled(mode == Mode.SELECTED || mode == Mode.EDIT && isValidAnimal);
-		addExaminationButton.setEnabled(mode == Mode.SELECTED || mode == Mode.EDIT && isValidAnimal);
-		adoptionButton.setVisible(mode == Mode.SELECTED && isValidAnimal);
-		
-		nameField.setEnabled(mode == Mode.EDIT || mode == Mode.CREATE);
-		birthDateField.setEnabled(mode == Mode.EDIT || mode == Mode.CREATE);
-		additionalInfoArea.setEnabled(mode == Mode.EDIT || mode == Mode.CREATE);
+		switch(mode) {
+			case NONE:
+				animalList.setEnabled(true);
+				editButton.setVisible(false);
+				cancelButton.setVisible(false);
+				saveButton.setVisible(false);
+				newButton.setVisible(true);
+				addIncidentButton.setEnabled(false);
+				addExaminationButton.setEnabled(false);
+				adoptionButton.setVisible(false);
+				nameField.setEnabled(false);
+				birthDateField.setEnabled(false);
+				additionalInfoArea.setEnabled(false);
+				for (ShelterRadioButton rb : radioButtonList) {
+					rb.setEnabled(false);
+				}
+				animalTypeComboBox.setEnabled(false);
+				patronComboBox.setEnabled(false);
+				roomComboBox.setEnabled(false);
+				uploadImageButton.setEnabled(false);
+				break;
+			case SELECTED:
+				animalList.setEnabled(true);
+				editButton.setVisible(true);
+				cancelButton.setVisible(false);
+				saveButton.setVisible(false);
+				newButton.setVisible(true);
+				addIncidentButton.setEnabled(true);
+				addExaminationButton.setEnabled(true);
+				adoptionButton.setVisible(true);
+				nameField.setEnabled(false);
+				birthDateField.setEnabled(false);
+				additionalInfoArea.setEnabled(false);
+				for (ShelterRadioButton rb : radioButtonList) {
+					rb.setEnabled(false);
+				}
+				animalTypeComboBox.setEnabled(false);
+				patronComboBox.setEnabled(false);
+				roomComboBox.setEnabled(false);
+				uploadImageButton.setEnabled(false);
+				break;
+			case EDIT:
+				animalList.setEnabled(false);
+				editButton.setVisible(false);
+				cancelButton.setVisible(true);
+				saveButton.setVisible(true);
+				newButton.setVisible(false);
+				addIncidentButton.setEnabled(true);
+				addExaminationButton.setEnabled(true);
+				adoptionButton.setVisible(false);
+				nameField.setEnabled(true);
+				birthDateField.setEnabled(true);
+				additionalInfoArea.setEnabled(true);
+				for (ShelterRadioButton rb : radioButtonList) {
+					rb.setEnabled(true);
+				}
+				animalTypeComboBox.setEnabled(true);
+				patronComboBox.setEnabled(true);
+				roomComboBox.setEnabled(true);
+				uploadImageButton.setEnabled(true);
+				break;
+			case CREATE:
+				animalList.setEnabled(false);
+				editButton.setVisible(false);
+				cancelButton.setVisible(true);
+				saveButton.setVisible(true);
+				newButton.setVisible(false);
+				addIncidentButton.setEnabled(false);
+				addExaminationButton.setEnabled(false);
+				adoptionButton.setVisible(false);
+				nameField.setEnabled(true);
+				birthDateField.setEnabled(true);
+				additionalInfoArea.setEnabled(true);
+				for (ShelterRadioButton rb : radioButtonList) {
+					rb.setEnabled(true);
+				}
+				animalTypeComboBox.setEnabled(true);
+				patronComboBox.setEnabled(true);
+				roomComboBox.setEnabled(true);
+				uploadImageButton.setEnabled(true);
+				break;
+			default:
+				throw new IllegalArgumentException("Unexpected value: " + mode);
+		}
 	}
 }
