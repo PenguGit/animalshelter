@@ -17,6 +17,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 
 import bl.DTOManager;
+import bl.entities.AnimalDTO;
 import bl.entities.PatronDTO;
 import bl.entities.PersonDTO;
 import gui.ShelterButton;
@@ -278,7 +279,7 @@ public class PatronPanel extends ShelterPanel {
 		}
 		dtoManager.deletePatron(selectedItem);
 
-		personList.clearSelection();
+		clearForm();
 		updateTableData();
 		changeFormState(Mode.NONE);
 	}
@@ -328,9 +329,10 @@ public class PatronPanel extends ShelterPanel {
 
 		dtoManager.savePatron(activePerson);
 
-		personList.clearSelection();
 		updateTableData();
-		changeFormState(Mode.NONE);
+		System.out.println(activePerson.getId());
+		selectPersonById(activePerson.getId());
+		changeFormState(Mode.SELECTED);
 	}
 
 	/**
@@ -354,6 +356,21 @@ public class PatronPanel extends ShelterPanel {
 		personList.clearSelection();
 	}
 
+	/**
+     * Selects a person in the list by their ID.
+     *
+     * @param id The ID of the person to select.
+     */
+	public void selectPersonById(int id) {
+		for (int i = 0; i < personListModel.getSize(); i++) {
+			PersonDTO person = personListModel.getElementAt(i);
+			if (person.getId() == id) {
+				personList.setSelectedIndex(i);
+				return;
+			}
+		}
+	}
+	
 	/**
 	 * Clears and resets the entire form. Sets the form state to Mode.NONE.
 	 * 

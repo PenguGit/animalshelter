@@ -26,7 +26,7 @@ public class DataManager {
 	}
 	
 	public int saveEntity(Entity entity) {
-		int newId = -1;
+		int newId = entity.getId();
 		try (Connection connection = DriverManager.getConnection(Constants.DB_URL, Constants.DB_USER, Constants.DB_PASSWORD)){
 			boolean isUpdate = entity.getId() > 0;
 			PreparedStatement statement = isUpdate ? entity.getSqlUpdateStatement(connection) : entity.getSqlInsertStatement(connection);
