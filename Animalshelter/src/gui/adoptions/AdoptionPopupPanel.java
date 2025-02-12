@@ -20,7 +20,6 @@ import gui.ShelterPanel;
 import gui.ShelterTextField;
 
 public class AdoptionPopupPanel extends ShelterPanel {
-	private DTOManager dtoManager;
 	
 	private GridBagConstraints gbc = new GridBagConstraints();
 	
@@ -40,8 +39,6 @@ public class AdoptionPopupPanel extends ShelterPanel {
 	public AdoptionPopupPanel(AnimalDTO animal) {
 		this.animal = animal;
 		
-		dtoManager = new DTOManager();
-
 		setLayout(new GridBagLayout());
 		setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
 
