@@ -55,6 +55,12 @@ import gui.adoptions.AdoptionPopupPanel;
 import gui.events.ExaminationPopupPanel;
 import gui.events.IncidentPopupPanel;
 
+/**
+ * A panel for viewing and managing animal information.
+ * This panel allows users to create, edit, and view animal details,
+ * including name, birthdate, gender, type, room assignment, and additional notes.
+ * It also includes functionality for uploading images and associating animals with patrons.
+ */
 public class AnimalViewPanel extends ShelterPanel {
 	DTOManager dtoManager;
 	private AnimalDTO animal;
@@ -100,6 +106,10 @@ public class AnimalViewPanel extends ShelterPanel {
 		CREATE
 	}
 	
+	  /**
+     * Constructs a new AnimalViewPanel.
+     * Initializes the layout, data access objects, file chooser, and UI components.
+     */
 	public AnimalViewPanel() {
 		setLayout(new BorderLayout());
 		dtoManager = new DTOManager();
@@ -111,12 +121,21 @@ public class AnimalViewPanel extends ShelterPanel {
 		initLists();
 		changeFormState(Mode.NONE);
 	}
-
+	
+	/**
+     * Initializes the output components, primarily the center panel for displaying animal details.
+     */
 	private void initOutput() {
 		ShelterPanel centerPanel = createCenterPanel();
 		add(centerPanel, BorderLayout.CENTER);
 	}
 
+	 /**
+     * Creates and configures the center panel of the layout, containing input fields and labels
+     * for animal data. Uses a GridBagLayout for precise component placement.
+     *
+     * @return The created ShelterPanel representing the center panel.
+     */
 	private ShelterPanel createCenterPanel() {
 		ShelterPanel centerPanel = new ShelterPanel();
 		centerPanel.setLayout(new GridBagLayout());
@@ -250,7 +269,10 @@ public class AnimalViewPanel extends ShelterPanel {
 		
 		return centerPanel;
 	}
-
+	/**
+     * Initializes the input components, specifically the button panel at the bottom of the view.
+     * This panel contains buttons for new, cancel, edit, save, and delete operations.
+     */
 	private void initInput() {
 		ShelterPanel buttonPanel = new ShelterPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -301,7 +323,10 @@ public class AnimalViewPanel extends ShelterPanel {
 
 		add(buttonPanel, BorderLayout.SOUTH);
 	}
-
+	/**
+     * Initializes the lists within the panel, including the main animal list
+     * on the left and the incident/examination lists on the right.
+     */
 	private void initLists() {
 		initSideList();
 
@@ -309,7 +334,10 @@ public class AnimalViewPanel extends ShelterPanel {
 
 		add(rightPanel, BorderLayout.EAST);
 	}
-
+	/**
+     * Initializes the side list displaying animals that are not yet adopted.
+     * This list allows users to select animals for viewing and editing.
+     */
 	private void initSideList() {
 		animalListModel = new DefaultListModel<>();
 		animalListModel.addAll(dtoManager.loadAnimalsNotAdopted());
@@ -322,7 +350,12 @@ public class AnimalViewPanel extends ShelterPanel {
 
 		add(sideListScrollPane, BorderLayout.WEST);
 	}
-
+	/**
+     * Creates and configures the right panel, which contains the incident and
+     * examination panels. Uses a BoxLayout for vertical arrangement.
+     *
+     * @return The created ShelterPanel representing the right panel.
+     */
 	private ShelterPanel createRightPanel() {
 		ShelterPanel rightPanel = new ShelterPanel();
 		rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
@@ -332,7 +365,12 @@ public class AnimalViewPanel extends ShelterPanel {
 
 		return rightPanel;
 	}
-	
+	/**
+     * Creates and configures the incident panel, including a header, a list
+     * to display incidents, and a button to add new incidents.
+     *
+     * @return The created ShelterPanel representing the incident panel.
+     */
 	private ShelterPanel createIncidentPanel() {
 		// Create incident header panel
 		ShelterPanel incidentPanel = new ShelterPanel();
@@ -364,7 +402,12 @@ public class AnimalViewPanel extends ShelterPanel {
 
 		return incidentPanel;
 	}
-
+	/**
+     * Creates and configures the examination panel, similar to the incident panel,
+     * including a header, a list for examinations, and a button to add new ones.
+     *
+     * @return The created ShelterPanel representing the examination panel.
+     */
 	private ShelterPanel createExaminationPanel() {
 		ShelterPanel examinationPanel = new ShelterPanel();
 		examinationPanel.setLayout(new BorderLayout());
@@ -395,7 +438,13 @@ public class AnimalViewPanel extends ShelterPanel {
 
 		return examinationPanel;
 	}
-
+	
+	/**
+     * Fills the animal details form with the data of the currently selected animal.
+     * This method populates the text fields, combo boxes, radio buttons, and image panel
+     * with the information from the 'animal' object. It also refreshes the incident and
+     * examination lists.
+     */
 	public void fillForm() {
 		refreshBoxModel(patronComboBoxModel, dtoManager.loadPatrons());
 		// Populate text fields
@@ -422,7 +471,13 @@ public class AnimalViewPanel extends ShelterPanel {
 		refreshListModel(incidentListModel, dtoManager.loadIncidentsByAnimalId(animal.getId()));
 		refreshListModel(examinationListModel, dtoManager.loadExaminationsByAnimalId(animal.getId()));
 	}
-
+	
+	/**
+     * Saves the animal data entered in the form.
+     * This method retrieves the values from the input fields, sets them on the 'animal' object,
+     * validates the data, and then saves the animal using the DTOManager. It also refreshes the
+     * animal list, clears the form, and updates the button and form states.
+     */
 	public void saveAnimal() {
 		String name = nameField.getText().trim();
 		LocalDate birthDate = birthDateField.getDate();
@@ -453,6 +508,11 @@ public class AnimalViewPanel extends ShelterPanel {
 		}
 	}
 
+//  /**
+//  * Deletes the currently selected animal.
+//  * This method deletes the animal object using the DTOManager, refreshes the animal list,
+//  * and clears the form.
+//  */
 //	public void deleteAnimal() {
 //		if (animal == null) {
 //			return;
@@ -463,7 +523,15 @@ public class AnimalViewPanel extends ShelterPanel {
 //		refreshListModel(animalListModel, dtoManager.loadAnimalsNotAdopted());
 //		clearForm();
 //	}
-
+	
+	/**
+     * Selects an animal in the list by its ID.
+     * This method iterates through the animal list model to find an animal with the matching ID
+     * and selects it in the list.
+     * This is used in roomsPanel to make a selection in the AnimalList there, be transferred to AnimalViewPanel
+     *
+     * @param id The ID of the animal to select.
+     */
 	public void selectAnimalById(int id) {
 		for (int i = 0; i < animalListModel.getSize(); i++) {
 			AnimalDTO animal = animalListModel.getElementAt(i);
@@ -474,7 +542,14 @@ public class AnimalViewPanel extends ShelterPanel {
 		}
 		animalList.setSelectedIndex(-1);
 	}
-
+	
+	/**
+     * Handles the event when the selection in the animal list changes.
+     * This method retrieves the selected animal, fills the form with its details,
+     * and updates the button and form states.
+     *
+     * @param e The ListSelectionEvent object.
+     */
 	private void onAnimalListSelectionChanged(ListSelectionEvent e) {
 
 		if (!e.getValueIsAdjusting() && animalList.isEnabled()) {
@@ -487,7 +562,11 @@ public class AnimalViewPanel extends ShelterPanel {
 			changeFormState(Mode.SELECTED);
 		}
 	}
-
+	
+	/**
+     * Handles the event when the "New Incident" button is pressed.
+     * This method opens a dialog to create a new incident for the selected animal.
+     */
 	private void onNewIncidentButtonPressed() {
 
 		JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Neues Vorkommnis", true);
@@ -520,7 +599,11 @@ public class AnimalViewPanel extends ShelterPanel {
 		dialog.pack();
 		dialog.setVisible(true);
 	}
-
+	
+	/**
+     * Handles the event when the "New Examination" button is pressed.
+     * This method opens a dialog to create a new examination for the selected animal.
+     */
 	private void onNewExaminationButtonPressed() {
 
 		JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Neue Untersuchung", true);
@@ -554,6 +637,10 @@ public class AnimalViewPanel extends ShelterPanel {
 		dialog.setVisible(true);
 	}
 
+	/**
+     * Handles the event when the "Adopt" button is pressed.
+     * This method opens a dialog to handle the adoption process for the selected animal.
+     */
 	private void onAdoptionButtonPressed() {
 		JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Tier adoptieren", true);
 		dialog.setSize(200, 150);
@@ -588,15 +675,23 @@ public class AnimalViewPanel extends ShelterPanel {
 		dialog.setVisible(true);
 	}
 	
-	public byte[] imageToByteArray(Path imagePath) throws IOException {
+	/**
+     * Converts an image from a Path to a byte array.
+     *
+     * @param imagePath The Path of the image file.
+     * @return A byte array representing the image data.
+     * @throws IOException If an I/O error occurs while reading the file.
+     */
+	public byte[] imagePathToByteArray(Path imagePath) throws IOException {
 		return Files.readAllBytes(imagePath);
 	}
-
-	private boolean validateAnimal(AnimalDTO animalDTO) {
-		return !animalDTO.getName().isEmpty() && animalDTO.getDateOfBirth() != null && animalDTO.getRoom() != null
-				&& animalDTO.getGender() != null && animalDTO.getAnimalType() != null && getGenderFromRadio() >= 0;
-	}
-
+	
+	/**
+     * Opens a file chooser dialog to select an image file.
+     * Filters the file selection to only allow image files (jpg, png, bmp, jpeg).
+     *
+     * @return The Path of the selected image file, or null if no file is selected.
+     */
 	private Path getPathFromFileChooser() {
 		fileChooser.setAcceptAllFileFilterUsed(false);
 		fileChooser.setDialogTitle("Wähle eine Bild-Datei aus.");
@@ -610,6 +705,25 @@ public class AnimalViewPanel extends ShelterPanel {
 		return null;
 	}
 
+	
+	/**
+     * Validates the animal data before saving.
+     * Checks if all required fields are filled and valid.
+     *
+     * @param animalDTO The AnimalDTO object to validate.
+     * @return True if the animal data is valid, false otherwise.
+     */
+	private boolean validateAnimal(AnimalDTO animalDTO) {
+		return !animalDTO.getName().isEmpty() && animalDTO.getDateOfBirth() != null && animalDTO.getRoom() != null
+				&& animalDTO.getGender() != null && animalDTO.getAnimalType() != null && getGenderFromRadio() >= 0;
+	}
+
+	/**
+     * Gets the selected gender from the radio button group.
+     *
+     * @return The index of the selected gender radio button (0 for male, 1 for female, etc.),
+     *         or -1 if no gender is selected.
+     */
 	private int getGenderFromRadio() {
 		if (genderButtonGroup.getSelection() != null) {
 			for (int i = 0; i < radioButtonList.size(); i++) {
@@ -620,7 +734,10 @@ public class AnimalViewPanel extends ShelterPanel {
 		}
 		return -1;
 	}
-
+	
+	/**
+     * Sets the selected gender radio button based on the animal's gender.
+     */
 	private void setRadioFromGender() {
 		for (int i = 0; i < radioButtonList.size(); i++) {
 			if (animal.getGender().getValue() == i) {
@@ -628,7 +745,12 @@ public class AnimalViewPanel extends ShelterPanel {
 			}
 		}
 	}
-
+	
+	 /**
+     * Clears the animal details form.
+     * Resets all input fields, combo boxes, radio buttons, and the image panel.
+     * Also clears the incident and examination lists and deselects any animal in the list.
+     */
 	public void clearForm() {
 		// Clear text fields
 		nameField.setText("");
@@ -648,7 +770,15 @@ public class AnimalViewPanel extends ShelterPanel {
 
 		animalList.clearSelection();
 	}
-
+	
+	/**
+     * Selects an item in a combo box based on the ID of an entity.
+     * Iterates through the combo box items and selects the item whose ID matches the entity's ID.
+     *
+     * @param comboBox The combo box to search within.
+     * @param entity   The entity whose ID is used for selection.
+     * @param <T>      The type of the items in the combo box, which must extend EntityDTO.
+     */
 	private <T extends EntityDTO> void selectComboBoxItemById(JComboBox<T> comboBox, T entity) {
 		if (entity == null)
 			return;
@@ -660,25 +790,49 @@ public class AnimalViewPanel extends ShelterPanel {
 			}
 		}
 	}
-
-	public static <T> void refreshListModel(DefaultListModel<T> model, ArrayList<T> newItems) {
+	
+	/**
+     * Refreshes a list model with new items.
+     * Clears the existing model and adds all the new items.
+     *
+     * @param model    The list model to refresh.
+     * @param newItems The new items to add to the model.
+     * @param <T>      The type of the items in the list model.
+     */
+	public <T> void refreshListModel(DefaultListModel<T> model, ArrayList<T> newItems) {
 		model.clear();
 		model.addAll(newItems);
 	}
-
-	public static <T> void refreshBoxModel(DefaultComboBoxModel<T> model, ArrayList<T> newItems) {
+	
+	/**
+     * Refreshes a combo box model with new items.
+     * Removes all existing elements and adds the new items.
+     *
+     * @param model    The combo box model to refresh.
+     * @param newItems The new items to add to the model.
+     * @param <T>      The type of the items in the combo box model.
+     */
+	public <T> void refreshBoxModel(DefaultComboBoxModel<T> model, ArrayList<T> newItems) {
 		model.removeAllElements();
 		for (T item : newItems) {
 			model.addElement(item);
 		}
 	}
 	
+	/**
+     * Handles the "New" button press.
+     * Clears the form, sets the mode to create new animal, and updates the button and form states.
+     */
 	private void onNewButtonPressed() {
 		clearForm();
 		changeFormState(Mode.CREATE);
 		animal = new AnimalDTO();
 	}
-
+	
+	/**
+     * Handles the "Cancel" button press.
+     * Resets the mode to neither edit nor create, and updates button and form states.
+     */
 	private void onCancelButtonPressed() {
 		if(animalList.getSelectedValue() == null) {
 			changeFormState(Mode.NONE);
@@ -687,14 +841,23 @@ public class AnimalViewPanel extends ShelterPanel {
 			changeFormState(Mode.SELECTED);
 		}
 	}
-
+	
+	/**
+     * Handles the "Edit" button press.
+     * Sets the mode to edit existing animal, and updates button and form states.
+     */
 	private void onEditButtonPressed() {
 		changeFormState(Mode.EDIT);
 	}
 	
+	/**
+     * Handles the "Upload Image" button press.
+     * Opens a file chooser to select an image, converts it to a byte array,
+     * sets it to the animal object and updates the image panel.
+     */
 	private void onUploadImageButtonPressed() {
 		try {
-			byte[] imageAsByteArray = imageToByteArray(getPathFromFileChooser());
+			byte[] imageAsByteArray = imagePathToByteArray(getPathFromFileChooser());
 			animal.setImage(imageAsByteArray);
 			imagePanel.setImageData(imageAsByteArray);
 		} catch (IOException e) {
@@ -703,6 +866,10 @@ public class AnimalViewPanel extends ShelterPanel {
 		}
 	}
 	
+	/**
+     * Changes the state of the form components (text fields, combo boxes, buttons etc.)
+     * based on the mode being passed in.
+     */
 	private void changeFormState(Mode mode) {
 		boolean isValidAnimal = animal != null && animal.getId() > 0;
 		animalList.setEnabled(mode == Mode.NONE || mode == Mode.SELECTED);
@@ -717,12 +884,5 @@ public class AnimalViewPanel extends ShelterPanel {
 		nameField.setEnabled(mode == Mode.EDIT || mode == Mode.CREATE);
 		birthDateField.setEnabled(mode == Mode.EDIT || mode == Mode.CREATE);
 		additionalInfoArea.setEnabled(mode == Mode.EDIT || mode == Mode.CREATE);
-		for (ShelterRadioButton rb : radioButtonList) {
-			rb.setEnabled(mode == Mode.EDIT || mode == Mode.CREATE);
-		}
-		animalTypeComboBox.setEnabled(mode == Mode.EDIT || mode == Mode.CREATE);
-		patronComboBox.setEnabled(mode == Mode.EDIT || mode == Mode.CREATE);
-		roomComboBox.setEnabled(mode == Mode.EDIT || mode == Mode.CREATE);
-		uploadImageButton.setEnabled(mode == Mode.EDIT || mode == Mode.CREATE);
 	}
 }
