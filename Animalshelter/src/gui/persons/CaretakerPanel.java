@@ -11,6 +11,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -26,9 +27,6 @@ import gui.ShelterPanel;
 import gui.ShelterTextField;
 
 public class CaretakerPanel extends ShelterPanel {
-	private boolean isInEditMode = false;
-	private boolean isInCreateMode = false;
-	
 	private ShelterPanel mainContainer;
 	private ShelterList<PersonDTO> personList;
 	private DefaultListModel<PersonDTO> personListModel;
@@ -54,6 +52,29 @@ public class CaretakerPanel extends ShelterPanel {
 	private ShelterButton saveButton;
 	private ShelterButton newButton;
 
+	/**
+	 * The current mode of the AnimalViewPanel, used to determine control states.
+	 * {@link #NONE} {@link #SELECTED} {@link #EDIT} {@link #CREATE}
+	 */
+	private enum Mode {
+		/**
+		 * The default mode, with nothing selected or being edited.
+		 */
+		NONE,
+		/**
+		 * Some animal is selected but not being edited.
+		 */
+		SELECTED,
+		/**
+		 * The currently selected animal is being edited.
+		 */
+		EDIT,
+		/**
+		 * A new animal was created and is being edited.
+		 */
+		CREATE
+	}
+
 	public CaretakerPanel() {
 		dtoManager = new DTOManager();
 
@@ -69,8 +90,11 @@ public class CaretakerPanel extends ShelterPanel {
 		initializeButtons();
 	}
 
+	/**
+	 * Initializes the various components of the person list.
+	 */
 	private void initializeListComponents() {
-		personListModel  = new DefaultListModel<PersonDTO>();
+		personListModel = new DefaultListModel<PersonDTO>();
 		personListModel.addAll(dtoManager.loadCaretakers());
 		personList = new ShelterList<PersonDTO>(personListModel);
 		personList.setCellRenderer(new ShelterListCellRenderer());
@@ -87,13 +111,16 @@ public class CaretakerPanel extends ShelterPanel {
 		add(scrollPane, BorderLayout.WEST);
 	}
 
+	/**
+	 * Initializes the various text fields for displaying person data.
+	 */
 	private void initializePersonDataComponents() {
 		dataLayoutPanel = new ShelterPanel();
 		dataLayoutPanel.setLayout(new GridBagLayout());
-        gbc.insets = new Insets(5, 5, 5, 5);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridx = 0;
-        add(dataLayoutPanel, BorderLayout.CENTER);
+		gbc.insets = new Insets(5, 5, 5, 5);
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.gridx = 0;
+		add(dataLayoutPanel, BorderLayout.CENTER);
 		firstNameLabel = new ShelterLabel("Vorname:");
 		firstNameTextField = new ShelterTextField();
 		firstNameTextField.setPreferredSize(new Dimension(250, 30));
@@ -115,19 +142,33 @@ public class CaretakerPanel extends ShelterPanel {
 		phoneTextField.setEnabled(false);
 
 		addLabelAndField(dataLayoutPanel, gbc, 0, firstNameLabel, firstNameTextField);
-        addLabelAndField(dataLayoutPanel, gbc, 1, lastNameLabel, lastNameTextField);
-        addLabelAndField(dataLayoutPanel, gbc, 2, emailLabel, emailTextField);
-        addLabelAndField(dataLayoutPanel, gbc, 3, phoneLabel, phoneTextField);
+		addLabelAndField(dataLayoutPanel, gbc, 1, lastNameLabel, lastNameTextField);
+		addLabelAndField(dataLayoutPanel, gbc, 2, emailLabel, emailTextField);
+		addLabelAndField(dataLayoutPanel, gbc, 3, phoneLabel, phoneTextField);
 	}
 
-	private void addLabelAndField(ShelterPanel panel, GridBagConstraints gbc, int row, ShelterLabel label, ShelterTextField field) {
-        gbc.gridy = row;
-        gbc.gridx = 0;
-        panel.add(label, gbc);
-        gbc.gridx = 1;
-        panel.add(field, gbc);
-    }
+	/**
+	 * Adds {@code label} and {@code field} next to each other in {@code panel}
+	 * using the given GridBagConstraints.
+	 * 
+	 * @param panel The panel to which the elements should be added.
+	 * @param gbc   The GridBagConstraints to be used.
+	 * @param row   The specific row that should be used for {@code gbc}.
+	 * @param label The label to be added.
+	 * @param field The text field to be added.
+	 */
+	private void addLabelAndField(ShelterPanel panel, GridBagConstraints gbc, int row, ShelterLabel label,
+			ShelterTextField field) {
+		gbc.gridy = row;
+		gbc.gridx = 0;
+		panel.add(label, gbc);
+		gbc.gridx = 1;
+		panel.add(field, gbc);
+	}
 
+	/**
+	 * Initializes the buttons used to control the form.
+	 */
 	private void initializeButtons() {
 		buttonLayoutPanel = new ShelterPanel();
 		mainContainer.add(buttonLayoutPanel);
@@ -178,142 +219,213 @@ public class CaretakerPanel extends ShelterPanel {
 		buttonLayoutPanel.add(newButton);
 
 		gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.gridwidth = 2;
-        dataLayoutPanel.add(buttonLayoutPanel, gbc);
+		gbc.gridy = 4;
+		gbc.gridwidth = 2;
+		dataLayoutPanel.add(buttonLayoutPanel, gbc);
 
-        add(dataLayoutPanel, BorderLayout.CENTER);
+		add(dataLayoutPanel, BorderLayout.CENTER);
 	}
 
+	/**
+	 * Handles the event when the selection in the animal list changes. This method
+	 * retrieves the selected person, fills the form with their details, and sets
+	 * the form state to Mode.SELECTED.
+	 *
+	 * @param e The ListSelectionEvent object.
+	 * @see Mode#SELECTED
+	 */
 	private void onListSelectionChanged(ListSelectionEvent e) {
-		if(e.getValueIsAdjusting()) {
+		if (e.getValueIsAdjusting()) {
 			return;
 		}
-		
-		changeButtonState();
-		changeTextFieldState();
+
+		fillForm();
+		changeFormState(Mode.SELECTED);
 	}
 
+	/**
+	 * Fills the person details form with the data of the currently selected person.
+	 */
+	private void fillForm() {
+		CaretakerDTO selectedItem = (CaretakerDTO) personList.getSelectedValue();
+		if (selectedItem == null) {
+			return;
+		}
+		firstNameTextField.setText(selectedItem.getFirstName());
+		lastNameTextField.setText(selectedItem.getLastName());
+		emailTextField.setText(selectedItem.getEmail());
+		phoneTextField.setText(selectedItem.getPhoneNumber());
+	}
+
+	/**
+	 * Handles the "Edit" button press. Sets the form state to Mode.EDIT.
+	 * 
+	 * @see Mode#EDIT
+	 */
 	private void onEditButtonPressed() {
-		isInEditMode = true;
-		isInCreateMode = false;
-		changeButtonState();
-		changeTextFieldState();
+		changeFormState(Mode.EDIT);
 	}
 
+	/**
+	 * Handles the "Delete" button press. Sets the form state to Mode.NONE.
+	 * 
+	 * @see Mode#NONE
+	 */
 	private void onDeleteButtonPressed() {
-		CaretakerDTO selectedItem = (CaretakerDTO)personList.getSelectedValue();
-		if(selectedItem == null) {
+		CaretakerDTO selectedItem = (CaretakerDTO) personList.getSelectedValue();
+		if (selectedItem == null) {
 			return;
 		}
 		dtoManager.deleteCaretaker(selectedItem);
-		
+
 		personList.clearSelection();
-		isInEditMode = false;
-		isInCreateMode = false;
-		changeButtonState();
-		changeTextFieldState();
 		updateTableData();
+		changeFormState(Mode.NONE);
 	}
 
+	/**
+	 * Handles the "Cancel" button press. Sets the form state to Mode.SELECTED if a
+	 * person is select, Mode.NODE otherwise.
+	 * 
+	 * @see Mode#SELECTED
+	 * @see Mode#NONE
+	 */
 	private void onCancelButtonPressed() {
-		personList.clearSelection();
-		isInEditMode = false;
-		isInCreateMode = false;
-		changeButtonState();
-		changeTextFieldState();
+		if (personList.getSelectedValue() == null) {
+			clearForm();
+			changeFormState(Mode.NONE);
+		} else {
+			fillForm();
+			changeFormState(Mode.SELECTED);
+		}
 	}
 
+	/**
+	 * Handles the "Save" button press. This method retrieves the values from the
+	 * input fields, builds a new person object and saves it to the database. Sets
+	 * the form state to Mode.NONE.
+	 * 
+	 * @see Mode#NONE
+	 */
 	private void onSaveButtonPressed() {
-		CaretakerDTO activePerson = (CaretakerDTO)personList.getSelectedValue();
-		if(firstNameTextField.getText().isBlank()) {
+		CaretakerDTO activePerson = (CaretakerDTO) personList.getSelectedValue();
+		if (firstNameTextField.getText().isBlank() || lastNameTextField.getText().isBlank()
+				|| emailTextField.getText().isBlank() || phoneTextField.getText().isBlank()) {
+			JOptionPane.showMessageDialog(null, "Please fill all required fields correctly.", "Validation Error",
+					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		if(lastNameTextField.getText().isBlank()) {
-			return;
-		}
-		if(emailTextField.getText().isBlank()) {
-			return;
-		}
-		if(phoneTextField.getText().isBlank()) {
-			return;
-		}
-		
-		if(activePerson == null) {
-			activePerson = new CaretakerDTO(lastNameTextField.getText(), firstNameTextField.getText(), phoneTextField.getText(), emailTextField.getText());
-		}
-		else {
+
+		if (activePerson == null) {
+			activePerson = new CaretakerDTO(lastNameTextField.getText(), firstNameTextField.getText(),
+					phoneTextField.getText(), emailTextField.getText());
+		} else {
 			activePerson.setFirstName(firstNameTextField.getText());
 			activePerson.setLastName(lastNameTextField.getText());
 			activePerson.setEmail(emailTextField.getText());
 			activePerson.setPhoneNumber(phoneTextField.getText());
 		}
-		
+
 		dtoManager.saveCaretaker(activePerson);
-		
+
 		personList.clearSelection();
-		isInEditMode = false;
-		isInCreateMode = false;
-		changeButtonState();
-		changeTextFieldState();
 		updateTableData();
+		changeFormState(Mode.NONE);
 	}
 
+	/**
+	 * Handles the "New" button press. Sets the form state to Mode.CREATE.
+	 * 
+	 * @see Mode#CREATE
+	 */
 	private void onNewButtonPressed() {
-		personList.clearSelection();
-		isInEditMode = false;
-		isInCreateMode = true;
-		changeButtonState();
-		changeTextFieldState();
+		clearForm();
+		changeFormState(Mode.CREATE);
 	}
 
-	public void changeButtonState() {
-		boolean hasSelectedItem = personList.getSelectedIndex() >= 0;
-		
-		personList.setEnabled(!isInEditMode && !isInCreateMode);
-		editButton.setVisible(hasSelectedItem && !isInEditMode && !isInCreateMode);
-		deleteButton.setVisible(hasSelectedItem && !isInEditMode && !isInCreateMode);
-		cancelButton.setVisible(isInEditMode || isInCreateMode);
-		saveButton.setVisible(isInEditMode || isInCreateMode);
-		newButton.setVisible(!isInEditMode && !isInCreateMode);
-	}
-	
-	public void changeTextFieldState() {
-		firstNameTextField.setEnabled(isInEditMode || isInCreateMode);
-		lastNameTextField.setEnabled(isInEditMode || isInCreateMode);
-		emailTextField.setEnabled(isInEditMode || isInCreateMode);
-		phoneTextField.setEnabled(isInEditMode || isInCreateMode);
-		
-		CaretakerDTO selectedItem = (CaretakerDTO)personList.getSelectedValue();
-		if(selectedItem == null || isInCreateMode) {
-			firstNameTextField.setText("");
-			lastNameTextField.setText("");
-			emailTextField.setText("");
-			phoneTextField.setText("");
-		}
-		else {
-			firstNameTextField.setText(selectedItem.getFirstName());
-			lastNameTextField.setText(selectedItem.getLastName());
-			emailTextField.setText(selectedItem.getEmail());
-			phoneTextField.setText(selectedItem.getPhoneNumber());
-		}
-	}
-	
+	/**
+	 * Gets all current person data from the database and updates the person list
+	 * model with it.
+	 */
 	public void updateTableData() {
-		personListModel  = new DefaultListModel<PersonDTO>();
+		personListModel = new DefaultListModel<PersonDTO>();
 		personListModel.addAll(dtoManager.loadCaretakers());
 		personList.setModel(personListModel);
-		personList.setSelectedIndex(-1);
+		personList.clearSelection();
 	}
-	
-	public void clear() {
+
+	/**
+	 * Clears and resets the entire form. Sets the form state to Mode.NONE.
+	 * 
+	 * @see Mode#NONE
+	 */
+	public void clearForm() {
 		firstNameTextField.setText("");
 		lastNameTextField.setText("");
 		emailTextField.setText("");
 		phoneTextField.setText("");
-		isInEditMode = false;
-		isInCreateMode = false;
 		personList.clearSelection();
+		changeFormState(Mode.NONE);
+	}
+
+	/**
+	 * Changes the state of the form components (text fields, buttons etc.) based on
+	 * the mode being passed in.
+	 * 
+	 * @param mode The mode determining the state of each control.
+	 */
+	public void changeFormState(Mode mode) {
+		switch (mode) {
+		case NONE:
+			personList.setEnabled(true);
+			editButton.setVisible(false);
+			deleteButton.setVisible(false);
+			cancelButton.setVisible(false);
+			saveButton.setVisible(false);
+			newButton.setVisible(true);
+			firstNameTextField.setEnabled(false);
+			lastNameTextField.setEnabled(false);
+			emailTextField.setEnabled(false);
+			phoneTextField.setEnabled(false);
+			break;
+		case SELECTED:
+			personList.setEnabled(true);
+			editButton.setVisible(true);
+			deleteButton.setVisible(true);
+			cancelButton.setVisible(false);
+			saveButton.setVisible(false);
+			newButton.setVisible(true);
+			firstNameTextField.setEnabled(false);
+			lastNameTextField.setEnabled(false);
+			emailTextField.setEnabled(false);
+			phoneTextField.setEnabled(false);
+			break;
+		case EDIT:
+			personList.setEnabled(false);
+			editButton.setVisible(false);
+			deleteButton.setVisible(false);
+			cancelButton.setVisible(true);
+			saveButton.setVisible(true);
+			newButton.setVisible(false);
+			firstNameTextField.setEnabled(true);
+			lastNameTextField.setEnabled(true);
+			emailTextField.setEnabled(true);
+			phoneTextField.setEnabled(true);
+			break;
+		case CREATE:
+			personList.setEnabled(false);
+			editButton.setVisible(false);
+			deleteButton.setVisible(false);
+			cancelButton.setVisible(true);
+			saveButton.setVisible(true);
+			newButton.setVisible(false);
+			firstNameTextField.setEnabled(true);
+			lastNameTextField.setEnabled(true);
+			emailTextField.setEnabled(true);
+			phoneTextField.setEnabled(true);
+			break;
+		default:
+			throw new IllegalArgumentException("Unexpected value: " + mode);
+		}
 	}
 }
-

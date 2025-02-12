@@ -149,11 +149,11 @@ public class ShelterFrame extends JFrame implements GUIConstants {
 		} else if (name.equals("adoptions")) {
 			adoptionsPanel.updateAnimalsListData();
 		} else if (name.equals("patrons")) {
-			patronPanel.clear();
+			patronPanel.clearForm();
 		} else if (name.equals("caretakers")) {
-			caretakerPanel.clear();
+			caretakerPanel.clearForm();
 		} else if (name.equals("vets")) {
-			vetPanel.clear();
+			vetPanel.clearForm();
 		}
 		titleLabel.setText(title);
 		cardLayout.show(cardPanel, name);
