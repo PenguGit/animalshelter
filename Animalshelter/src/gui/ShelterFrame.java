@@ -4,12 +4,15 @@ import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 import bl.DTOManager;
@@ -67,7 +70,10 @@ public class ShelterFrame extends JFrame implements GUIConstants {
 
 		topBarPanel.add(Box.createRigidArea(new Dimension(16, 0)));
 
-		titleLabel = new ShelterLabel(GREETING);
+		ImageIcon icon = new ImageIcon("resources/dachshund.png");
+		icon = new ImageIcon(icon.getImage().getScaledInstance(92, 92, Image.SCALE_SMOOTH));
+		
+		titleLabel = new ShelterLabel(GREETING, icon);
 		titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		topBarPanel.add(titleLabel);
 
@@ -81,6 +87,9 @@ public class ShelterFrame extends JFrame implements GUIConstants {
 		StartpagePanel startPagePanel = new StartpagePanel();
 
 		startPagePanel.animalsButton.addActionListener((ActionEvent _) -> {
+			ImageIcon animalIcon = new ImageIcon("resources/animal.png");
+			animalIcon = new ImageIcon(animalIcon.getImage().getScaledInstance(48, 48, Image.SCALE_SMOOTH));
+			titleLabel.setIcon(animalIcon);
 			onNavigationButtonPressed("animals", "Tiere");
 		});
 
