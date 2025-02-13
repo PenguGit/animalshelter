@@ -17,9 +17,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 
 import bl.DTOManager;
-import bl.entities.AnimalDTO;
-import bl.entities.VetDTO;
 import bl.entities.PersonDTO;
+import bl.entities.VetDTO;
 import gui.ShelterButton;
 import gui.ShelterLabel;
 import gui.ShelterList;

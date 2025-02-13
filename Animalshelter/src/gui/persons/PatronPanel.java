@@ -17,7 +17,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 
 import bl.DTOManager;
-import bl.entities.AnimalDTO;
 import bl.entities.PatronDTO;
 import bl.entities.PersonDTO;
 import gui.ShelterButton;

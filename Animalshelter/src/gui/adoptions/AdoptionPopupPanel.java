@@ -9,7 +9,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
-import bl.DTOManager;
 import bl.entities.AdopterDTO;
 import bl.entities.AdoptionDTO;
 import bl.entities.AnimalDTO;
