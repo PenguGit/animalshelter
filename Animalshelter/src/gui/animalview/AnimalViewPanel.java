@@ -123,7 +123,7 @@ public class AnimalViewPanel extends ShelterPanel {
 	}
 
 	/**
-	 * Constructs a new AnimalViewPanel. Initializes the layout, data access
+	 * Constructs a new AnimalViewPanel.Initializes the layout, data access
 	 * objects, file chooser, and UI components.
 	 */
 	public AnimalViewPanel() {
