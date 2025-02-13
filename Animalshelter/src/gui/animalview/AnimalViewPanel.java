@@ -2,8 +2,10 @@ package gui.animalview;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -155,137 +157,117 @@ public class AnimalViewPanel extends ShelterPanel {
 	 * @return The created ShelterPanel representing the center panel.
 	 */
 	private ShelterPanel createCenterPanel() {
-		ShelterPanel centerPanel = new ShelterPanel();
-		centerPanel.setLayout(new GridBagLayout());
-		centerPanel.setBackground(Color.LIGHT_GRAY);
-		centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+	    ShelterPanel centerPanel = new ShelterPanel();
+	    centerPanel.setLayout(new GridBagLayout());
+	    centerPanel.setBackground(Color.LIGHT_GRAY);
+	    centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		genderButtonGroup = new ButtonGroup();
-		ShelterPanel genderPanel = new ShelterPanel(new FlowLayout(FlowLayout.LEFT, 2, 2));
+	    GridBagConstraints gbc = new GridBagConstraints();
+	    gbc.insets = new Insets(5, 5, 5, 5);
+	    gbc.fill = GridBagConstraints.BOTH;
 
-		genderPanel.setBackground(centerPanel.getBackground());
+	    // --- Image Panel ---
+	    imagePanel = new ShelterImagePanel(null);
+	    gbc.gridheight = 2;
+	    gbc.gridwidth = 2;
+	    addComponent(centerPanel, gbc, imagePanel, 0, 0);
 
-		radioButtonList = new ArrayList<>();
 
-		ShelterRadioButton maleRadioButton = new ShelterRadioButton("M");
-		ShelterRadioButton femaleRadioButton = new ShelterRadioButton("W");
-		ShelterRadioButton unknownRadioButton = new ShelterRadioButton("N/A");
-		maleRadioButton.setBackground(centerPanel.getBackground());
-		femaleRadioButton.setBackground(centerPanel.getBackground());
-		unknownRadioButton.setBackground(centerPanel.getBackground());
+	    // --- Upload Image Button ---
+	    gbc.gridheight = 1;
+	    gbc.gridwidth = 1;
+	    uploadImageButton = new ShelterButton("Upload");
+	    uploadImageButton.setFont(new Font(FONT_SANS, Font.PLAIN, 20));
+	    uploadImageButton.addActionListener(_ -> onUploadImageButtonPressed());
+	    addComponent(centerPanel, gbc, uploadImageButton, 0, 2);
 
-		genderButtonGroup.add(maleRadioButton);
-		genderButtonGroup.add(femaleRadioButton);
-		genderButtonGroup.add(unknownRadioButton);
-		genderPanel.add(maleRadioButton);
-		genderPanel.add(femaleRadioButton);
-		genderPanel.add(unknownRadioButton);
+	    // --- Name Label ---
+	    addComponent(centerPanel, gbc, new ShelterLabel("Name: "), 2, 0);
 
-		radioButtonList.add(maleRadioButton);
-		radioButtonList.add(femaleRadioButton);
-		radioButtonList.add(unknownRadioButton);
+	    // --- Name Field ---
+	    nameField = new ShelterTextField(15);
+	    addComponent(centerPanel, gbc, nameField, 3, 0);
 
-		DefaultComboBoxModel<RoomDTO> roomBoxModel = new DefaultComboBoxModel<>();
-		roomBoxModel.addAll(dtoManager.loadRooms());
-		roomComboBox = new ShelterComboBox<>(roomBoxModel);
-		roomComboBox.setRenderer(new ShelterListCellRenderer());
+	    // --- Birthdate Label ---
+	    addComponent(centerPanel, gbc, new ShelterLabel("Geburtsdatum: "), 2, 1);
 
-		DefaultComboBoxModel<AnimalTypeDTO> animalTypeBoxModel = new DefaultComboBoxModel<>();
-		animalTypeBoxModel.addAll(dtoManager.loadAnimalTypes());
-		animalTypeComboBox = new ShelterComboBox<>(animalTypeBoxModel);
-		animalTypeComboBox.setRenderer(new ShelterListCellRenderer());
+	    // --- Birthdate Field ---
+	    birthDateField = new ShelterBirthdateTextField();
+	    addComponent(centerPanel, gbc, birthDateField, 3, 1);
 
-		imagePanel = new ShelterImagePanel(null);
-		uploadImageButton = new ShelterButton("Bild Hochladen");
-		uploadImageButton.addActionListener(_ -> {
-			onUploadImageButtonPressed();
-		});
+	    // --- Gender Label ---
+	    addComponent(centerPanel, gbc, new ShelterLabel("Geschlecht: "), 2, 2);
 
-		additionalInfoArea = new ShelterTextArea(5, 20);
-		additionalInfoArea.setLineWrap(true);
-		additionalInfoArea.setWrapStyleWord(true);
+	    // --- Gender Field (Gender Panel creation remains the same) ---
+	    ShelterPanel genderPanel = new ShelterPanel(new FlowLayout(FlowLayout.LEFT, 2, 2));
+	    genderPanel.setBackground(centerPanel.getBackground());
+	    genderButtonGroup = new ButtonGroup();
+	    radioButtonList = new ArrayList<>();
+	    ShelterRadioButton maleRadioButton = new ShelterRadioButton("M");
+	    ShelterRadioButton femaleRadioButton = new ShelterRadioButton("W");
+	    ShelterRadioButton unknownRadioButton = new ShelterRadioButton("N/A");
+	    maleRadioButton.setBackground(centerPanel.getBackground());
+	    femaleRadioButton.setBackground(centerPanel.getBackground());
+	    unknownRadioButton.setBackground(centerPanel.getBackground());
+	    genderButtonGroup.add(maleRadioButton);
+	    genderButtonGroup.add(femaleRadioButton);
+	    genderButtonGroup.add(unknownRadioButton);
+	    genderPanel.add(maleRadioButton);
+	    genderPanel.add(femaleRadioButton);
+	    genderPanel.add(unknownRadioButton);
+	    radioButtonList.add(maleRadioButton);
+	    radioButtonList.add(femaleRadioButton);
+	    radioButtonList.add(unknownRadioButton);
+	    addComponent(centerPanel, gbc, genderPanel, 3, 2);
 
-		patronComboBoxModel = new DefaultComboBoxModel<>();
-		patronComboBoxModel.addAll(dtoManager.loadPatrons());
-		patronComboBox = new ShelterComboBox<>(patronComboBoxModel);
-		patronComboBox.setRenderer(new ShelterListCellRenderer());
 
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(5, 5, 5, 5);
-		gbc.fill = GridBagConstraints.BOTH; // Important for consistent width
+	    // --- Animal Type Label ---
+	    addComponent(centerPanel, gbc, new ShelterLabel("Typ: "), 0, 3);
 
-		// Image Panel
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.gridheight = 2; // Span 3 rows
-		centerPanel.add(imagePanel, gbc);
+	    // --- Animal Type ComboBox ---
+	    DefaultComboBoxModel<AnimalTypeDTO> animalTypeBoxModel = new DefaultComboBoxModel<>();
+	    animalTypeBoxModel.addAll(dtoManager.loadAnimalTypes());
+	    animalTypeComboBox = new ShelterComboBox<>(animalTypeBoxModel);
+	    addComponent(centerPanel, gbc, animalTypeComboBox, 1, 3);
 
-		gbc.gridheight = 1; // Reset gridheight
+	    // --- Room Label ---
+	    addComponent(centerPanel, gbc, new ShelterLabel("Raum: "), 0, 4);
 
-		gbc.gridy = 2;
+	    // --- Room ComboBox ---
+	    DefaultComboBoxModel<RoomDTO> roomBoxModel = new DefaultComboBoxModel<>();
+	    roomBoxModel.addAll(dtoManager.loadRooms());
+	    roomComboBox = new ShelterComboBox<>(roomBoxModel);
+	    addComponent(centerPanel, gbc, roomComboBox, 1, 4);
+	    // --- Additional Info Label ---
+	    gbc.gridwidth = 2;
+	    addComponent(centerPanel, gbc, new ShelterLabel("Beschreibung: "), 0, 5);
 
-		centerPanel.add(uploadImageButton, gbc);
+	    // --- Additional Info Area ---
+	    additionalInfoArea = new ShelterTextArea(5, 20);
+	    additionalInfoArea.setLineWrap(true);
+	    additionalInfoArea.setWrapStyleWord(true);
+	    gbc.gridheight = 2;
+	    addComponent(centerPanel, gbc, new JScrollPane(additionalInfoArea), 0, 6);
 
-		// Name Label
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		centerPanel.add(new ShelterLabel("Name: "), gbc);
 
-		// Name Field
-		gbc.gridx = 2;
-		centerPanel.add(nameField = new ShelterTextField(15), gbc);
+	    // --- Patron Label ---
+	    gbc.gridheight = 1;
+	    gbc.gridwidth = 1;
+	    addComponent(centerPanel, gbc, new ShelterLabel("Pate: "), 0, 9);
 
-		// Birthdate Label
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		centerPanel.add(new ShelterLabel("Geburtsdatum: "), gbc);
+	    // --- Patron ComboBox ---
+	    patronComboBoxModel = new DefaultComboBoxModel<>();
+	    patronComboBoxModel.addAll(dtoManager.loadPatrons());
+	    patronComboBox = new ShelterComboBox<>(patronComboBoxModel);
+	    addComponent(centerPanel, gbc, patronComboBox, 1, 9);
 
-		// Birthdate Field
-		gbc.gridx = 2;
-		centerPanel.add(birthDateField = new ShelterBirthdateTextField(), gbc);
-
-		// Gender Label
-		gbc.gridx = 1;
-		gbc.gridy = 2;
-		centerPanel.add(new ShelterLabel("Geschlecht: "), gbc);
-
-		// Gender Field
-		gbc.gridx = 2;
-		centerPanel.add(genderPanel, gbc);
-
-		gbc.gridx = 0;
-		gbc.gridy = 3;
-		centerPanel.add(new ShelterLabel("Typ: "), gbc);
-
-		gbc.gridx = 1;
-		centerPanel.add(animalTypeComboBox, gbc);
-
-		gbc.gridx = 0;
-		gbc.gridy = 4;
-		centerPanel.add(new ShelterLabel("Raum: "), gbc);
-
-		// Room Combobox Field
-		gbc.gridx = 1;
-		centerPanel.add(roomComboBox, gbc);
-
-		gbc.gridx = 0;
-		gbc.gridy = 5;
-		centerPanel.add(new ShelterLabel("Zusätzliche Info: "), gbc);
-
-		gbc.gridy = 6;
-		gbc.gridheight = 3;
-		gbc.gridwidth = 3;
-		centerPanel.add(new JScrollPane(additionalInfoArea), gbc);
-
-		gbc.gridwidth = 1;
-		gbc.gridx = 0;
-		gbc.gridy = 9;
-		centerPanel.add(new ShelterLabel("Pate: "), gbc);
-
-		gbc.gridx = 1;
-		centerPanel.add(patronComboBox, gbc);
-
-		return centerPanel;
+	    return centerPanel;
+	}
+	
+	private void addComponent(ShelterPanel panel, GridBagConstraints gbc, Component component, int gridx, int gridy) {
+	    gbc.gridx = gridx;
+	    gbc.gridy = gridy;
+	    panel.add(component, gbc);
 	}
 
 	/**
