@@ -45,6 +45,13 @@ public class ExaminationPopupDialog extends JDialog implements GUIConstants {
 	
 	private boolean resultSuccess;
 	
+	/**
+	 * Constructs a new adoption popup.
+	 * @param animal The animal to which the examination would apply.
+	 * @param owner The frame from which the dialog was opened.
+	 * @param title The dialog title.
+	 * @param modal If true, the resulting popup is modal (i.e. it blocks on setVisible(true) until setVisible(false) and it blocks input to the underlying window.)
+	 */
 	public ExaminationPopupDialog(AnimalDTO animal, Frame owner, String title, boolean modal) {
 		super(owner, title, modal);
 		
@@ -65,6 +72,9 @@ public class ExaminationPopupDialog extends JDialog implements GUIConstants {
 		initializeComponents();
 	}
 
+	/**
+	 * Initializes the various input fields for the panel and places them within the layout.
+	 */
 	private void initializeComponents() {;
 		titleTextField = new ShelterTextField();
 		titleTextField.setPreferredSize(new Dimension(250, 30));
@@ -113,6 +123,13 @@ public class ExaminationPopupDialog extends JDialog implements GUIConstants {
         panel.add(saveButton, gbc);
 	}
 	
+	/**
+	 * A helper method to place fields with corresponding labels in a GridBagLayout.
+	 * @param gbc The GridBagConstraints to use.
+	 * @param labelText The label to place.
+	 * @param field The field to place.
+	 * @param yPos The row in the layout the elements should occupy.
+	 */
 	private void addLabelAndField(GridBagConstraints gbc, String labelText, JComponent field, int yPos) {
         ShelterLabel label = new ShelterLabel(labelText);
 
@@ -126,12 +143,18 @@ public class ExaminationPopupDialog extends JDialog implements GUIConstants {
         panel.add(field, gbc);
     }
 	
+	/**
+	 * Closes the dialog without saving anything, indirectly reporting a failure result in the process.
+	 */
 	private void onCancelButtonPressed() {
 		resultSuccess = false;
 		setVisible(false);
 		dispose();
 	}
 	
+	/**
+	 * Validates the form input fields, saves the resulting object to the database, then sets the result and closes the dialog.
+	 */
 	private void onSaveButtonPressed() {
 		if(!validateForm()) {
 			JOptionPane.showMessageDialog(this, "Please fill all required fields correctly.", "Validation Error", JOptionPane.ERROR_MESSAGE);
@@ -147,10 +170,21 @@ public class ExaminationPopupDialog extends JDialog implements GUIConstants {
 		dispose();
 	}
 	
+	/**
+     * Validates the examination data before saving.
+     * Checks if all required fields are filled and valid.
+     *
+     * @return True if the examination data is valid, false otherwise.
+     */
 	private boolean validateForm() {
 		return !titleTextField.getText().isBlank() && !descriptionTextField.getText().isBlank() && dateField.getDate() != null && vetComboBox.getSelectedItem() != null;
 	}
 	
+	/**
+	 * Shows the dialog and (assuming it is modal) returns success or failure of the dialogs' operation AFTER setVisible(false) has been called.
+	 * 
+	 * @return True if the new examination was saved successfully, false otherwise.
+	 */
 	public boolean showDialog() {
 		setVisible(true);
 		return resultSuccess;
