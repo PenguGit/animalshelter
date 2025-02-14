@@ -11,6 +11,9 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 
 import gui.ShelterPanel;
+import gui.util.IconManager;
+import gui.util.IconManager.Size;
+import static gui.util.IconManager.Type;
 
 public class StartpagePanel extends ShelterPanel {
 	public StartpagePanelButton animalsButton;
@@ -19,8 +22,6 @@ public class StartpagePanel extends ShelterPanel {
 	public StartpagePanelButton patronsButton;
 	public StartpagePanelButton caretakersButton;
 	public StartpagePanelButton vetsButton;
-	
-	private static final Dimension DEFAULT_ICON_SIZE = new Dimension(92, 92);
 	
 	public StartpagePanel() {
 		setLayout(new BorderLayout());
@@ -41,10 +42,9 @@ public class StartpagePanel extends ShelterPanel {
         
         int index = 1;
         
-        ImageIcon animalIcon = new ImageIcon("resources/animal.png");
-        animalIcon = new ImageIcon(animalIcon.getImage().getScaledInstance(DEFAULT_ICON_SIZE.width, DEFAULT_ICON_SIZE.height, Image.SCALE_SMOOTH));
-        animalsButton = new StartpagePanelButton("Tiere", animalIcon);
+        animalsButton = new StartpagePanelButton("Tiere", IconManager.getIcon(Type.ANIMAL, Size.DEFAULT), IconManager.getIcon(Type.ANIMAL, Size.LARGE));
         animalsButton.setPreferredSize(new Dimension(200, 200));
+        animalsButton.setMinimumSize(new Dimension(200, 200));
         animalsButton.setBackground(new Color(144, 238, 144));
         animalsButton.setFocusable(false);
         buttonPanel.add(animalsButton, gbc);
@@ -55,10 +55,9 @@ public class StartpagePanel extends ShelterPanel {
             gbc.gridx++;
         }
         
-        ImageIcon roomsIcon = new ImageIcon("resources/rooms.png");
-        roomsIcon = new ImageIcon(roomsIcon.getImage().getScaledInstance(DEFAULT_ICON_SIZE.width, DEFAULT_ICON_SIZE.height, Image.SCALE_SMOOTH));
-        roomsButton = new StartpagePanelButton("Räume", roomsIcon);
+        roomsButton = new StartpagePanelButton("Räume", IconManager.getIcon(Type.ROOMS, Size.DEFAULT), IconManager.getIcon(Type.ROOMS, Size.LARGE));
         roomsButton.setPreferredSize(new Dimension(200, 200));
+        roomsButton.setMinimumSize(new Dimension(200, 200));
         roomsButton.setBackground(new Color(216, 191, 216));
         roomsButton.setFocusable(false);
         buttonPanel.add(roomsButton, gbc);
@@ -69,10 +68,9 @@ public class StartpagePanel extends ShelterPanel {
             gbc.gridx++;
         }
         
-        ImageIcon adoptionIcon = new ImageIcon("resources/adoption.png");
-        adoptionIcon = new ImageIcon(adoptionIcon.getImage().getScaledInstance(DEFAULT_ICON_SIZE.width, DEFAULT_ICON_SIZE.height, Image.SCALE_SMOOTH));
-        adoptionsButton = new StartpagePanelButton("Adoption", adoptionIcon);
+        adoptionsButton = new StartpagePanelButton("Adoption", IconManager.getIcon(Type.ADOPTION, Size.DEFAULT), IconManager.getIcon(Type.ADOPTION, Size.LARGE));
         adoptionsButton.setPreferredSize(new Dimension(200, 200));
+        adoptionsButton.setMinimumSize(new Dimension(200, 200));
         adoptionsButton.setBackground(new Color(240, 128, 128)); 
         adoptionsButton.setFocusable(false);
         buttonPanel.add(adoptionsButton, gbc);
@@ -83,10 +81,9 @@ public class StartpagePanel extends ShelterPanel {
             gbc.gridx++;
         }
         
-        ImageIcon patronIcon = new ImageIcon("resources/patron.png");
-        patronIcon = new ImageIcon(patronIcon.getImage().getScaledInstance(DEFAULT_ICON_SIZE.width, DEFAULT_ICON_SIZE.height, Image.SCALE_SMOOTH));
-        patronsButton = new StartpagePanelButton("Paten", patronIcon);
+        patronsButton = new StartpagePanelButton("Paten", IconManager.getIcon(Type.PATRON, Size.DEFAULT), IconManager.getIcon(Type.PATRON, Size.LARGE));
         patronsButton.setPreferredSize(new Dimension(200, 200));
+        patronsButton.setMinimumSize(new Dimension(200, 200));
         patronsButton.setBackground(new Color(255, 182, 193)); 
         patronsButton.setFocusable(false);
         buttonPanel.add(patronsButton, gbc);
@@ -97,10 +94,9 @@ public class StartpagePanel extends ShelterPanel {
             gbc.gridx++;
         }
         
-        ImageIcon caretakerIcon = new ImageIcon("resources/caretaker.png");
-        caretakerIcon = new ImageIcon(caretakerIcon.getImage().getScaledInstance(DEFAULT_ICON_SIZE.width, DEFAULT_ICON_SIZE.height, Image.SCALE_SMOOTH));
-        caretakersButton = new StartpagePanelButton("Pfleger", caretakerIcon);
+        caretakersButton = new StartpagePanelButton("Pfleger", IconManager.getIcon(Type.CARETAKER, Size.DEFAULT), IconManager.getIcon(Type.CARETAKER, Size.LARGE));
         caretakersButton.setPreferredSize(new Dimension(200, 200));
+        caretakersButton.setMinimumSize(new Dimension(200, 200));
         caretakersButton.setBackground(new Color(255, 204, 153)); 
         caretakersButton.setFocusable(false);
         buttonPanel.add(caretakersButton, gbc);
@@ -111,11 +107,9 @@ public class StartpagePanel extends ShelterPanel {
             gbc.gridx++;
         }
         
-        
-        ImageIcon vetIcon = new ImageIcon("resources/vet.png");
-        vetIcon = new ImageIcon(vetIcon.getImage().getScaledInstance(DEFAULT_ICON_SIZE.width, DEFAULT_ICON_SIZE.height, Image.SCALE_SMOOTH));
-        vetsButton = new StartpagePanelButton("Ärzte", vetIcon);
+        vetsButton = new StartpagePanelButton("Ärzte", IconManager.getIcon(Type.VET, Size.DEFAULT), IconManager.getIcon(Type.VET, Size.LARGE));
         vetsButton.setPreferredSize(new Dimension(200, 200));
+        vetsButton.setMinimumSize(new Dimension(200, 200));
         vetsButton.setBackground(new Color(173, 216, 230)); 
         vetsButton.setFocusable(false);
         buttonPanel.add(vetsButton, gbc);
