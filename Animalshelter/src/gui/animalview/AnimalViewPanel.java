@@ -1,11 +1,9 @@
 package gui.animalview;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -48,7 +46,6 @@ import gui.ShelterComboBox;
 import gui.ShelterImagePanel;
 import gui.ShelterLabel;
 import gui.ShelterList;
-import gui.ShelterListCellRenderer;
 import gui.ShelterPanel;
 import gui.ShelterRadioButton;
 import gui.ShelterTextArea;
@@ -157,109 +154,112 @@ public class AnimalViewPanel extends ShelterPanel {
 	 * @return The created ShelterPanel representing the center panel.
 	 */
 	private ShelterPanel createCenterPanel() {
-	    ShelterPanel centerPanel = new ShelterPanel();
-	    centerPanel.setLayout(new GridBagLayout());
-	    centerPanel.setBackground(Color.LIGHT_GRAY);
-	    centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		ShelterPanel centerPanel = new ShelterPanel();
+		centerPanel.setLayout(new GridBagLayout());
+		centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-	    GridBagConstraints gbc = new GridBagConstraints();
-	    gbc.insets = new Insets(5, 5, 5, 5);
-	    gbc.fill = GridBagConstraints.BOTH;
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = new Insets(5, 5, 5, 5);
+		gbc.fill = GridBagConstraints.BOTH;
 
-	    // --- Image Panel ---
-	    imagePanel = new ShelterImagePanel(null);
-	    gbc.gridheight = 2;
-	    gbc.gridwidth = 2;
-	    addComponent(centerPanel, gbc, imagePanel, 0, 0);
+		// --- Image Panel ---
+		imagePanel = new ShelterImagePanel(null);
+		gbc.gridheight = 2;
+		gbc.gridwidth = 2;
+		addComponent(centerPanel, gbc, imagePanel, 0, 0);
 
+		// --- Upload Image Button ---
+		gbc.gridheight = 1;
+		gbc.gridwidth = 1;
+		uploadImageButton = new ShelterButton("Upload");
+		uploadImageButton.addActionListener(_ -> onUploadImageButtonPressed());
+		addComponent(centerPanel, gbc, uploadImageButton, 0, 2);
 
-	    // --- Upload Image Button ---
-	    gbc.gridheight = 1;
-	    gbc.gridwidth = 1;
-	    uploadImageButton = new ShelterButton("Upload");
-	    uploadImageButton.addActionListener(_ -> onUploadImageButtonPressed());
-	    addComponent(centerPanel, gbc, uploadImageButton, 0, 2);
+		// --- Name Label ---
+		addComponent(centerPanel, gbc, new ShelterLabel("Name: "), 2, 0);
 
-	    // --- Name Label ---
-	    addComponent(centerPanel, gbc, new ShelterLabel("Name: "), 2, 0);
+		// --- Name Field ---
+		nameField = new ShelterTextField(15);
+		addComponent(centerPanel, gbc, nameField, 3, 0);
 
-	    // --- Name Field ---
-	    nameField = new ShelterTextField(15);
-	    addComponent(centerPanel, gbc, nameField, 3, 0);
+		// --- Birthdate Label ---
+		addComponent(centerPanel, gbc, new ShelterLabel("Geburtsdatum: "), 2, 1);
 
-	    // --- Birthdate Label ---
-	    addComponent(centerPanel, gbc, new ShelterLabel("Geburtsdatum: "), 2, 1);
+		// --- Birthdate Field ---
+		birthDateField = new ShelterBirthdateTextField();
+		addComponent(centerPanel, gbc, birthDateField, 3, 1);
 
-	    // --- Birthdate Field ---
-	    birthDateField = new ShelterBirthdateTextField();
-	    addComponent(centerPanel, gbc, birthDateField, 3, 1);
+		// --- Gender Label ---
+		addComponent(centerPanel, gbc, new ShelterLabel("Geschlecht: "), 2, 2);
 
-	    // --- Gender Label ---
-	    addComponent(centerPanel, gbc, new ShelterLabel("Geschlecht: "), 2, 2);
+		// --- Gender Field (Gender Panel creation remains the same) ---
+		ShelterPanel genderPanel = new ShelterPanel(new FlowLayout(FlowLayout.LEFT, 1, 2));
+		genderButtonGroup = new ButtonGroup();
+		radioButtonList = new ArrayList<>();
+		String[] genders = { "M", "W", "N/A" };
+		for (String gender : genders) {
+			ShelterRadioButton radioButton = new ShelterRadioButton(gender);
+			genderButtonGroup.add(radioButton);
+			genderPanel.add(radioButton);
+			radioButtonList.add(radioButton);
+		}
+		addComponent(centerPanel, gbc, genderPanel, 3, 2);
 
-	    // --- Gender Field (Gender Panel creation remains the same) ---
-	    ShelterPanel genderPanel = new ShelterPanel(new FlowLayout(FlowLayout.LEFT, 1, 2));
-	    genderPanel.setBackground(centerPanel.getBackground());
-	    genderButtonGroup = new ButtonGroup();
-	    radioButtonList = new ArrayList<>();
-	    String[] genders = {"M", "W", "N/A"};
-	    for (String gender : genders) {
-	        ShelterRadioButton radioButton = new ShelterRadioButton(gender);
-	        radioButton.setBackground(centerPanel.getBackground());
-	        genderButtonGroup.add(radioButton);
-	        genderPanel.add(radioButton);
-	        radioButtonList.add(radioButton);
-	    }
-	    addComponent(centerPanel, gbc, genderPanel, 3, 2);
+		// --- Animal Type Label ---
+		addComponent(centerPanel, gbc, new ShelterLabel("Typ: "), 0, 3);
 
+		// --- Animal Type ComboBox ---
+		DefaultComboBoxModel<AnimalTypeDTO> animalTypeBoxModel = new DefaultComboBoxModel<>();
+		animalTypeBoxModel.addAll(dtoManager.loadAnimalTypes());
+		animalTypeComboBox = new ShelterComboBox<>(animalTypeBoxModel);
+		addComponent(centerPanel, gbc, animalTypeComboBox, 1, 3);
 
-	    // --- Animal Type Label ---
-	    addComponent(centerPanel, gbc, new ShelterLabel("Typ: "), 0, 3);
+		// --- Room Label ---
+		addComponent(centerPanel, gbc, new ShelterLabel("Raum: "), 0, 4);
 
-	    // --- Animal Type ComboBox ---
-	    DefaultComboBoxModel<AnimalTypeDTO> animalTypeBoxModel = new DefaultComboBoxModel<>();
-	    animalTypeBoxModel.addAll(dtoManager.loadAnimalTypes());
-	    animalTypeComboBox = new ShelterComboBox<>(animalTypeBoxModel);
-	    addComponent(centerPanel, gbc, animalTypeComboBox, 1, 3);
+		// --- Room ComboBox ---
+		DefaultComboBoxModel<RoomDTO> roomBoxModel = new DefaultComboBoxModel<>();
+		roomBoxModel.addAll(dtoManager.loadRooms());
+		roomComboBox = new ShelterComboBox<>(roomBoxModel);
+		addComponent(centerPanel, gbc, roomComboBox, 1, 4);
+		// --- Additional Info Label ---
+		gbc.gridwidth = 2;
+		addComponent(centerPanel, gbc, new ShelterLabel("Beschreibung: "), 0, 5);
 
-	    // --- Room Label ---
-	    addComponent(centerPanel, gbc, new ShelterLabel("Raum: "), 0, 4);
+		// --- Additional Info Area ---
+		additionalInfoArea = new ShelterTextArea(5, 20);
+		additionalInfoArea.setLineWrap(true);
+		additionalInfoArea.setWrapStyleWord(true);
+		gbc.gridheight = 2;
+		addComponent(centerPanel, gbc, new JScrollPane(additionalInfoArea), 0, 6);
 
-	    // --- Room ComboBox ---
-	    DefaultComboBoxModel<RoomDTO> roomBoxModel = new DefaultComboBoxModel<>();
-	    roomBoxModel.addAll(dtoManager.loadRooms());
-	    roomComboBox = new ShelterComboBox<>(roomBoxModel);
-	    addComponent(centerPanel, gbc, roomComboBox, 1, 4);
-	    // --- Additional Info Label ---
-	    gbc.gridwidth = 2;
-	    addComponent(centerPanel, gbc, new ShelterLabel("Beschreibung: "), 0, 5);
+		// --- Patron Label ---
+		gbc.gridheight = 1;
+		gbc.gridwidth = 1;
+		addComponent(centerPanel, gbc, new ShelterLabel("Pate: "), 0, 9);
 
-	    // --- Additional Info Area ---
-	    additionalInfoArea = new ShelterTextArea(5, 20);
-	    additionalInfoArea.setLineWrap(true);
-	    additionalInfoArea.setWrapStyleWord(true);
-	    gbc.gridheight = 2;
-	    addComponent(centerPanel, gbc, new JScrollPane(additionalInfoArea), 0, 6);
+		// --- Patron ComboBox ---
+		patronComboBoxModel = new DefaultComboBoxModel<>();
+		patronComboBoxModel.addAll(dtoManager.loadPatrons());
+		patronComboBox = new ShelterComboBox<>(patronComboBoxModel);
+		addComponent(centerPanel, gbc, patronComboBox, 1, 9);
 
-
-	    // --- Patron Label ---
-	    gbc.gridheight = 1;
-	    gbc.gridwidth = 1;
-	    addComponent(centerPanel, gbc, new ShelterLabel("Pate: "), 0, 9);
-
-	    // --- Patron ComboBox ---
-	    patronComboBoxModel = new DefaultComboBoxModel<>();
-	    patronComboBoxModel.addAll(dtoManager.loadPatrons());
-	    patronComboBox = new ShelterComboBox<>(patronComboBoxModel);
-	    addComponent(centerPanel, gbc, patronComboBox, 1, 9);
-
-	    return centerPanel;
+		return centerPanel;
 	}
-	
+
+	/**
+	 * Adds a component to a Panel in a GridbagLayout at the given coordinates.
+	 * 
+	 * @param panel     The Panel to add the component to
+	 * @param gbc       The constraints that are used for the GridBagLayout
+	 * @param component The Component to be added
+	 * @param gridx     The column to add the item into
+	 * @param gridy     The row to add the item into
+	 */
 	private void addComponent(ShelterPanel panel, GridBagConstraints gbc, Component component, int gridx, int gridy) {
-	    gbc.gridx = gridx;
-	    gbc.gridy = gridy;
-	    panel.add(component, gbc);
+		gbc.gridx = gridx;
+		gbc.gridy = gridy;
+		panel.add(component, gbc);
 	}
 
 	/**
@@ -323,7 +323,7 @@ public class AnimalViewPanel extends ShelterPanel {
 	 * left and the incident/examination lists on the right.
 	 */
 	private void initLists() {
-		initSideList();
+		initAnimalListPanel();
 
 		ShelterPanel rightPanel = createRightPanel();
 
@@ -331,21 +331,27 @@ public class AnimalViewPanel extends ShelterPanel {
 	}
 
 	/**
-	 * Initializes the side list displaying animals that are not yet adopted. This
-	 * list allows users to select animals for viewing and editing.
+	 * Initializes the animal list displaying animals that are not yet adopted. This
+	 * list allows users to select animals for viewing and editing. It also initializes the
+	 * search field and the ComboBox to filter for Animal-Type
 	 */
-	private void initSideList() {
+	private void initAnimalListPanel() {
+		ShelterPanel animalListPanel = new ShelterPanel();
+		animalListPanel.setLayout(new BoxLayout(animalListPanel, BoxLayout.Y_AXIS));
+		
+		
 		animalListModel = new DefaultListModel<>();
 		animalListModel.addAll(dtoManager.loadAnimalsNotAdopted());
 		animalList = new ShelterList<AnimalDTO>(animalListModel);
 		animalList.addListSelectionListener((ListSelectionEvent e) -> {
 			onAnimalListSelectionChanged(e);
 		});
-		animalList.getModel();
 		JScrollPane sideListScrollPane = new JScrollPane(animalList);
 		sideListScrollPane.setPreferredSize(new Dimension(250, 300));
-
-		add(sideListScrollPane, BorderLayout.WEST);
+		
+		
+		
+		animalListPanel.add(sideListScrollPane, BorderLayout.WEST);
 	}
 
 	/**
@@ -377,7 +383,6 @@ public class AnimalViewPanel extends ShelterPanel {
 
 		ShelterPanel incidentHeaderPanel = new ShelterPanel();
 		incidentHeaderPanel.setLayout(new BoxLayout(incidentHeaderPanel, BoxLayout.X_AXIS));
-		incidentHeaderPanel.setBackground(Color.MAGENTA);
 		incidentPanel.add(incidentHeaderPanel, BorderLayout.NORTH);
 
 		// Create and style components
@@ -414,7 +419,6 @@ public class AnimalViewPanel extends ShelterPanel {
 
 		ShelterPanel examinationHeaderPanel = new ShelterPanel();
 		examinationHeaderPanel.setLayout(new BoxLayout(examinationHeaderPanel, BoxLayout.X_AXIS));
-		examinationHeaderPanel.setBackground(Color.CYAN);
 		examinationPanel.add(examinationHeaderPanel, BorderLayout.NORTH);
 
 		// Create and style components
