@@ -4,12 +4,15 @@ import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 import bl.DTOManager;
@@ -21,6 +24,8 @@ import gui.persons.VetPanel;
 import gui.rooms.RoomsPanel;
 import gui.startpage.StartpagePanel;
 import gui.util.GUIConstants;
+import gui.util.IconManager;
+import gui.util.IconManager.Size;
 
 public class ShelterFrame extends JFrame implements GUIConstants {
 	DTOManager dtoManager;
@@ -67,7 +72,7 @@ public class ShelterFrame extends JFrame implements GUIConstants {
 
 		topBarPanel.add(Box.createRigidArea(new Dimension(16, 0)));
 
-		titleLabel = new ShelterLabel(GREETING);
+		titleLabel = new ShelterLabel(GREETING, IconManager.getIcon(IconManager.Type.APP, Size.LARGE));
 		titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		topBarPanel.add(titleLabel);
 
@@ -142,17 +147,26 @@ public class ShelterFrame extends JFrame implements GUIConstants {
 
 	private void onNavigationButtonPressed(String name, String title) {
 		backButton.setVisible(!name.equals("start"));
+		if(name.equals("start")) {
+			titleLabel.setIcon( IconManager.getIcon(IconManager.Type.APP, Size.LARGE));
+		}
 		if (name.equals("animals")) {
+			titleLabel.setIcon( IconManager.getIcon(IconManager.Type.ANIMAL, Size.SMALL));
 			animalViewPanel.clearForm();
 		} else if (name.equals("rooms")) {
+			titleLabel.setIcon( IconManager.getIcon(IconManager.Type.ROOMS, Size.SMALL));
 			roomsPanel.updateRoomsListData();
 		} else if (name.equals("adoptions")) {
+			titleLabel.setIcon( IconManager.getIcon(IconManager.Type.ADOPTION, Size.SMALL));
 			adoptionsPanel.updateAnimalsListData();
 		} else if (name.equals("patrons")) {
+			titleLabel.setIcon( IconManager.getIcon(IconManager.Type.PATRON, Size.SMALL));
 			patronPanel.clearForm();
 		} else if (name.equals("caretakers")) {
+			titleLabel.setIcon( IconManager.getIcon(IconManager.Type.CARETAKER, Size.SMALL));
 			caretakerPanel.clearForm();
 		} else if (name.equals("vets")) {
+			titleLabel.setIcon( IconManager.getIcon(IconManager.Type.VET, Size.SMALL));
 			vetPanel.clearForm();
 		}
 		titleLabel.setText(title);

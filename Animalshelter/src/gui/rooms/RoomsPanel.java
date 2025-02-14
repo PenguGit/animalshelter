@@ -36,7 +36,7 @@ public class RoomsPanel extends ShelterPanel {
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
 
-		animals = dtoManager.loadAnimals();
+		animals = dtoManager.loadAnimalsNotAdopted();
 
 		initializeRoomsList();
 		add(Box.createHorizontalGlue());
@@ -86,7 +86,7 @@ public class RoomsPanel extends ShelterPanel {
 		roomsListModel.clear();
 		roomsListModel.addAll(dtoManager.loadRooms());
 		roomsList.clearSelection();
-		animals = dtoManager.loadAnimals();
+		animals = dtoManager.loadAnimalsNotAdopted();
 	}
 	
 	private void updateAnimalsListData() {
