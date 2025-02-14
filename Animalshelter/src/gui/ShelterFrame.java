@@ -61,7 +61,7 @@ public class ShelterFrame extends JFrame implements GUIConstants {
 		topBarPanel.setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
 		mainPanel.add(topBarPanel);
 
-		backButton = new ShelterButton("<");
+		backButton = new ShelterButton(IconManager.getIcon(IconManager.Type.BACK, Size.SMALL));
 		backButton.setFocusable(false);
 		backButton.setVisible(false);
 		backButton.setAlignmentX(Component.LEFT_ALIGNMENT);

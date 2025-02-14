@@ -7,6 +7,7 @@ import javax.swing.ImageIcon;
 public class IconManager implements GUIConstants {
 	public enum Type {
 		APP,
+		BACK,
 		ANIMAL,
 		ROOMS,
 		ADOPTION,
@@ -32,6 +33,9 @@ public class IconManager implements GUIConstants {
 				break;
 			case APP:
 				animalIcon = new ImageIcon("resources/dachshund.png");
+				break;
+			case BACK:
+				animalIcon = new ImageIcon("resources/back.png");
 				break;
 			case CARETAKER:
 				animalIcon = new ImageIcon("resources/caretaker.png");
