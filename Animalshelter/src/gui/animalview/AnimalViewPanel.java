@@ -177,7 +177,6 @@ public class AnimalViewPanel extends ShelterPanel {
 	    gbc.gridheight = 1;
 	    gbc.gridwidth = 1;
 	    uploadImageButton = new ShelterButton("Upload");
-	    uploadImageButton.setFont(new Font(FONT_SANS, Font.PLAIN, 20));
 	    uploadImageButton.addActionListener(_ -> onUploadImageButtonPressed());
 	    addComponent(centerPanel, gbc, uploadImageButton, 0, 2);
 
@@ -199,25 +198,18 @@ public class AnimalViewPanel extends ShelterPanel {
 	    addComponent(centerPanel, gbc, new ShelterLabel("Geschlecht: "), 2, 2);
 
 	    // --- Gender Field (Gender Panel creation remains the same) ---
-	    ShelterPanel genderPanel = new ShelterPanel(new FlowLayout(FlowLayout.LEFT, 2, 2));
+	    ShelterPanel genderPanel = new ShelterPanel(new FlowLayout(FlowLayout.LEFT, 1, 2));
 	    genderPanel.setBackground(centerPanel.getBackground());
 	    genderButtonGroup = new ButtonGroup();
 	    radioButtonList = new ArrayList<>();
-	    ShelterRadioButton maleRadioButton = new ShelterRadioButton("M");
-	    ShelterRadioButton femaleRadioButton = new ShelterRadioButton("W");
-	    ShelterRadioButton unknownRadioButton = new ShelterRadioButton("N/A");
-	    maleRadioButton.setBackground(centerPanel.getBackground());
-	    femaleRadioButton.setBackground(centerPanel.getBackground());
-	    unknownRadioButton.setBackground(centerPanel.getBackground());
-	    genderButtonGroup.add(maleRadioButton);
-	    genderButtonGroup.add(femaleRadioButton);
-	    genderButtonGroup.add(unknownRadioButton);
-	    genderPanel.add(maleRadioButton);
-	    genderPanel.add(femaleRadioButton);
-	    genderPanel.add(unknownRadioButton);
-	    radioButtonList.add(maleRadioButton);
-	    radioButtonList.add(femaleRadioButton);
-	    radioButtonList.add(unknownRadioButton);
+	    String[] genders = {"M", "W", "N/A"};
+	    for (String gender : genders) {
+	        ShelterRadioButton radioButton = new ShelterRadioButton(gender);
+	        radioButton.setBackground(centerPanel.getBackground());
+	        genderButtonGroup.add(radioButton);
+	        genderPanel.add(radioButton);
+	        radioButtonList.add(radioButton);
+	    }
 	    addComponent(centerPanel, gbc, genderPanel, 3, 2);
 
 
