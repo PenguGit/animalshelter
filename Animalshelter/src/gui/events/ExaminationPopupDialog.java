@@ -46,7 +46,7 @@ public class ExaminationPopupDialog extends JDialog implements GUIConstants {
 	private boolean resultSuccess;
 	
 	/**
-	 * Constructs a new adoption popup.
+	 * Constructs a new examination popup.
 	 * @param animal The animal to which the examination would apply.
 	 * @param owner The frame from which the dialog was opened.
 	 * @param title The dialog title.
