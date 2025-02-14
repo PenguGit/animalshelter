@@ -1,6 +1,5 @@
 package gui.persons;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -78,14 +77,15 @@ public class PatronPanel extends ShelterPanel {
 	public PatronPanel() {
 		dtoManager = new DTOManager();
 
-		setLayout(new BorderLayout());
+		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+		initializeListComponents();
+		
 		mainContainer = new ShelterPanel();
-		mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.X_AXIS));
+		mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.Y_AXIS));
 		add(mainContainer);
 
-		initializeListComponents();
 		initializePersonDataComponents();
 		initializeButtons();
 	}
@@ -106,9 +106,8 @@ public class PatronPanel extends ShelterPanel {
 		});
 
 		JScrollPane scrollPane = new JScrollPane(personList);
-		mainContainer.add(scrollPane);
 		scrollPane.setPreferredSize(new Dimension(250, 0));
-		add(scrollPane, BorderLayout.WEST);
+		add(scrollPane);
 	}
 
 	/**
@@ -120,7 +119,7 @@ public class PatronPanel extends ShelterPanel {
 		gbc.insets = new Insets(5, 5, 5, 5);
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 0;
-		add(dataLayoutPanel, BorderLayout.CENTER);
+		mainContainer.add(dataLayoutPanel);
 		firstNameLabel = new ShelterLabel("Vorname:");
 		firstNameTextField = new ShelterTextField();
 		firstNameTextField.setPreferredSize(new Dimension(250, 30));
@@ -171,10 +170,7 @@ public class PatronPanel extends ShelterPanel {
 	 */
 	private void initializeButtons() {
 		buttonLayoutPanel = new ShelterPanel();
-		mainContainer.add(buttonLayoutPanel);
-
 		buttonLayoutPanel.setLayout(new BoxLayout(buttonLayoutPanel, BoxLayout.X_AXIS));
-		add(buttonLayoutPanel, BorderLayout.PAGE_END);
 		editButton = new ShelterButton(EDIT_BUTTON);
 		editButton.addActionListener((ActionEvent _) -> {
 			onEditButtonPressed();
@@ -223,7 +219,7 @@ public class PatronPanel extends ShelterPanel {
 		gbc.gridwidth = 2;
 		dataLayoutPanel.add(buttonLayoutPanel, gbc);
 
-		add(dataLayoutPanel, BorderLayout.CENTER);
+		mainContainer.add(dataLayoutPanel);
 	}
 
 	/**
