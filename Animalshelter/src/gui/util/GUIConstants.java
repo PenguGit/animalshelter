@@ -24,7 +24,7 @@ public interface GUIConstants {
 
 	public static final Dimension DEFAULT_ICON_SIZE = new Dimension(64, 64);
 	public static final Dimension SMALL_ICON_SIZE = new Dimension(48, 48);
-	public static final Dimension LARGE_ICON_SIZE = new Dimension(92, 92);
+	public static final Dimension LARGE_ICON_SIZE = new Dimension(96, 96);
 	
 	public static final Font FONT_TAB = new Font(FONT_SANS, Font.PLAIN, 20);
 	public static final Font FONT_LIST = new Font(FONT_SANS, Font.PLAIN, 30);

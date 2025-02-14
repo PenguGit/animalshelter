@@ -1,6 +1,7 @@
 package gui.events;
 
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -8,6 +9,7 @@ import java.awt.Insets;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import bl.DTOManager;
@@ -21,11 +23,14 @@ import gui.ShelterLabel;
 import gui.ShelterListCellRenderer;
 import gui.ShelterPanel;
 import gui.ShelterTextField;
+import gui.util.GUIConstants;
 
-public class IncidentPopupPanel extends ShelterPanel {
+public class IncidentPopupDialog extends JDialog implements GUIConstants {
 	private DTOManager dtoManager;
 	
 	private GridBagConstraints gbc = new GridBagConstraints();
+	
+	private ShelterPanel panel;
 	
 	private ShelterTextField titleTextField;
 	private ShelterTextField descriptionTextField;
@@ -38,13 +43,24 @@ public class IncidentPopupPanel extends ShelterPanel {
 	
 	private AnimalDTO animal;
 	
-	public IncidentPopupPanel(AnimalDTO animal) {
+	private boolean resultSuccess;
+	
+	public IncidentPopupDialog(AnimalDTO animal, Frame owner, String title, boolean modal) {
+		super(owner, title, modal);
+		
 		this.animal = animal;
+		
+		setSize(200, 150);
+		setLocationRelativeTo(owner);
+		setResizable(false);
 		
 		dtoManager = new DTOManager();
 
-		setLayout(new GridBagLayout());
-		setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
+		panel = new ShelterPanel();
+		add(panel);
+		
+		panel.setLayout(new GridBagLayout());
+		panel.setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
 
 		initializeComponents();
 	}
@@ -82,49 +98,62 @@ public class IncidentPopupPanel extends ShelterPanel {
         gbc.gridy = 5;
         gbc.gridx = 0;
         cancelButton = new ShelterButton(CANCEL_BUTTON);
+        cancelButton.addActionListener((_) -> {
+        	onCancelButtonPressed();
+        });
         
-        add(cancelButton, gbc);
+        panel.add(cancelButton, gbc);
         
         gbc.gridx = 1;
         saveButton = new ShelterButton(SAVE_BUTTON);
+        saveButton.addActionListener((_) -> {
+        	onSaveButtonPressed();
+        });
         
-        add(saveButton, gbc);
+        panel.add(saveButton, gbc);
 	}
 	
-	
-	
-	public ShelterButton getCancelButton() {
-		return cancelButton;
-	}
-
-	public ShelterButton getSaveButton() {
-		return saveButton;
-	}
-
 	private void addLabelAndField(GridBagConstraints gbc, String labelText, JComponent field, int yPos) {
         ShelterLabel label = new ShelterLabel(labelText);
 
         gbc.gridx = 0;
         gbc.gridy = yPos;
         gbc.gridwidth = 1;
-        add(label, gbc);
+        panel.add(label, gbc);
 
         gbc.gridx = 1;
         gbc.gridwidth = 2;
-        add(field, gbc);
+        panel.add(field, gbc);
     }
+	
+	private void onCancelButtonPressed() {
+		resultSuccess = false;
+		setVisible(false);
+		dispose();
+	}
+	
+	private void onSaveButtonPressed() {
+		if(!validateForm()) {
+			JOptionPane.showMessageDialog(this, "Please fill all required fields correctly.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
+		IncidentDTO incident = new IncidentDTO(titleTextField.getText(), dateField.getDate(), descriptionTextField.getText(), (CaretakerDTO)caretakerComboBox.getSelectedItem(), animal);
+		
+		dtoManager.saveIncident(incident);
+
+		resultSuccess = true;
+		setVisible(false);
+		dispose();
+	}
 	
 	private boolean validateForm() {
 		return !titleTextField.getText().isBlank() && !descriptionTextField.getText().isBlank() && dateField.getDate() != null && caretakerComboBox.getSelectedItem() != null;
 	}
 	
-	public IncidentDTO getIncident() {
-		if(!validateForm()) {
-			JOptionPane.showMessageDialog(null, "Please fill all required fields correctly.", "Validation Error",
-					JOptionPane.ERROR_MESSAGE);
-			return null;
-		}
-		return new IncidentDTO(titleTextField.getText(), dateField.getDate(), descriptionTextField.getText(), (CaretakerDTO)caretakerComboBox.getSelectedItem(), animal);
+	public boolean showDialog() {
+		setVisible(true);
+		return resultSuccess;
 	}
 }
 

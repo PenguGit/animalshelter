@@ -8,7 +8,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,7 +21,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -32,7 +30,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import bl.DTOManager;
-import bl.entities.AdoptionDTO;
 import bl.entities.AnimalDTO;
 import bl.entities.AnimalTypeDTO;
 import bl.entities.EntityDTO;
@@ -50,9 +47,9 @@ import gui.ShelterPanel;
 import gui.ShelterRadioButton;
 import gui.ShelterTextArea;
 import gui.ShelterTextField;
-import gui.adoptions.AdoptionPopupPanel;
-import gui.events.ExaminationPopupPanel;
-import gui.events.IncidentPopupPanel;
+import gui.adoptions.AdoptionPopupDialog;
+import gui.events.ExaminationPopupDialog;
+import gui.events.IncidentPopupDialog;
 
 /**
  * A panel for viewing and managing animal information. This panel allows users
@@ -571,36 +568,12 @@ public class AnimalViewPanel extends ShelterPanel {
 	 * opens a dialog to create a new incident for the selected animal.
 	 */
 	private void onNewIncidentButtonPressed() {
-
-		JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Neues Vorkommnis", true);
-		dialog.setSize(200, 150);
-		dialog.setLocationRelativeTo(this);
-		dialog.setResizable(false);
-
-		IncidentPopupPanel panel = new IncidentPopupPanel(animal);
-		dialog.add(panel);
-
-		panel.getCancelButton().addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				dialog.dispose();
-			}
-		});
-
-		panel.getSaveButton().addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				IncidentDTO incident = panel.getIncident();
-				if (incident != null) {
-					dtoManager.saveIncident(incident);
-					dialog.dispose();
-					refreshListModel(incidentListModel, dtoManager.loadIncidentsByAnimalId(animal.getId()));
-				}
-			}
-		});
-
+		IncidentPopupDialog dialog = new IncidentPopupDialog(animal, (JFrame) SwingUtilities.getWindowAncestor(this), "Neues Vorkommnis", true);
 		dialog.pack();
-		dialog.setVisible(true);
+		boolean incidentSuccess = dialog.showDialog();
+		if(incidentSuccess) {
+			refreshListModel(incidentListModel, dtoManager.loadIncidentsByAnimalId(animal.getId()));
+		}
 	}
 
 	/**
@@ -608,36 +581,12 @@ public class AnimalViewPanel extends ShelterPanel {
 	 * opens a dialog to create a new examination for the selected animal.
 	 */
 	private void onNewExaminationButtonPressed() {
-
-		JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Neue Untersuchung", true);
-		dialog.setSize(200, 150);
-		dialog.setLocationRelativeTo(this);
-		dialog.setResizable(false);
-
-		ExaminationPopupPanel panel = new ExaminationPopupPanel(animal);
-		dialog.add(panel);
-
-		panel.cancelButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				dialog.dispose();
-			}
-		});
-
-		panel.saveButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				ExaminationDTO incident = panel.getExamination();
-				if (incident != null) {
-					dtoManager.saveExamination(incident);
-					dialog.dispose();
-					refreshListModel(examinationListModel, dtoManager.loadExaminationsByAnimalId(animal.getId()));
-				}
-			}
-		});
-
+		ExaminationPopupDialog dialog = new ExaminationPopupDialog(animal, (JFrame) SwingUtilities.getWindowAncestor(this), "Neue Untersuchung", true);
 		dialog.pack();
-		dialog.setVisible(true);
+		boolean examinationSuccess = dialog.showDialog();
+		if(examinationSuccess) {
+			refreshListModel(examinationListModel, dtoManager.loadExaminationsByAnimalId(animal.getId()));
+		}
 	}
 
 	/**
@@ -645,37 +594,12 @@ public class AnimalViewPanel extends ShelterPanel {
 	 * dialog to handle the adoption process for the selected animal.
 	 */
 	private void onAdoptionButtonPressed() {
-		JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Tier adoptieren", true);
-		dialog.setSize(200, 150);
-		dialog.setLocationRelativeTo(this);
-		dialog.setResizable(false);
-
-		AdoptionPopupPanel panel = new AdoptionPopupPanel(animal);
-		dialog.add(panel);
-
-		panel.cancelButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				dialog.dispose();
-			}
-		});
-
-		panel.saveButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				AdoptionDTO adoption = panel.getAdoption();
-				if (adoption != null) {
-					dtoManager.saveAdopter(adoption.getAdopter());
-					System.out.println(adoption.getAdopter().getId());
-					dtoManager.saveAdoption(adoption);
-					dialog.dispose();
-					refreshListModel(animalListModel, dtoManager.loadAnimalsNotAdopted());
-				}
-			}
-		});
-
+		AdoptionPopupDialog dialog = new AdoptionPopupDialog(animal, (JFrame) SwingUtilities.getWindowAncestor(this), "Tier adoptieren", true);
 		dialog.pack();
-		dialog.setVisible(true);
+		boolean adoptionSuccess = dialog.showDialog();
+		if(adoptionSuccess) {
+			refreshListModel(animalListModel, dtoManager.loadAnimalsNotAdopted());
+		}
 	}
 
 	/**
