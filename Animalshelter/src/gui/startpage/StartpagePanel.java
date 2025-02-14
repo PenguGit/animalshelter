@@ -5,15 +5,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 
 import gui.ShelterPanel;
 import gui.util.IconManager;
 import gui.util.IconManager.Size;
-import static gui.util.IconManager.Type;
+import gui.util.IconManager.Type;
 
 public class StartpagePanel extends ShelterPanel {
 	public StartpagePanelButton animalsButton;
