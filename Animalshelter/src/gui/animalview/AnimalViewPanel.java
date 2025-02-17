@@ -557,13 +557,14 @@ public class AnimalViewPanel extends ShelterPanel {
 
 		// Validate and save or process the object
 		if (validateAnimal(animal)) {
-			dtoManager.saveAnimal(animal);
 			if(animal.getId() < 1) {
+				dtoManager.saveAnimal(animal);
 				animalsWithoutAdoptionList = (dtoManager.loadAnimalsNotAdopted());
 				refreshListModel(animalListModel, animalsWithoutAdoptionList);
 				clearAll();
 				changeFormState(Mode.NONE);
 			} else {
+				dtoManager.saveAnimal(animal);
 				changeFormState(Mode.SELECTED);
 			}
 			
