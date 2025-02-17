@@ -150,7 +150,7 @@ public class ShelterFrame extends JFrame implements GUIConstants {
 		}
 		if (name.equals("animals")) {
 			titleLabel.setIcon( IconManager.getIcon(IconManager.Type.ANIMAL, Size.SMALL));
-			animalViewPanel.clearForm();
+			animalViewPanel.clearAll();
 		} else if (name.equals("rooms")) {
 			titleLabel.setIcon( IconManager.getIcon(IconManager.Type.ROOMS, Size.SMALL));
 			roomsPanel.updateRoomsListData();
