@@ -43,10 +43,18 @@ public class RoomsPanel extends ShelterPanel {
 		initializeAnimalsList();
 	}
 
+
+	/**
+	 * Returns the animals list.
+	 * @return The list of animals.
+	 */
 	public ShelterList<AnimalDTO> getAnimalsList() {
 		return animalsList;
 	}
 
+	/**
+	 * Initializes and places the list of rooms.
+	 */
 	private void initializeRoomsList() {
 		roomsListModel  = new DefaultListModel<RoomDTO>();
 		roomsList = new ShelterList<RoomDTO>(roomsListModel);
@@ -63,6 +71,9 @@ public class RoomsPanel extends ShelterPanel {
 		add(roomsScrollPane);
 	}
 	
+	/**
+	 * Initializes and places the list of animals.
+	 */
 	private void initializeAnimalsList() {
 		animalsListModel  = new DefaultListModel<AnimalDTO>();
 		animalsList = new ShelterList<AnimalDTO>(animalsListModel);
@@ -74,6 +85,10 @@ public class RoomsPanel extends ShelterPanel {
 		add(animalsScrollPane);
 	}
 
+	/**
+	 * Called when a different room is selected, to update the corresponding animals list.
+	 * @param e The event fired by the list change.
+	 */
 	private void onRoomsListSelectionChanged(ListSelectionEvent e) {
 		if(e.getValueIsAdjusting()) {
 			return;
@@ -82,6 +97,9 @@ public class RoomsPanel extends ShelterPanel {
 		updateAnimalsListData();
 	}
 	
+	/**
+	 * Updates the rooms list with data from the database.
+	 */
 	public void updateRoomsListData() {
 		roomsListModel.clear();
 		roomsListModel.addAll(dtoManager.loadRooms());
@@ -89,6 +107,9 @@ public class RoomsPanel extends ShelterPanel {
 		animals = dtoManager.loadAnimalsNotAdopted();
 	}
 	
+	/**
+	 * Updates the animals list with data from the database, based on the currently selected room, if any.
+	 */
 	private void updateAnimalsListData() {
 		RoomDTO selectedRoom = roomsList.getSelectedValue();
 		

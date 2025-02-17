@@ -5,9 +5,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Represents the 'patron' table in the database.
+ */
 public class Patron extends Person {
 	public Patron() {};
 	
+	/**
+	 * Initializes a new object from the values in a database ResultSet.
+	 * @param resultSet The ResultSet containing the relevant fields.
+	 * @throws SQLException Occurs, e.g., if the named field is not present in the ResultSet for some reason.
+	 */
 	public Patron(ResultSet resultSet) throws SQLException {
 		this.id = resultSet.getInt("id");
 		this.lastName = resultSet.getString("last_name");

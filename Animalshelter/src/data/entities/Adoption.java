@@ -8,6 +8,9 @@ import java.sql.SQLException;
 
 import data.DataManager;
 
+/**
+ * Represents the 'adoption' table in the database.
+ */
 public class Adoption extends Entity {
 	private Date date;
 	private Adopter adopter;
@@ -15,6 +18,11 @@ public class Adoption extends Entity {
 	
 	public Adoption() {};
 	
+	/**
+	 * Initializes a new object from the values in a database ResultSet.
+	 * @param resultSet The ResultSet containing the relevant fields.
+	 * @throws SQLException Occurs, e.g., if the named field is not present in the ResultSet for some reason.
+	 */
 	public Adoption(ResultSet resultSet) throws SQLException {
 		this.id = resultSet.getInt("id");
 		String tempString = resultSet.getString("date");

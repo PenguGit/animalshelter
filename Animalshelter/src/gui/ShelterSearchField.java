@@ -13,6 +13,9 @@ public class ShelterSearchField extends ShelterTextField {
         init();
     }
 
+    /**
+     * Adds a key listener to this field, which on a keystroke executes the searchHandler interface with its current text as an argument.
+     */
     private void init() {
         addKeyListener(new KeyAdapter() {
             @Override

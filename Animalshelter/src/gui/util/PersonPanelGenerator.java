@@ -10,11 +10,19 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
+/**
+ * This classes' main should only be run manually, to quickly generate the additional person panels if CaretakerPanel has been changed.
+ */
 public class PersonPanelGenerator {
 	public static void main(String[] args) {
         PersonPanelGenerator.generatePersonPanelClasses();
 	}
 	
+	/**
+	 * This utility method generates VetPanel and PatronPanel from CaretakerPanel.
+	 * It loads the source code of CaretakerPanel, replaces occurrences of relevant keywords and the compiles the resulting strings back into classes.
+	 * Note: After substantial changes to CaretakerPanel, this may no longer work and will have to be adjusted.
+	 */
 	public static void generatePersonPanelClasses() {
 		String[] classNames = {"VetPanel", "PatronPanel"};
 		

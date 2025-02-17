@@ -5,23 +5,75 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 
 public class IconManager implements GUIConstants {
+	/**
+	 * The various icon types used in the application.
+	 * {@link #APP} {@link #BACK} {@link #ANIMAL} {@link #ROOMS} {@link #ADOPTION} {@link #PATRON} {@link #CARETAKER} {@link #VET}
+	 * @see GUIConstants
+	 */
 	public enum Type {
+		/**
+		 * Default icon representing the app itself.
+		 */
 		APP,
+		/**
+		 * Back arrow icon.
+		 */
 		BACK,
+		/**
+		 * Icon representing animals.
+		 */
 		ANIMAL,
+		/**
+		 * Icon representing rooms.
+		 */
 		ROOMS,
+		/**
+		 * Icon representing adoptions.
+		 */
 		ADOPTION,
+		/**
+		 * Icon representing patrons.
+		 */
 		PATRON,
+		/**
+		 * Icon representing caretakers.
+		 */
 		CARETAKER,
+		/**
+		 * Icon representing vets.
+		 */
 		VET
 	}
 	
+	/**
+	 * The icon size, used to determine control states.
+	 * Actual size are defined in GUIConstants.
+	 * {@link #DEFAULT} {@link #SMALL} {@link #LARGE}
+	 * @see GUIConstants
+	 */
 	public enum Size {
+		/**
+		 * The default icon size.
+		 */
 		DEFAULT,
+		/**
+		 * A slightly smaller icon size.
+		 */
 		SMALL,
+		/**
+		 * A slightly larger icon size.
+		 */
 		LARGE,
 	}
 	
+	/**
+	 * Returns an ImageIcon of the desired type and size.
+	 * @param type
+	 * @param size
+	 * @return
+	 * @see Type
+	 * @see Size
+	 */
 	public static ImageIcon getIcon(Type type, Size size) {
 		ImageIcon animalIcon;
 		switch(type) {

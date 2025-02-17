@@ -51,11 +51,10 @@ public class AdoptionsPanel extends ShelterPanel {
 		initializeAnimalsList();
 		initializePersonDataComponents();
 	}
-
-	public ShelterList<AdoptionDTO> getAnimalsList() {
-		return animalsList;
-	}
 	
+	/**
+	 * Initializes and places the list of animals.
+	 */
 	private void initializeAnimalsList() {
 		animalsListModel  = new DefaultListModel<AdoptionDTO>();
 		animalsListModel.addAll(dtoManager.loadAdoptions());
@@ -72,6 +71,9 @@ public class AdoptionsPanel extends ShelterPanel {
 		add(animalsScrollPane);
 	}
 
+	/**
+	 * Initializes and places the various components that make up the adoption data for a given animal.
+	 */
 	private void initializePersonDataComponents() {
 		dataLayoutPanel = new ShelterPanel();
 		dataLayoutPanel.setLayout(new GridBagLayout());
@@ -106,6 +108,14 @@ public class AdoptionsPanel extends ShelterPanel {
         addLabels(dataLayoutPanel, gbc, 4, dateLabel, dateTextLabel);
 	}
 
+	/**
+	 * A helper method to place fields with corresponding labels in a GridBagLayout.
+	 * @param panel The panel to which they should be added.
+	 * @param gbc The GridBagConstraints to use.
+	 * @param label The label to place.
+	 * @param field The field to place.
+	 * @param row The row in the layout the elements should occupy.
+	 */
 	private void addLabels(ShelterPanel panel, GridBagConstraints gbc, int row, ShelterLabel label, ShelterLabel field) {
         gbc.gridy = row;
         gbc.gridx = 0;
@@ -114,6 +124,10 @@ public class AdoptionsPanel extends ShelterPanel {
         panel.add(field, gbc);
     }
 	
+	/**
+	 * Called when a different animal is selected, to update the corresponding adoption data.
+	 * @param e The event fired by the list change.
+	 */
 	private void onAnimalsListSelectionChanged(ListSelectionEvent e) {
 		if(e.getValueIsAdjusting()) {
 			return;
@@ -122,6 +136,9 @@ public class AdoptionsPanel extends ShelterPanel {
 		fillAdoptionData();
 	}
 	
+	/**
+	 * Fills in the adoption data for the currently selected animal, if any.
+	 */
 	private void fillAdoptionData() {
 		AdoptionDTO selectedAdoption = animalsList.getSelectedValue();
 		
@@ -137,6 +154,9 @@ public class AdoptionsPanel extends ShelterPanel {
 		dateTextLabel.setText(selectedAdoption.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
 	}
 	
+	/**
+	 * Updates the animal list with data from the database.
+	 */
 	public void updateAnimalsListData() {
 		animalsListModel.clear();
 		animalsListModel.addAll(dtoManager.loadAdoptions());
