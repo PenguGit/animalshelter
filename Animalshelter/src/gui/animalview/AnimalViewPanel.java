@@ -66,7 +66,7 @@ public class AnimalViewPanel extends ShelterPanel {
 	private AnimalDTO animal;
 
 	private ArrayList<AnimalTypeDTO> animalTypeList;
-	private ArrayList<AnimalDTO> animalWithoutAdoptionList;
+	private ArrayList<AnimalDTO> animalsWithoutAdoptionList;
 
 	private ShelterList<AnimalDTO> animalList;
 	private ShelterList<IncidentDTO> incidentList;
@@ -136,7 +136,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		setLayout(new BorderLayout());
 		dtoManager = new DTOManager();
 		fileChooser = new JFileChooser();
-		animalWithoutAdoptionList = dtoManager.loadAnimalsNotAdopted();
+		animalsWithoutAdoptionList = dtoManager.loadAnimalsNotAdopted();
 		animalTypeList = dtoManager.loadAnimalTypes();
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -350,10 +350,10 @@ public class AnimalViewPanel extends ShelterPanel {
 		animalTypeBoxModel.addAll(animalTypeList);
 		animalTypeSelectionComboBox = new ShelterComboBox<>(animalTypeBoxModel);
 		animalTypeSelectionComboBox.setMaximumSize(new Dimension(250, 10));
+		animalListPanel.add(animalTypeSelectionComboBox);
 		animalTypeSelectionComboBox.addActionListener(_ -> {
 			performSearch(animalSearchField.getText());
 		});
-		animalListPanel.add(animalTypeSelectionComboBox);
 		
 
 		animalSearchField = new ShelterSearchField(this::performSearch);
@@ -382,15 +382,14 @@ public class AnimalViewPanel extends ShelterPanel {
      * @param query The search query string.  Can be empty but not null.
      */
 	public void performSearch(String query) {
-		
 		List<AnimalDTO> filtered;
 		if (animalTypeSelectionComboBox.getSelectedIndex() != 0) {
-			filtered = animalWithoutAdoptionList.stream()
+			filtered = animalsWithoutAdoptionList.stream()
 					.filter(animal -> animal.getAnimalType().getId() == ((AnimalTypeDTO) animalTypeSelectionComboBox.getSelectedItem()).getId())
 					.collect(Collectors.toList());
 		}
 		else {
-			filtered = animalWithoutAdoptionList;
+			filtered = animalsWithoutAdoptionList;
 		}
 		if (!animalSearchField.getText().isEmpty()) {
 			filtered = filtered.stream()
@@ -559,9 +558,16 @@ public class AnimalViewPanel extends ShelterPanel {
 		// Validate and save or process the object
 		if (validateAnimal(animal)) {
 			dtoManager.saveAnimal(animal);
-			refreshListModel(animalListModel, dtoManager.loadAnimalsNotAdopted());
-			clearAll();
-			changeFormState(Mode.NONE);
+			if(animal.getId() < 1) {
+				animalsWithoutAdoptionList = (dtoManager.loadAnimalsNotAdopted());
+				refreshListModel(animalListModel, animalsWithoutAdoptionList);
+				clearAll();
+				changeFormState(Mode.NONE);
+			} else {
+				changeFormState(Mode.SELECTED);
+			}
+			
+			
 		} else {
 			JOptionPane.showMessageDialog(null, "Please fill all required fields correctly.", "Validation Error",
 					JOptionPane.ERROR_MESSAGE);
@@ -661,7 +667,8 @@ public class AnimalViewPanel extends ShelterPanel {
 		dialog.pack();
 		boolean adoptionSuccess = dialog.showDialog();
 		if (adoptionSuccess) {
-			refreshListModel(animalListModel, dtoManager.loadAnimalsNotAdopted());
+			animalsWithoutAdoptionList = dtoManager.loadAnimalsNotAdopted();
+			refreshListModel(animalListModel, animalsWithoutAdoptionList);
 		}
 	}
 
@@ -742,6 +749,7 @@ public class AnimalViewPanel extends ShelterPanel {
 	 */
 	public void clearForm() {
 		// Clear text fields
+		animal = null;
 		nameField.setText("");
 		birthDateField.setText("");
 		additionalInfoArea.setText("");
@@ -756,7 +764,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		examinationListModel.clear();
 		genderButtonGroup.clearSelection();
 		imagePanel.clearImageData();
-		animal = null;
+		
 		
 		animalList.clearSelection();
 		changeFormState(Mode.NONE);
@@ -767,7 +775,7 @@ public class AnimalViewPanel extends ShelterPanel {
 	 */
 	public void clearSearch() {
 		animalSearchField.setText("");
-		animalTypeSelectionComboBox.setSelectedIndex(0);
+		animalTypeSelectionComboBox.setSelectedIndex(-1);
 	}
 	
 	/**
