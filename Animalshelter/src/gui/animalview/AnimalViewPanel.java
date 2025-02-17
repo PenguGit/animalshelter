@@ -775,7 +775,7 @@ public class AnimalViewPanel extends ShelterPanel {
 	 */
 	public void clearSearch() {
 		animalSearchField.setText("");
-		animalTypeSelectionComboBox.setSelectedIndex(-1);
+		animalTypeSelectionComboBox.setSelectedIndex(0);
 	}
 	
 	/**
