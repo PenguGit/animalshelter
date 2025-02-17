@@ -383,7 +383,6 @@ public class AnimalViewPanel extends ShelterPanel {
      */
 	public void performSearch(String query) {
 		
-		//TODO need to fix this triggering ListSelection
 		List<AnimalDTO> filtered;
 		if (animalTypeSelectionComboBox.getSelectedIndex() != 0) {
 			filtered = animalWithoutAdoptionList.stream()
@@ -398,7 +397,18 @@ public class AnimalViewPanel extends ShelterPanel {
 					.filter(animal -> animal.getName().toLowerCase().contains(query.toLowerCase()))
 					.collect(Collectors.toList());
 		}
+		if (animal != null) {
+			for(AnimalDTO a : filtered) {
+				if (a.getId() == animal.getId()) {
+					refreshListModel(animalListModel, filtered);
+					animalList.setSelectedValue(a, true);
+					return;
+				}
+			}
+		}
+		clearForm();
 		refreshListModel(animalListModel, filtered);
+		changeFormState(Mode.NONE);
 	}
 
 	/**
@@ -550,7 +560,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		if (validateAnimal(animal)) {
 			dtoManager.saveAnimal(animal);
 			refreshListModel(animalListModel, dtoManager.loadAnimalsNotAdopted());
-			clearForm();
+			clearAll();
 			changeFormState(Mode.NONE);
 		} else {
 			JOptionPane.showMessageDialog(null, "Please fill all required fields correctly.", "Validation Error",
@@ -604,7 +614,7 @@ public class AnimalViewPanel extends ShelterPanel {
 
 		if (!e.getValueIsAdjusting() && animalList.isEnabled()) {
 			animal = animalList.getSelectedValue();
-
+			
 			if (animal != null) {
 				fillForm();
 			}
@@ -735,13 +745,12 @@ public class AnimalViewPanel extends ShelterPanel {
 		nameField.setText("");
 		birthDateField.setText("");
 		additionalInfoArea.setText("");
-		animalSearchField.setText("");
+		
 		
 		// Reset combo boxes
 		roomComboBox.setSelectedIndex(-1);
 		patronComboBox.setSelectedIndex(-1);
 		animalTypeComboBox.setSelectedIndex(-1);
-		animalTypeSelectionComboBox.setSelectedIndex(0);
 		
 		incidentListModel.clear();
 		examinationListModel.clear();
@@ -751,6 +760,22 @@ public class AnimalViewPanel extends ShelterPanel {
 		
 		animalList.clearSelection();
 		changeFormState(Mode.NONE);
+	}
+	
+	/**
+	 * Clears both fields that are associated with the search method
+	 */
+	public void clearSearch() {
+		animalSearchField.setText("");
+		animalTypeSelectionComboBox.setSelectedIndex(0);
+	}
+	
+	/**
+	 * Clears all fields in the form
+	 */
+	public void clearAll() {
+		clearForm();
+		clearSearch();
 	}
 
 	/**
@@ -807,7 +832,7 @@ public class AnimalViewPanel extends ShelterPanel {
 	 * animal, and updates the button and form states.
 	 */
 	private void onNewButtonPressed() {
-		clearForm();
+		clearAll();
 		changeFormState(Mode.CREATE);
 		animal = new AnimalDTO();
 	}
