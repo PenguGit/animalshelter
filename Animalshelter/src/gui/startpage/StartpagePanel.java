@@ -21,6 +21,9 @@ public class StartpagePanel extends ShelterPanel {
 	public StartpagePanelButton caretakersButton;
 	public StartpagePanelButton vetsButton;
 	
+	/**
+	 * Initializes the start page panel with the 6 main buttons arranged in a grid.
+	 */
 	public StartpagePanel() {
 		setLayout(new BorderLayout());
         
