@@ -27,7 +27,7 @@ public class DataManager {
 	
 	public int saveEntity(Entity entity) {
 		int newId = entity.getId();
-		try (Connection connection = DriverManager.getConnection(Constants.DB_URL, Constants.DB_USER, Constants.DB_PASSWORD)){
+		try (Connection connection = DriverManager.getConnection(Constants.DB_URL)){
 			boolean isUpdate = entity.getId() > 0;
 			PreparedStatement statement = isUpdate ? entity.getSqlUpdateStatement(connection) : entity.getSqlInsertStatement(connection);
 			statement.executeUpdate();
@@ -50,7 +50,7 @@ public class DataManager {
 	public <T extends Entity> T loadEntityById(Class<T> entityType, int id) {
 		T entity = null;
 		
-		try (Connection connection = DriverManager.getConnection(Constants.DB_URL, Constants.DB_USER, Constants.DB_PASSWORD)){
+		try (Connection connection = DriverManager.getConnection(Constants.DB_URL)){
 			T tempEntity = entityType.getDeclaredConstructor().newInstance();
 			tempEntity.setId(id);
 			PreparedStatement statement = tempEntity.getSqlSelectByIdStatement(connection);
@@ -71,7 +71,7 @@ public class DataManager {
 	public <T extends Entity> ArrayList<T> loadEntities(Class<T> entityType) {
 		ArrayList<T> result = new ArrayList<>();
 
-		try (Connection connection = DriverManager.getConnection(Constants.DB_URL, Constants.DB_USER, Constants.DB_PASSWORD)) {
+		try (Connection connection = DriverManager.getConnection(Constants.DB_URL)) {
 			PreparedStatement statement = entityType.getDeclaredConstructor().newInstance().getSqlSelectAllStatement(connection);
 			ResultSet rs = statement.executeQuery();
 			while(rs.next()) {
@@ -88,7 +88,7 @@ public class DataManager {
 	}
 	
 	public void deleteEntity(Entity entity) {
-		try (Connection connection = DriverManager.getConnection(Constants.DB_URL, Constants.DB_USER, Constants.DB_PASSWORD)) {
+		try (Connection connection = DriverManager.getConnection(Constants.DB_URL)) {
 			PreparedStatement statement = entity.getSqlDeleteStatement(connection);
 			statement.executeUpdate();
 		} catch (SQLException | IllegalArgumentException | SecurityException e) {

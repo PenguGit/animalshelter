@@ -2,8 +2,6 @@ package data.entities;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -56,26 +54,27 @@ public class Animal extends Entity {
 	public Animal() {};
 	
 	public Animal(ResultSet resultSet) throws SQLException {
-		this.id = resultSet.getInt("animal.id");
-		this.name = resultSet.getString("animal.name");
-		this.gender = Gender.fromValue(resultSet.getInt("animal.gender"));
-		this.dateOfBirth = resultSet.getDate("animal.date_of_birth");
-		this.additionalInfo = resultSet.getString("animal.additional_info");
+		this.id = resultSet.getInt("id");
+		this.name = resultSet.getString("name");
+		this.gender = Gender.fromValue(resultSet.getInt("gender"));
 		
-		this.animalType = DataManager.getInstance().loadEntityById(AnimalType.class, resultSet.getInt("animal.animaltype_id"));
-		this.patron = DataManager.getInstance().loadEntityById(Patron.class, resultSet.getInt("animal.patron_id"));
-		this.room = DataManager.getInstance().loadEntityById(Room.class, resultSet.getInt("animal.room_id"));
+		String tempString = resultSet.getString("date_of_birth");
+		this.dateOfBirth = Date.valueOf(tempString);
+		this.additionalInfo = resultSet.getString("additional_info");
+		
+		this.animalType = DataManager.getInstance().loadEntityById(AnimalType.class, resultSet.getInt("animaltype_id"));
+		this.patron = DataManager.getInstance().loadEntityById(Patron.class, resultSet.getInt("patron_id"));
+		this.room = DataManager.getInstance().loadEntityById(Room.class, resultSet.getInt("room_id"));
 		
 		try {
-	        Blob blob = resultSet.getBlob("animal.image"); // Get the image as a Blob
-	        if (blob != null) { // Check if an image exists
-	            try (InputStream inputStream = blob.getBinaryStream()) {
-	                this.image = inputStream.readAllBytes(); // Read the bytes into the byte array
-	            }
+			
+			byte[] imageBytes = resultSet.getBytes("image"); // Get the image as a Blob
+			 if (imageBytes != null) { // Check if an image exists
+	                this.image = imageBytes; // Read the bytes into the byte array
 	        } else {
 	            this.image = null; // Set image to null if it doesn't exist
 	        }
-	    } catch (SQLException | IOException e) {
+	    } catch (SQLException e) {
 	        // Handle the exception appropriately (e.g., log it, re-throw, etc.)
 	        e.printStackTrace(); // Example: print the error
 	        this.image = null; // Or set to a default image if you have one
@@ -165,7 +164,7 @@ public class Animal extends Entity {
 			PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 			statement.setString(1, name);
 			statement.setInt(2, gender.getValue());
-			statement.setDate(3, dateOfBirth);
+			statement.setString(3, dateOfBirth.toString());
 			if(additionalInfo.isBlank()) {
 				statement.setNull(4, Types.VARCHAR);
 			} else {
@@ -201,7 +200,7 @@ public class Animal extends Entity {
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, name);
 			statement.setInt(2, gender.getValue());
-			statement.setDate(3, dateOfBirth);
+			statement.setString(3, dateOfBirth.toString());
 			if(additionalInfo.isBlank()) {
 				statement.setNull(4, Types.VARCHAR);
 			} else {

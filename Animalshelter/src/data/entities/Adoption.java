@@ -16,11 +16,12 @@ public class Adoption extends Entity {
 	public Adoption() {};
 	
 	public Adoption(ResultSet resultSet) throws SQLException {
-		this.id = resultSet.getInt("adoption.id");
-		this.date = resultSet.getDate("adoption.date");
+		this.id = resultSet.getInt("id");
+		String tempString = resultSet.getString("date");
+		this.date = Date.valueOf(tempString);
 		
-		this.adopter = DataManager.getInstance().loadEntityById(Adopter.class, resultSet.getInt("adoption.adopter_id"));
-		this.animal = DataManager.getInstance().loadEntityById(Animal.class, resultSet.getInt("adoption.animal_id"));
+		this.adopter = DataManager.getInstance().loadEntityById(Adopter.class, resultSet.getInt("adopter_id"));
+		this.animal = DataManager.getInstance().loadEntityById(Animal.class, resultSet.getInt("animal_id"));
 	}
 	
 	public Adoption(Date date, Adopter adopter, Animal animal) {
@@ -66,7 +67,7 @@ public class Adoption extends Entity {
 		String sql = "INSERT INTO adoption(date, Adopter_id, Animal_id) VALUES(?, ?, ?)";
 		try {
 			PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-			statement.setDate(1, date);
+			statement.setString(1, date.toString());
 			statement.setInt(2, adopter.getId());
 			statement.setInt(3, animal.getId());
 			return statement;
@@ -81,7 +82,7 @@ public class Adoption extends Entity {
 		String sql = "UPDATE adoption SET date = ?, Adopter_id = ?, Animal_id = ? WHERE id = ?";
 		try {
 			PreparedStatement statement = connection.prepareStatement(sql);
-			statement.setDate(1, date);
+			statement.setString(1, date.toString());
 			statement.setInt(2, adopter.getId());
 			statement.setInt(3, animal.getId());
 			statement.setInt(4, id);

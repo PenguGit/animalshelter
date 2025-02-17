@@ -18,12 +18,14 @@ public class Incident extends Entity {
 	public Incident() {};
 	
 	public Incident(ResultSet resultSet) throws SQLException {
-		this.id = resultSet.getInt("incident.id");
-		this.title = resultSet.getString("incident.title");
-		this.date = resultSet.getDate("incident.date");
-		this.description = resultSet.getString("incident.description");
-		this.caretaker = DataManager.getInstance().loadEntityById(Caretaker.class, resultSet.getInt("incident.caretaker_id"));
-		this.animal = DataManager.getInstance().loadEntityById(Animal.class, resultSet.getInt("incident.animal_id"));
+		this.id = resultSet.getInt("id");
+		this.title = resultSet.getString("title");
+		String tempString = resultSet.getString("date");
+		this.date = Date.valueOf(tempString);
+		
+		this.description = resultSet.getString("description");
+		this.caretaker = DataManager.getInstance().loadEntityById(Caretaker.class, resultSet.getInt("caretaker_id"));
+		this.animal = DataManager.getInstance().loadEntityById(Animal.class, resultSet.getInt("animal_id"));
 	}
 	
 	public Incident(String title, Date date, String description, Caretaker caretaker, Animal animal) {
@@ -89,7 +91,7 @@ public class Incident extends Entity {
 		try {
 			PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 			statement.setString(1, title);
-			statement.setDate(2, date);
+			statement.setString(2, date.toString());
 			statement.setString(3, description);
 			statement.setInt(4, caretaker.getId());
 			statement.setInt(5, animal.getId());
@@ -106,7 +108,7 @@ public class Incident extends Entity {
 		try {
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, title);
-			statement.setDate(2, date);
+			statement.setString(2, date.toString());
 			statement.setString(3, description);
 			statement.setInt(4, caretaker.getId());
 			statement.setInt(5, animal.getId());

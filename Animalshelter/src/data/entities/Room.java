@@ -11,8 +11,8 @@ public class Room extends Entity {
 	public Room() {};
 	
 	public Room(ResultSet resultSet) throws SQLException {
-		this.id = resultSet.getInt("room.id");
-		this.name = resultSet.getString("room.name");
+		this.id = resultSet.getInt("id");
+		this.name = resultSet.getString("name");
 	}
 	
 	public Room(String name) {

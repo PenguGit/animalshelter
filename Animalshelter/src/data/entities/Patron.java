@@ -9,11 +9,11 @@ public class Patron extends Person {
 	public Patron() {};
 	
 	public Patron(ResultSet resultSet) throws SQLException {
-		this.id = resultSet.getInt("patron.id");
-		this.lastName = resultSet.getString("patron.last_name");
-		this.firstName = resultSet.getString("patron.first_name");
-		this.phoneNumber = resultSet.getString("patron.phone_number");
-		this.email = resultSet.getString("patron.email");
+		this.id = resultSet.getInt("id");
+		this.lastName = resultSet.getString("last_name");
+		this.firstName = resultSet.getString("first_name");
+		this.phoneNumber = resultSet.getString("phone_number");
+		this.email = resultSet.getString("email");
 	}
 	
 	public Patron(String lastName, String firstName, String phoneNumber, String email) {

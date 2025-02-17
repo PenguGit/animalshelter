@@ -11,8 +11,8 @@ public class AnimalType extends Entity {
 	public AnimalType() {};
 	
 	public AnimalType(ResultSet resultSet) throws SQLException {
-		this.id = resultSet.getInt("animaltype.id");
-		this.name = resultSet.getString("animaltype.name");
+		this.id = resultSet.getInt("id");
+		this.name = resultSet.getString("name");
 	}
 	
 	public AnimalType(String name) {
