@@ -567,8 +567,6 @@ public class AnimalViewPanel extends ShelterPanel {
 				dtoManager.saveAnimal(animal);
 				changeFormState(Mode.SELECTED);
 			}
-			
-			
 		} else {
 			JOptionPane.showMessageDialog(null, "Please fill all required fields correctly.", "Validation Error",
 					JOptionPane.ERROR_MESSAGE);
