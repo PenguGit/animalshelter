@@ -15,8 +15,8 @@ import javax.swing.JScrollPane;
 
 import bl.DTOManager;
 import bl.entities.AnimalDTO;
-import bl.entities.ExaminationDTO;
-import bl.entities.VetDTO;
+import bl.entities.CaretakerDTO;
+import bl.entities.IncidentDTO;
 import gui.ShelterBirthdateTextField;
 import gui.ShelterButton;
 import gui.ShelterComboBox;
@@ -27,7 +27,7 @@ import gui.ShelterTextArea;
 import gui.ShelterTextField;
 import gui.util.GUIConstants;
 
-public class ExaminationPopupDialog extends JDialog implements GUIConstants {
+public class IncidentCreateDialog extends JDialog implements GUIConstants {
 	private DTOManager dtoManager;
 	
 	private GridBagConstraints gbc = new GridBagConstraints();
@@ -38,7 +38,7 @@ public class ExaminationPopupDialog extends JDialog implements GUIConstants {
 	private ShelterTextArea descriptionTextArea;
 	private ShelterBirthdateTextField dateField;
 	private ShelterLabel animalLabel;
-	private ShelterComboBox<VetDTO> vetComboBox;
+	private ShelterComboBox<CaretakerDTO> caretakerComboBox;
 	
 	private ShelterButton cancelButton;
 	private ShelterButton saveButton;
@@ -48,13 +48,13 @@ public class ExaminationPopupDialog extends JDialog implements GUIConstants {
 	private boolean resultSuccess;
 	
 	/**
-	 * Constructs a new examination popup.
-	 * @param animal The animal to which the examination would apply.
+	 * Constructs a new incident popup.
+	 * @param animal The animal to which the incident would apply.
 	 * @param owner The frame from which the dialog was opened.
 	 * @param title The dialog title.
 	 * @param modal If true, the resulting popup is modal (i.e. it blocks on setVisible(true) until setVisible(false) and it blocks input to the underlying window.)
 	 */
-	public ExaminationPopupDialog(AnimalDTO animal, Frame owner, String title, boolean modal) {
+	public IncidentCreateDialog(AnimalDTO animal, Frame owner, String title, boolean modal) {
 		super(owner, title, modal);
 		
 		this.animal = animal;
@@ -91,11 +91,11 @@ public class ExaminationPopupDialog extends JDialog implements GUIConstants {
 		animalLabel = new ShelterLabel(animal.getName());
 		animalLabel.setPreferredSize(new Dimension(250, 30));
 		
-		DefaultComboBoxModel<VetDTO> vetComboBoxModel = new DefaultComboBoxModel<>();
-		vetComboBoxModel.addAll(dtoManager.loadVets());
-		vetComboBox = new ShelterComboBox<VetDTO>(vetComboBoxModel);
-		vetComboBox.setRenderer(new ShelterListCellRenderer());
-		vetComboBox.setPreferredSize(new Dimension(250, 30));
+		DefaultComboBoxModel<CaretakerDTO> caretakerComboBoxModel = new DefaultComboBoxModel<>();
+		caretakerComboBoxModel.addAll(dtoManager.loadCaretakers());
+		caretakerComboBox = new ShelterComboBox<CaretakerDTO>(caretakerComboBoxModel);
+		caretakerComboBox.setRenderer(new ShelterListCellRenderer());
+		caretakerComboBox.setPreferredSize(new Dimension(250, 30));
 		
 		gbc.insets = new Insets(10, 10, 10, 10);
         gbc.anchor = GridBagConstraints.WEST;
@@ -103,7 +103,7 @@ public class ExaminationPopupDialog extends JDialog implements GUIConstants {
         addLabelAndField(gbc, "Beschreibung:", descriptionTextAreaScrollPane, 1, 3);
         addLabelAndField(gbc, "Datum:", dateField, 4, 1);
         addLabelAndField(gbc, "Tier:", animalLabel, 5, 1);
-        addLabelAndField(gbc, "Arzt:", vetComboBox, 6, 1);
+        addLabelAndField(gbc, "Pfleger:", caretakerComboBox, 6, 1);
         
         gbc.gridwidth = 1;
         gbc.gridy = 7;
@@ -165,9 +165,9 @@ public class ExaminationPopupDialog extends JDialog implements GUIConstants {
 			return;
 		}
 		
-		ExaminationDTO examination = new ExaminationDTO(titleTextField.getText(), dateField.getDate(), descriptionTextArea.getText(), (VetDTO)vetComboBox.getSelectedItem(), animal);
+		IncidentDTO incident = new IncidentDTO(titleTextField.getText(), dateField.getDate(), descriptionTextArea.getText(), (CaretakerDTO)caretakerComboBox.getSelectedItem(), animal);
 		
-		dtoManager.saveExamination(examination);
+		dtoManager.saveIncident(incident);
 
 		resultSuccess = true;
 		setVisible(false);
@@ -175,19 +175,19 @@ public class ExaminationPopupDialog extends JDialog implements GUIConstants {
 	}
 	
 	/**
-     * Validates the examination data before saving.
+     * Validates the incident data before saving.
      * Checks if all required fields are filled and valid.
      *
-     * @return True if the examination data is valid, false otherwise.
+     * @return True if the incident data is valid, false otherwise.
      */
 	private boolean validateForm() {
-		return !titleTextField.getText().isBlank() && !descriptionTextArea.getText().isBlank() && dateField.getDate() != null && vetComboBox.getSelectedItem() != null;
+		return !titleTextField.getText().isBlank() && !descriptionTextArea.getText().isBlank() && dateField.getDate() != null && caretakerComboBox.getSelectedItem() != null;
 	}
 	
 	/**
 	 * Shows the dialog and (assuming it is modal) returns success or failure of the dialogs' operation AFTER setVisible(false) has been called.
 	 * 
-	 * @return True if the new examination was saved successfully, false otherwise.
+	 * @return True if the new incident was saved successfully, false otherwise.
 	 */
 	public boolean showDialog() {
 		setVisible(true);

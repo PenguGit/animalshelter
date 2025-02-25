@@ -7,29 +7,21 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 import bl.DTOManager;
-import bl.entities.AnimalDTO;
-import bl.entities.CaretakerDTO;
 import bl.entities.IncidentDTO;
 import gui.ShelterBirthdateTextField;
 import gui.ShelterButton;
-import gui.ShelterComboBox;
 import gui.ShelterLabel;
-import gui.ShelterListCellRenderer;
 import gui.ShelterPanel;
 import gui.ShelterTextArea;
 import gui.ShelterTextField;
 import gui.util.GUIConstants;
 
-public class IncidentPopupDialog extends JDialog implements GUIConstants {
-	private DTOManager dtoManager;
-	
+public class IncidentDisplayDialog extends JDialog implements GUIConstants {
 	private GridBagConstraints gbc = new GridBagConstraints();
 	
 	private ShelterPanel panel;
@@ -38,32 +30,27 @@ public class IncidentPopupDialog extends JDialog implements GUIConstants {
 	private ShelterTextArea descriptionTextArea;
 	private ShelterBirthdateTextField dateField;
 	private ShelterLabel animalLabel;
-	private ShelterComboBox<CaretakerDTO> caretakerComboBox;
+	private ShelterLabel caretakerLabel;
 	
-	private ShelterButton cancelButton;
-	private ShelterButton saveButton;
+	private ShelterButton closeButton;
 	
-	private AnimalDTO animal;
-	
-	private boolean resultSuccess;
+	private IncidentDTO incident;
 	
 	/**
-	 * Constructs a new incident popup.
-	 * @param animal The animal to which the incident would apply.
+	 * Constructs a new examination display popup.
+	 * @param examination The examination data to display.
 	 * @param owner The frame from which the dialog was opened.
 	 * @param title The dialog title.
 	 * @param modal If true, the resulting popup is modal (i.e. it blocks on setVisible(true) until setVisible(false) and it blocks input to the underlying window.)
 	 */
-	public IncidentPopupDialog(AnimalDTO animal, Frame owner, String title, boolean modal) {
+	public IncidentDisplayDialog(IncidentDTO incident, Frame owner, String title, boolean modal) {
 		super(owner, title, modal);
 		
-		this.animal = animal;
+		this.incident = incident;
 		
 		setSize(200, 150);
 		setLocationRelativeTo(owner);
 		setResizable(false);
-		
-		dtoManager = new DTOManager();
 
 		panel = new ShelterPanel();
 		add(panel);
@@ -72,6 +59,7 @@ public class IncidentPopupDialog extends JDialog implements GUIConstants {
 		panel.setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
 
 		initializeComponents();
+		fillForm();
 	}
 
 	/**
@@ -80,22 +68,22 @@ public class IncidentPopupDialog extends JDialog implements GUIConstants {
 	private void initializeComponents() {;
 		titleTextField = new ShelterTextField();
 		titleTextField.setPreferredSize(new Dimension(250, 30));
+		titleTextField.setEnabled(false);
 	
 		descriptionTextArea = new ShelterTextArea();
 		JScrollPane descriptionTextAreaScrollPane = new JScrollPane(descriptionTextArea);
 		descriptionTextAreaScrollPane.setPreferredSize(new Dimension(250, 120));
+		descriptionTextArea.setEnabled(false);
 		
 		dateField = new ShelterBirthdateTextField();
 		dateField.setPreferredSize(new Dimension(250, 30));
+		dateField.setEnabled(false);
 		
-		animalLabel = new ShelterLabel(animal.getName());
+		animalLabel = new ShelterLabel();
 		animalLabel.setPreferredSize(new Dimension(250, 30));
 		
-		DefaultComboBoxModel<CaretakerDTO> caretakerComboBoxModel = new DefaultComboBoxModel<>();
-		caretakerComboBoxModel.addAll(dtoManager.loadCaretakers());
-		caretakerComboBox = new ShelterComboBox<CaretakerDTO>(caretakerComboBoxModel);
-		caretakerComboBox.setRenderer(new ShelterListCellRenderer());
-		caretakerComboBox.setPreferredSize(new Dimension(250, 30));
+		caretakerLabel = new ShelterLabel();
+		caretakerLabel.setPreferredSize(new Dimension(250, 30));
 		
 		gbc.insets = new Insets(10, 10, 10, 10);
         gbc.anchor = GridBagConstraints.WEST;
@@ -103,25 +91,17 @@ public class IncidentPopupDialog extends JDialog implements GUIConstants {
         addLabelAndField(gbc, "Beschreibung:", descriptionTextAreaScrollPane, 1, 3);
         addLabelAndField(gbc, "Datum:", dateField, 4, 1);
         addLabelAndField(gbc, "Tier:", animalLabel, 5, 1);
-        addLabelAndField(gbc, "Pfleger:", caretakerComboBox, 6, 1);
+        addLabelAndField(gbc, "Pfleger:", caretakerLabel, 6, 1);
         
         gbc.gridwidth = 1;
         gbc.gridy = 7;
         gbc.gridx = 0;
-        cancelButton = new ShelterButton(CANCEL_BUTTON);
-        cancelButton.addActionListener((_) -> {
-        	onCancelButtonPressed();
+        closeButton = new ShelterButton(CANCEL_BUTTON);
+        closeButton.addActionListener((_) -> {
+        	onCloseButtonPressed();
         });
         
-        panel.add(cancelButton, gbc);
-        
-        gbc.gridx = 1;
-        saveButton = new ShelterButton(SAVE_BUTTON);
-        saveButton.addActionListener((_) -> {
-        	onSaveButtonPressed();
-        });
-        
-        panel.add(saveButton, gbc);
+        panel.add(closeButton, gbc);
 	}
 	
 	/**
@@ -150,48 +130,29 @@ public class IncidentPopupDialog extends JDialog implements GUIConstants {
 	/**
 	 * Closes the dialog without saving anything, indirectly reporting a failure result in the process.
 	 */
-	private void onCancelButtonPressed() {
-		resultSuccess = false;
+	private void onCloseButtonPressed() {
 		setVisible(false);
 		dispose();
-	}
-	
-	/**
-	 * Validates the form input fields, saves the resulting object to the database, then sets the result and closes the dialog.
-	 */
-	private void onSaveButtonPressed() {
-		if(!validateForm()) {
-			JOptionPane.showMessageDialog(this, "Please fill all required fields correctly.", "Validation Error", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-		
-		IncidentDTO incident = new IncidentDTO(titleTextField.getText(), dateField.getDate(), descriptionTextArea.getText(), (CaretakerDTO)caretakerComboBox.getSelectedItem(), animal);
-		
-		dtoManager.saveIncident(incident);
-
-		resultSuccess = true;
-		setVisible(false);
-		dispose();
-	}
-	
-	/**
-     * Validates the incident data before saving.
-     * Checks if all required fields are filled and valid.
-     *
-     * @return True if the incident data is valid, false otherwise.
-     */
-	private boolean validateForm() {
-		return !titleTextField.getText().isBlank() && !descriptionTextArea.getText().isBlank() && dateField.getDate() != null && caretakerComboBox.getSelectedItem() != null;
 	}
 	
 	/**
 	 * Shows the dialog and (assuming it is modal) returns success or failure of the dialogs' operation AFTER setVisible(false) has been called.
 	 * 
-	 * @return True if the new incident was saved successfully, false otherwise.
+	 * @return True if the new examination was saved successfully, false otherwise.
 	 */
-	public boolean showDialog() {
+	public void showDialog() {
 		setVisible(true);
-		return resultSuccess;
+	}
+	
+	/**
+	 * Fills the form with values from the examination with which it was initialized.
+	 */
+	private void fillForm() {
+		titleTextField.setText(incident.getTitle());
+		descriptionTextArea.setText(incident.getDescription());
+		dateField.setDate(incident.getDate());
+		animalLabel.setText(incident.getAnimal().getName());
+		caretakerLabel.setText(incident.getCaretaker().getLastName() + ", " + incident.getCaretaker().getFirstName());
 	}
 }
 
