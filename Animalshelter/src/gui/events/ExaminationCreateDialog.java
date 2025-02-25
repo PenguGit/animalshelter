@@ -11,6 +11,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 
 import bl.DTOManager;
 import bl.entities.AnimalDTO;
@@ -22,10 +23,11 @@ import gui.ShelterComboBox;
 import gui.ShelterLabel;
 import gui.ShelterListCellRenderer;
 import gui.ShelterPanel;
+import gui.ShelterTextArea;
 import gui.ShelterTextField;
 import gui.util.GUIConstants;
 
-public class ExaminationPopupDialog extends JDialog implements GUIConstants {
+public class ExaminationCreateDialog extends JDialog implements GUIConstants {
 	private DTOManager dtoManager;
 	
 	private GridBagConstraints gbc = new GridBagConstraints();
@@ -33,7 +35,7 @@ public class ExaminationPopupDialog extends JDialog implements GUIConstants {
 	private ShelterPanel panel;
 	
 	private ShelterTextField titleTextField;
-	private ShelterTextField descriptionTextField;
+	private ShelterTextArea descriptionTextArea;
 	private ShelterBirthdateTextField dateField;
 	private ShelterLabel animalLabel;
 	private ShelterComboBox<VetDTO> vetComboBox;
@@ -52,7 +54,7 @@ public class ExaminationPopupDialog extends JDialog implements GUIConstants {
 	 * @param title The dialog title.
 	 * @param modal If true, the resulting popup is modal (i.e. it blocks on setVisible(true) until setVisible(false) and it blocks input to the underlying window.)
 	 */
-	public ExaminationPopupDialog(AnimalDTO animal, Frame owner, String title, boolean modal) {
+	public ExaminationCreateDialog(AnimalDTO animal, Frame owner, String title, boolean modal) {
 		super(owner, title, modal);
 		
 		this.animal = animal;
@@ -79,14 +81,13 @@ public class ExaminationPopupDialog extends JDialog implements GUIConstants {
 		titleTextField = new ShelterTextField();
 		titleTextField.setPreferredSize(new Dimension(250, 30));
 	
-		descriptionTextField = new ShelterTextField();
-		descriptionTextField.setPreferredSize(new Dimension(250, 30));
+		descriptionTextArea = new ShelterTextArea();
+		JScrollPane descriptionTextAreaScrollPane = new JScrollPane(descriptionTextArea);
+		descriptionTextAreaScrollPane.setPreferredSize(new Dimension(250, 120));
 		
 		dateField = new ShelterBirthdateTextField();
 		dateField.setPreferredSize(new Dimension(250, 30));
 		
-		DefaultComboBoxModel<AnimalDTO> animalComboBoxModel = new DefaultComboBoxModel<>();
-		animalComboBoxModel.addAll(dtoManager.loadAnimals());
 		animalLabel = new ShelterLabel(animal.getName());
 		animalLabel.setPreferredSize(new Dimension(250, 30));
 		
@@ -98,14 +99,14 @@ public class ExaminationPopupDialog extends JDialog implements GUIConstants {
 		
 		gbc.insets = new Insets(10, 10, 10, 10);
         gbc.anchor = GridBagConstraints.WEST;
-        addLabelAndField(gbc, "Bezeichnung:", titleTextField, 0);
-        addLabelAndField(gbc, "Beschreibung:", descriptionTextField, 1);
-        addLabelAndField(gbc, "Datum:", dateField, 2);
-        addLabelAndField(gbc, "Tier:", animalLabel, 3);
-        addLabelAndField(gbc, "Arzt:", vetComboBox, 4);
+        addLabelAndField(gbc, "Bezeichnung:", titleTextField, 0, 1);
+        addLabelAndField(gbc, "Beschreibung:", descriptionTextAreaScrollPane, 1, 3);
+        addLabelAndField(gbc, "Datum:", dateField, 4, 1);
+        addLabelAndField(gbc, "Tier:", animalLabel, 5, 1);
+        addLabelAndField(gbc, "Arzt:", vetComboBox, 6, 1);
         
         gbc.gridwidth = 1;
-        gbc.gridy = 5;
+        gbc.gridy = 7;
         gbc.gridx = 0;
         cancelButton = new ShelterButton(CANCEL_BUTTON);
         cancelButton.addActionListener((_) -> {
@@ -129,17 +130,20 @@ public class ExaminationPopupDialog extends JDialog implements GUIConstants {
 	 * @param labelText The label to place.
 	 * @param field The field to place.
 	 * @param yPos The row in the layout the elements should occupy.
+	 * @param height The number of rows the field should occupy. Usually 1.
 	 */
-	private void addLabelAndField(GridBagConstraints gbc, String labelText, JComponent field, int yPos) {
+	private void addLabelAndField(GridBagConstraints gbc, String labelText, JComponent field, int yPos, int height) {
         ShelterLabel label = new ShelterLabel(labelText);
 
         gbc.gridx = 0;
         gbc.gridy = yPos;
         gbc.gridwidth = 1;
+        gbc.gridheight = 1;
         panel.add(label, gbc);
 
         gbc.gridx = 1;
         gbc.gridwidth = 2;
+        gbc.gridheight = height;
         panel.add(field, gbc);
     }
 	
@@ -161,7 +165,7 @@ public class ExaminationPopupDialog extends JDialog implements GUIConstants {
 			return;
 		}
 		
-		ExaminationDTO examination = new ExaminationDTO(titleTextField.getText(), dateField.getDate(), descriptionTextField.getText(), (VetDTO)vetComboBox.getSelectedItem(), animal);
+		ExaminationDTO examination = new ExaminationDTO(titleTextField.getText(), dateField.getDate(), descriptionTextArea.getText(), (VetDTO)vetComboBox.getSelectedItem(), animal);
 		
 		dtoManager.saveExamination(examination);
 
@@ -177,7 +181,7 @@ public class ExaminationPopupDialog extends JDialog implements GUIConstants {
      * @return True if the examination data is valid, false otherwise.
      */
 	private boolean validateForm() {
-		return !titleTextField.getText().isBlank() && !descriptionTextField.getText().isBlank() && dateField.getDate() != null && vetComboBox.getSelectedItem() != null;
+		return !titleTextField.getText().isBlank() && !descriptionTextArea.getText().isBlank() && dateField.getDate() != null && vetComboBox.getSelectedItem() != null;
 	}
 	
 	/**

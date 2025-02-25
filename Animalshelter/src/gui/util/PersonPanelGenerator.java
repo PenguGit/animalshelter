@@ -20,8 +20,10 @@ public class PersonPanelGenerator {
 	
 	/**
 	 * This utility method generates VetPanel and PatronPanel from CaretakerPanel.
-	 * It loads the source code of CaretakerPanel, replaces occurrences of relevant keywords and the compiles the resulting strings back into classes.
+	 * It loads the source code of CaretakerPanel, replaces occurrences of relevant keywords and then compiles the resulting strings back into classes.
+	 * <p>
 	 * Note: After substantial changes to CaretakerPanel, this may no longer work and will have to be adjusted.
+	 * </p>
 	 */
 	public static void generatePersonPanelClasses() {
 		String[] classNames = {"VetPanel", "PatronPanel"};

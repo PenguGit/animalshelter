@@ -8,6 +8,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -51,8 +53,10 @@ import gui.ShelterSearchField;
 import gui.ShelterTextArea;
 import gui.ShelterTextField;
 import gui.adoptions.AdoptionPopupDialog;
-import gui.events.ExaminationPopupDialog;
-import gui.events.IncidentPopupDialog;
+import gui.events.ExaminationCreateDialog;
+import gui.events.ExaminationDisplayDialog;
+import gui.events.IncidentCreateDialog;
+import gui.events.IncidentDisplayDialog;
 
 /**
  * A panel for viewing and managing animal information. This panel allows users
@@ -444,6 +448,15 @@ public class AnimalViewPanel extends ShelterPanel {
 		ShelterLabel incidentLabel = new ShelterLabel("Vorkommnisse:");
 		incidentListModel = new DefaultListModel<>();
 		incidentList = new ShelterList<IncidentDTO>(incidentListModel);
+		incidentList.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent evt) {
+				if (evt.getClickCount() == 2) {
+					onIncidentDoubleClicked();
+				}
+			}
+		});
+		
+		
 		addIncidentButton = new ShelterButton("+");
 		addIncidentButton.setFocusable(false);
 		addIncidentButton.setEnabled(false);
@@ -480,6 +493,14 @@ public class AnimalViewPanel extends ShelterPanel {
 		ShelterLabel examinationLabel = new ShelterLabel("Untersuchungen:");
 		examinationListModel = new DefaultListModel<>();
 		examinationList = new ShelterList<ExaminationDTO>(examinationListModel);
+		examinationList.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent evt) {
+				if (evt.getClickCount() == 2) {
+					onExaminationDoubleClicked();
+				}
+			}
+		});
+		
 		addExaminationButton = new ShelterButton("+");
 		addExaminationButton.setFocusable(false);
 		addExaminationButton.setEnabled(false);
@@ -632,7 +653,7 @@ public class AnimalViewPanel extends ShelterPanel {
 	 * opens a dialog to create a new incident for the selected animal.
 	 */
 	private void onNewIncidentButtonPressed() {
-		IncidentPopupDialog dialog = new IncidentPopupDialog(animal, (JFrame) SwingUtilities.getWindowAncestor(this),
+		IncidentCreateDialog dialog = new IncidentCreateDialog(animal, (JFrame) SwingUtilities.getWindowAncestor(this),
 				"Neues Vorkommnis", true);
 		dialog.pack();
 		boolean incidentSuccess = dialog.showDialog();
@@ -640,19 +661,39 @@ public class AnimalViewPanel extends ShelterPanel {
 			refreshListModel(incidentListModel, dtoManager.loadIncidentsByAnimalId(animal.getId()));
 		}
 	}
+	
+	/**
+	 * Handles the even when an entry in the incident list is double clicked, opening the display dialog.
+	 */
+	private void onIncidentDoubleClicked() {
+		IncidentDisplayDialog dialog = new IncidentDisplayDialog(incidentList.getSelectedValue(),
+				(JFrame) SwingUtilities.getWindowAncestor(this), "Vorkommnis", true);
+		dialog.pack();
+		dialog.showDialog();
+	}
 
 	/**
 	 * Handles the event when the "New Examination" button is pressed. This method
 	 * opens a dialog to create a new examination for the selected animal.
 	 */
 	private void onNewExaminationButtonPressed() {
-		ExaminationPopupDialog dialog = new ExaminationPopupDialog(animal,
+		ExaminationCreateDialog dialog = new ExaminationCreateDialog(animal,
 				(JFrame) SwingUtilities.getWindowAncestor(this), "Neue Untersuchung", true);
 		dialog.pack();
 		boolean examinationSuccess = dialog.showDialog();
 		if (examinationSuccess) {
 			refreshListModel(examinationListModel, dtoManager.loadExaminationsByAnimalId(animal.getId()));
 		}
+	}
+	
+	/**
+	 * Handles the even when an entry in the examination list is double clicked, opening the display dialog.
+	 */
+	private void onExaminationDoubleClicked() {
+		ExaminationDisplayDialog dialog = new ExaminationDisplayDialog(examinationList.getSelectedValue(),
+				(JFrame) SwingUtilities.getWindowAncestor(this), "Untersuchung", true);
+		dialog.pack();
+		dialog.showDialog();
 	}
 
 	/**
