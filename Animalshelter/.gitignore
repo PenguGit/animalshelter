@@ -8,10 +8,11 @@
 *.nar
 hs_err_pid*
 replay_pid*
-
+doc/
 ##############################
 ## Eclipse
 ##############################
+doc/
 .settings/
 bin/
 tmp/
