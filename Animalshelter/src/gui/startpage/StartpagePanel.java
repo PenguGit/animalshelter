@@ -17,9 +17,11 @@ public class StartpagePanel extends ShelterPanel {
 	public StartpagePanelButton animalsButton;
 	public StartpagePanelButton roomsButton;
 	public StartpagePanelButton adoptionsButton;
+	public StartpagePanelButton searchButton;
 	public StartpagePanelButton patronsButton;
 	public StartpagePanelButton caretakersButton;
 	public StartpagePanelButton vetsButton;
+	public StartpagePanelButton statisticsButton;
 	
 	/**
 	 * Initializes the start page panel with the 6 main buttons arranged in a grid.
@@ -27,8 +29,10 @@ public class StartpagePanel extends ShelterPanel {
 	public StartpagePanel() {
 		setLayout(new BorderLayout());
         
+		int buttonColumns = 4;
+		
         ShelterPanel buttonPanel = new ShelterPanel();
-        buttonPanel.setLayout(new GridBagLayout());  // 2x3 grid, spacing
+        buttonPanel.setLayout(new GridBagLayout());  // 2x4 grid, spacing
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
         
         GridBagConstraints gbc = new GridBagConstraints();
@@ -49,7 +53,7 @@ public class StartpagePanel extends ShelterPanel {
         animalsButton.setBackground(new Color(144, 238, 144));
         animalsButton.setFocusable(false);
         buttonPanel.add(animalsButton, gbc);
-        if (index++ % 3 == 0) {
+        if (index++ % buttonColumns == 0) {
             gbc.gridx = 0;
             gbc.gridy++;
         } else {
@@ -62,7 +66,7 @@ public class StartpagePanel extends ShelterPanel {
         roomsButton.setBackground(new Color(216, 191, 216));
         roomsButton.setFocusable(false);
         buttonPanel.add(roomsButton, gbc);
-        if (index++ % 3 == 0) {
+        if (index++ % buttonColumns == 0) {
             gbc.gridx = 0;
             gbc.gridy++;
         } else {
@@ -75,11 +79,24 @@ public class StartpagePanel extends ShelterPanel {
         adoptionsButton.setBackground(new Color(240, 128, 128)); 
         adoptionsButton.setFocusable(false);
         buttonPanel.add(adoptionsButton, gbc);
-        if (index++ % 3 == 0) {
+        if (index++ % buttonColumns == 0) {
             gbc.gridx = 0;
             gbc.gridy++;
         } else {
             gbc.gridx++;
+        }
+        
+        searchButton = new StartpagePanelButton("Suche", IconManager.getIcon(Type.SEARCH, Size.DEFAULT), IconManager.getIcon(Type.SEARCH, Size.LARGE));
+        searchButton.setPreferredSize(new Dimension(200, 200));
+        searchButton.setMinimumSize(new Dimension(200, 200));
+        searchButton.setBackground(new Color(189, 252, 201)); 
+        searchButton.setFocusable(false);
+        buttonPanel.add(searchButton, gbc);
+        if (index++ % buttonColumns == 0) {
+        	gbc.gridx = 0;
+        	gbc.gridy++;
+        } else {
+        	gbc.gridx++;
         }
         
         patronsButton = new StartpagePanelButton("Paten", IconManager.getIcon(Type.PATRON, Size.DEFAULT), IconManager.getIcon(Type.PATRON, Size.LARGE));
@@ -88,7 +105,7 @@ public class StartpagePanel extends ShelterPanel {
         patronsButton.setBackground(new Color(255, 182, 193)); 
         patronsButton.setFocusable(false);
         buttonPanel.add(patronsButton, gbc);
-        if (index++ % 3 == 0) {
+        if (index++ % buttonColumns == 0) {
             gbc.gridx = 0;
             gbc.gridy++;
         } else {
@@ -101,7 +118,7 @@ public class StartpagePanel extends ShelterPanel {
         caretakersButton.setBackground(new Color(255, 204, 153)); 
         caretakersButton.setFocusable(false);
         buttonPanel.add(caretakersButton, gbc);
-        if (index++ % 3 == 0) {
+        if (index++ % buttonColumns == 0) {
             gbc.gridx = 0;
             gbc.gridy++;
         } else {
@@ -114,7 +131,21 @@ public class StartpagePanel extends ShelterPanel {
         vetsButton.setBackground(new Color(173, 216, 230)); 
         vetsButton.setFocusable(false);
         buttonPanel.add(vetsButton, gbc);
-        if (index++ % 3 == 0) {
+        if (index++ % buttonColumns == 0) {
+        	gbc.gridx = 0;
+        	gbc.gridy++;
+        } else {
+        	gbc.gridx++;
+        }
+        
+        statisticsButton = new StartpagePanelButton("Statistik", IconManager.getIcon(Type.STATISTICS, Size.DEFAULT), IconManager.getIcon(Type.STATISTICS, Size.LARGE));
+        statisticsButton.setPreferredSize(new Dimension(200, 200));
+        statisticsButton.setMinimumSize(new Dimension(200, 200));
+        statisticsButton.setBackground(new Color(255, 253, 208)); 
+        statisticsButton.setFocusable(false);
+        statisticsButton.setEnabled(false); //TODO: Implement statistics
+        buttonPanel.add(statisticsButton, gbc);
+        if (index++ % buttonColumns == 0) {
         	gbc.gridx = 0;
         	gbc.gridy++;
         } else {

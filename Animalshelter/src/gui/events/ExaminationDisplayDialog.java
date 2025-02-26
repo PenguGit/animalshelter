@@ -11,7 +11,6 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 
-import bl.DTOManager;
 import bl.entities.ExaminationDTO;
 import gui.ShelterBirthdateTextField;
 import gui.ShelterButton;
