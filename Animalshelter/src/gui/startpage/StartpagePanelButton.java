@@ -21,11 +21,17 @@ public class StartpagePanelButton extends ShelterButton {
 		
 		addMouseListener(new MouseAdapter() {
 		    public void mouseEntered(MouseEvent evt) {
+		    	if(!isEnabled()) {
+		    		return;
+		    	}
 		        setText("");
 		        setIcon(largeIcon);
 		    }
 
 		    public void mouseExited(MouseEvent evt) {
+		    	if(!isEnabled()) {
+		    		return;
+		    	}
 		        setText(defaultText);
 		        setIcon(defaultIcon);
 		    }

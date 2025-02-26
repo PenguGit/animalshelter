@@ -32,6 +32,10 @@ public class IconManager implements GUIConstants {
 		 */
 		ADOPTION,
 		/**
+		 * Icon representing search.
+		 */
+		SEARCH,
+		/**
 		 * Icon representing patrons.
 		 */
 		PATRON,
@@ -42,7 +46,11 @@ public class IconManager implements GUIConstants {
 		/**
 		 * Icon representing vets.
 		 */
-		VET
+		VET,
+		/**
+		 * Icon representing statistics.
+		 */
+		STATISTICS
 	}
 	
 	/**
@@ -75,31 +83,37 @@ public class IconManager implements GUIConstants {
 	 * @see Size
 	 */
 	public static ImageIcon getIcon(Type type, Size size) {
-		ImageIcon animalIcon;
+		ImageIcon icon;
 		switch(type) {
 			case ADOPTION:
-				animalIcon = new ImageIcon("resources/adoption.png");
+				icon = new ImageIcon("resources/adoption.png");
 				break;
 			case ANIMAL:
-				animalIcon = new ImageIcon("resources/animal.png");
+				icon = new ImageIcon("resources/animal.png");
 				break;
 			case APP:
-				animalIcon = new ImageIcon("resources/dachshund.png");
+				icon = new ImageIcon("resources/dachshund.png");
 				break;
 			case BACK:
-				animalIcon = new ImageIcon("resources/back.png");
+				icon = new ImageIcon("resources/back.png");
 				break;
 			case CARETAKER:
-				animalIcon = new ImageIcon("resources/caretaker.png");
+				icon = new ImageIcon("resources/caretaker.png");
 				break;
 			case PATRON:
-				animalIcon = new ImageIcon("resources/patron.png");
+				icon = new ImageIcon("resources/patron.png");
 				break;
 			case ROOMS:
-				animalIcon = new ImageIcon("resources/rooms.png");
+				icon = new ImageIcon("resources/rooms.png");
+				break;
+			case SEARCH:
+				icon = new ImageIcon("resources/search.png");
+				break;
+			case STATISTICS:
+				icon = new ImageIcon("resources/statistics.png");
 				break;
 			case VET:
-				animalIcon = new ImageIcon("resources/vet.png");
+				icon = new ImageIcon("resources/vet.png");
 				break;
 			default:
 				throw new IllegalArgumentException("Unexpected value: " + type);
@@ -107,11 +121,11 @@ public class IconManager implements GUIConstants {
 		
 		switch(size) {
 			case DEFAULT:
-				return new ImageIcon(animalIcon.getImage().getScaledInstance(DEFAULT_ICON_SIZE.width, DEFAULT_ICON_SIZE.height, Image.SCALE_SMOOTH));
+				return new ImageIcon(icon.getImage().getScaledInstance(DEFAULT_ICON_SIZE.width, DEFAULT_ICON_SIZE.height, Image.SCALE_SMOOTH));
 			case SMALL:
-				return new ImageIcon(animalIcon.getImage().getScaledInstance(SMALL_ICON_SIZE.width, SMALL_ICON_SIZE.height, Image.SCALE_SMOOTH));
+				return new ImageIcon(icon.getImage().getScaledInstance(SMALL_ICON_SIZE.width, SMALL_ICON_SIZE.height, Image.SCALE_SMOOTH));
 			case LARGE:
-				return new ImageIcon(animalIcon.getImage().getScaledInstance(LARGE_ICON_SIZE.width, LARGE_ICON_SIZE.height, Image.SCALE_SMOOTH));
+				return new ImageIcon(icon.getImage().getScaledInstance(LARGE_ICON_SIZE.width, LARGE_ICON_SIZE.height, Image.SCALE_SMOOTH));
 			default:
 				throw new IllegalArgumentException("Unexpected value: " + type);
 		}
