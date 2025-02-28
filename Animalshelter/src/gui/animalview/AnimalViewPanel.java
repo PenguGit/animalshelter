@@ -65,47 +65,151 @@ import gui.events.IncidentDisplayDialog;
  * for uploading images and associating animals with patrons.
  */
 public class AnimalViewPanel extends ShelterPanel {
-	DTOManager dtoManager;
+	/**
+	 * Manages Data Transfer Objects (DTOs) for handling data operations. Used
+	 * throughout the class to facilitate CRUD operations and ensure data
+	 * consistency.
+	 */
+	private DTOManager dtoManager;
+
+	/**
+	 * Represents the currently selected animal. Needed across multiple
+	 * interactions, such as editing, saving, and deleting records.
+	 */
 	private AnimalDTO animal;
 
+	/**
+	 * Holds the list of available animal types. Used to populate dropdown menus
+	 * dynamically and maintain consistency in selections.
+	 */
 	private ArrayList<AnimalTypeDTO> animalTypeList;
+
+	/**
+	 * Stores animals that have not yet been adopted. Helps in filtering and
+	 * displaying relevant data within the UI.
+	 */
 	private ArrayList<AnimalDTO> animalsWithoutAdoptionList;
 
+	/**
+	 * Maintains a collection of all animals in the shelter. Acts as a central data
+	 * source for searches, filtering, and UI updates.
+	 */
 	private ShelterList<AnimalDTO> animalList;
+
+	/**
+	 * Keeps track of all reported incidents related to animals. Ensures incident
+	 * records are easily accessible and manageable.
+	 */
 	private ShelterList<IncidentDTO> incidentList;
+
+	/**
+	 * Contains a history of medical examinations performed on animals. Provides
+	 * easy access to examination details for reference and updates.
+	 */
 	private ShelterList<ExaminationDTO> examinationList;
-	DefaultListModel<AnimalDTO> animalListModel;
-	DefaultListModel<IncidentDTO> incidentListModel;
-	DefaultListModel<ExaminationDTO> examinationListModel;
-	DefaultComboBoxModel<PatronDTO> patronComboBoxModel;
 
-	private ShelterButton addIncidentButton;
-	private ShelterButton addExaminationButton;
-	private ShelterButton saveButton;
-	// private ShelterButton deleteButton;
-	private ShelterButton adoptionButton;
-	private ShelterButton newButton;
-	private ShelterButton uploadImageButton;
-	private ShelterButton editButton;
-	private ShelterButton cancelButton;
+	/**
+	 * Data model backing the UI list of animals. Ensures that the displayed list
+	 * updates dynamically as data changes.
+	 */
+	private DefaultListModel<AnimalDTO> animalListModel;
 
+	/**
+	 * Data model for the list of incidents. Keeps the UI in sync with any changes
+	 * in reported incidents.
+	 */
+	private DefaultListModel<IncidentDTO> incidentListModel;
+
+	/**
+	 * Data model for displaying examination records. Allows real-time updates when
+	 * new records are added or modified.
+	 */
+	private DefaultListModel<ExaminationDTO> examinationListModel;
+
+	/**
+	 * Model for the patron selection dropdown. Keeps the list of available patrons
+	 * up to date for accurate assignment.
+	 */
+	private DefaultComboBoxModel<PatronDTO> patronComboBoxModel;
+
+	/**
+	 * Buttons used for various actions within the UI. These components are
+	 * referenced frequently to handle user interactions and are dynamically
+	 * enabled, disabled, or triggered based on application state.
+	 */
+	private ShelterButton addIncidentButton, addExaminationButton, saveButton, adoptionButton, newButton,
+			uploadImageButton, editButton, cancelButton;
+
+	/**
+	 * Dropdown for selecting an animal type. Requires persistent storage as it is
+	 * dynamically populated and referenced.
+	 */
 	private ShelterComboBox<AnimalTypeDTO> animalTypeComboBox;
+
+	/**
+	 * Dropdown for selecting an animal's assigned room. Keeps track of available
+	 * rooms and updates dynamically.
+	 */
 	private ShelterComboBox<RoomDTO> roomComboBox;
+
+	/**
+	 * Dropdown for selecting a patron. Needs to stay up to date with patron
+	 * availability and assignments.
+	 */
 	private ShelterComboBox<PatronDTO> patronComboBox;
+
+	/**
+	 * Dropdown for filtering animals by type. Used throughout the UI for searching
+	 * and categorization.
+	 */
 	private ShelterComboBox<AnimalTypeDTO> animalTypeSelectionComboBox;
 
+	/**
+	 * Collection of radio buttons for selecting various animal attributes. Grouped
+	 * together for easier management of mutually exclusive options.
+	 */
 	private ArrayList<ShelterRadioButton> radioButtonList;
 
+	/**
+	 * Input field for entering an animal's name. Accessed frequently for validation
+	 * and data binding.
+	 */
 	private ShelterTextField nameField;
+
+	/**
+	 * Input field for specifying an animal's birthdate. Ensures proper date
+	 * formatting and validation.
+	 */
 	private ShelterBirthdateTextField birthDateField;
 
+	/**
+	 * Text area for additional information about the animal. Used across multiple
+	 * interactions for storing and displaying descriptive details.
+	 */
 	private ShelterTextArea additionalInfoArea;
 
+	/**
+	 * Panel for displaying and managing the animal's image. Requires persistent
+	 * reference as the image updates dynamically.
+	 */
 	private ShelterImagePanel imagePanel;
+
+	/**
+	 * Grouping of radio buttons for gender selection. Ensures only one option can
+	 * be selected at a time.
+	 */
 	private ButtonGroup genderButtonGroup;
 
+	/**
+	 * File chooser for selecting images. Used in file-related operations and
+	 * requires persistent reference.
+	 */
 	private JFileChooser fileChooser;
 
+	/**
+	 * Search field for filtering animals in the UI. Keeps track of search queries
+	 * and updates the display dynamically.
+	 */
 	private ShelterSearchField animalSearchField;
 
 	/**
@@ -313,13 +417,6 @@ public class AnimalViewPanel extends ShelterPanel {
 			saveAnimal();
 		});
 
-//		deleteButton = new ShelterButton(DELETE_BUTTON);
-//		deleteButton.setVisible(false);
-//		deleteButton.addActionListener(_ -> {
-//			deleteAnimal();
-//		});
-//		buttonPanel.add(deleteButton);
-
 		buttonPanel.add(adoptionButton);
 		buttonPanel.add(cancelButton);
 		buttonPanel.add(editButton);
@@ -349,15 +446,14 @@ public class AnimalViewPanel extends ShelterPanel {
 		animalListPanel.setLayout(new BoxLayout(animalListPanel, BoxLayout.Y_AXIS));
 
 		DefaultComboBoxModel<AnimalTypeDTO> animalTypeBoxModel = new DefaultComboBoxModel<>();
-		animalTypeBoxModel.addElement(new AnimalTypeDTO(0,"Alle Tiere"));
+		animalTypeBoxModel.addElement(new AnimalTypeDTO(0, "Alle Tiere"));
 		animalTypeBoxModel.addAll(animalTypeList);
 		animalTypeSelectionComboBox = new ShelterComboBox<>(animalTypeBoxModel);
 		animalTypeSelectionComboBox.setMaximumSize(new Dimension(250, 10));
+		animalListPanel.add(animalTypeSelectionComboBox);
 		animalTypeSelectionComboBox.addActionListener(_ -> {
 			performSearch(animalSearchField.getText());
 		});
-		animalListPanel.add(animalTypeSelectionComboBox);
-		
 
 		animalSearchField = new ShelterSearchField(this::performSearch);
 		animalSearchField.setMaximumSize(new Dimension(250, 10));
@@ -378,30 +474,29 @@ public class AnimalViewPanel extends ShelterPanel {
 	}
 
 	/**
-     * Performs a search on the list of animals based on the provided query and the selected animal type.
-     * The search is case-insensitive and filters the list based on both the animal type and the name.
-     * The results are then used to update the displayed list of animals.
-     *
-     * @param query The search query string.  Can be empty but not null.
-     */
+	 * Performs a search on the list of animals based on the provided query and the
+	 * selected animal type. The search is case-insensitive and filters the list
+	 * based on both the animal type and the name. The results are then used to
+	 * update the displayed list of animals.
+	 *
+	 * @param query The search query string. Can be empty but not null.
+	 */
 	public void performSearch(String query) {
-		
 		List<AnimalDTO> filtered;
 		if (animalTypeSelectionComboBox.getSelectedIndex() != 0) {
 			filtered = animalsWithoutAdoptionList.stream()
-					.filter(animal -> animal.getAnimalType().getId() == ((AnimalTypeDTO) animalTypeSelectionComboBox.getSelectedItem()).getId())
+					.filter(animal -> animal.getAnimalType()
+							.getId() == ((AnimalTypeDTO) animalTypeSelectionComboBox.getSelectedItem()).getId())
 					.collect(Collectors.toList());
-		}
-		else {
+		} else {
 			filtered = animalsWithoutAdoptionList;
 		}
 		if (!animalSearchField.getText().isEmpty()) {
-			filtered = filtered.stream()
-					.filter(animal -> animal.getName().toLowerCase().contains(query.toLowerCase()))
+			filtered = filtered.stream().filter(animal -> animal.getName().toLowerCase().contains(query.toLowerCase()))
 					.collect(Collectors.toList());
 		}
 		if (animal != null) {
-			for(AnimalDTO a : filtered) {
+			for (AnimalDTO a : filtered) {
 				if (a.getId() == animal.getId()) {
 					refreshListModel(animalListModel, filtered);
 					animalList.setSelectedValue(a, true);
@@ -456,8 +551,7 @@ public class AnimalViewPanel extends ShelterPanel {
 				}
 			}
 		});
-		
-		
+
 		addIncidentButton = new ShelterButton("+");
 		addIncidentButton.setFocusable(false);
 		addIncidentButton.setEnabled(false);
@@ -501,7 +595,7 @@ public class AnimalViewPanel extends ShelterPanel {
 				}
 			}
 		});
-		
+
 		addExaminationButton = new ShelterButton("+");
 		addExaminationButton.setFocusable(false);
 		addExaminationButton.setEnabled(false);
@@ -578,7 +672,7 @@ public class AnimalViewPanel extends ShelterPanel {
 
 		// Validate and save or process the object
 		if (validateAnimal(animal)) {
-			if(animal.getId() < 1) {
+			if (animal.getId() < 1) {
 				dtoManager.saveAnimal(animal);
 				animalsWithoutAdoptionList = (dtoManager.loadAnimalsNotAdopted());
 				refreshListModel(animalListModel, animalsWithoutAdoptionList);
@@ -593,22 +687,6 @@ public class AnimalViewPanel extends ShelterPanel {
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}
-
-//  /**
-//  * Deletes the currently selected animal.
-//  * This method deletes the animal object using the DTOManager, refreshes the animal list,
-//  * and clears the form.
-//  */
-//	public void deleteAnimal() {
-//		if (animal == null) {
-//			return;
-//		}
-//
-//		dtoManager.deleteAnimal(animal);
-//
-//		refreshListModel(animalListModel, dtoManager.loadAnimalsNotAdopted());
-//		clearForm();
-//	}
 
 	/**
 	 * Selects an animal in the list by its ID. This method iterates through the
@@ -640,7 +718,7 @@ public class AnimalViewPanel extends ShelterPanel {
 
 		if (!e.getValueIsAdjusting() && animalList.isEnabled()) {
 			animal = animalList.getSelectedValue();
-			
+
 			if (animal != null) {
 				fillForm();
 			}
@@ -662,9 +740,10 @@ public class AnimalViewPanel extends ShelterPanel {
 			refreshListModel(incidentListModel, dtoManager.loadIncidentsByAnimalId(animal.getId()));
 		}
 	}
-	
+
 	/**
-	 * Handles the even when an entry in the incident list is double clicked, opening the display dialog.
+	 * Handles the even when an entry in the incident list is double clicked,
+	 * opening the display dialog.
 	 */
 	private void onIncidentDoubleClicked() {
 		IncidentDisplayDialog dialog = new IncidentDisplayDialog(incidentList.getSelectedValue(),
@@ -686,9 +765,10 @@ public class AnimalViewPanel extends ShelterPanel {
 			refreshListModel(examinationListModel, dtoManager.loadExaminationsByAnimalId(animal.getId()));
 		}
 	}
-	
+
 	/**
-	 * Handles the even when an entry in the examination list is double clicked, opening the display dialog.
+	 * Handles the even when an entry in the examination list is double clicked,
+	 * opening the display dialog.
 	 */
 	private void onExaminationDoubleClicked() {
 		ExaminationDisplayDialog dialog = new ExaminationDisplayDialog(examinationList.getSelectedValue(),
@@ -793,23 +873,21 @@ public class AnimalViewPanel extends ShelterPanel {
 		nameField.setText("");
 		birthDateField.setText("");
 		additionalInfoArea.setText("");
-		
-		
+
 		// Reset combo boxes
 		roomComboBox.setSelectedIndex(-1);
 		patronComboBox.setSelectedIndex(-1);
 		animalTypeComboBox.setSelectedIndex(-1);
-		
+
 		incidentListModel.clear();
 		examinationListModel.clear();
 		genderButtonGroup.clearSelection();
 		imagePanel.clearImageData();
-		
-		
+
 		animalList.clearSelection();
 		changeFormState(Mode.NONE);
 	}
-	
+
 	/**
 	 * Clears both fields that are associated with the search method
 	 */
@@ -817,7 +895,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		animalSearchField.setText("");
 		animalTypeSelectionComboBox.setSelectedIndex(0);
 	}
-	
+
 	/**
 	 * Clears all fields in the form
 	 */
@@ -950,7 +1028,7 @@ public class AnimalViewPanel extends ShelterPanel {
 			uploadImageButton.setEnabled(false);
 			animalSearchField.setEnabled(true);
 			animalTypeSelectionComboBox.setEnabled(true);
-			
+
 			break;
 		case SELECTED:
 			animalList.setEnabled(true);
