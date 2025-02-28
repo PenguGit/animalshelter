@@ -640,6 +640,7 @@ public class AnimalViewPanel extends ShelterPanel {
 		imagePanel.clearImageData();
 		if (animal.getImage() != null) {
 			imagePanel.setImageData(animal.getImage());
+			imagePanel.setScale(0.5);
 		}
 
 		refreshListModel(incidentListModel, dtoManager.loadIncidentsByAnimalId(animal.getId()));
