@@ -4,6 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+/**
+ * The {@code Entity} class serves as an abstract base class for all data entities that can be persisted in a database.
+ * It provides common functionality for managing entity IDs and generating SQL PreparedStatements for basic CRUD(Create, Read, Update, Delete) operations.
+ * Subclasses must implement methods to generate SQL insert and update statements specific to their data structure.
+ * This class also provides default implementations for generating SQL delete, select by ID, and select all statements.
+ */
 public abstract class Entity {
 	protected int id = -1;
 	
