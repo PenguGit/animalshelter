@@ -353,10 +353,10 @@ public class AnimalViewPanel extends ShelterPanel {
 		animalTypeBoxModel.addAll(animalTypeList);
 		animalTypeSelectionComboBox = new ShelterComboBox<>(animalTypeBoxModel);
 		animalTypeSelectionComboBox.setMaximumSize(new Dimension(250, 10));
-		animalListPanel.add(animalTypeSelectionComboBox);
 		animalTypeSelectionComboBox.addActionListener(_ -> {
 			performSearch(animalSearchField.getText());
 		});
+		animalListPanel.add(animalTypeSelectionComboBox);
 		
 
 		animalSearchField = new ShelterSearchField(this::performSearch);
@@ -385,6 +385,7 @@ public class AnimalViewPanel extends ShelterPanel {
      * @param query The search query string.  Can be empty but not null.
      */
 	public void performSearch(String query) {
+		
 		List<AnimalDTO> filtered;
 		if (animalTypeSelectionComboBox.getSelectedIndex() != 0) {
 			filtered = animalsWithoutAdoptionList.stream()
