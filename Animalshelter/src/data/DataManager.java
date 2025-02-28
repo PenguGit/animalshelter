@@ -11,6 +11,13 @@ import java.util.ArrayList;
 import data.entities.Entity;
 import util.Constants;
 
+/**
+ * The {@code DataManager} class provides a singleton instance for managing database operations related to {@link Entity} objects.
+ * It handles saving, loading, and deleting entities, abstracting the underlying SQL operations.
+ * This class uses JDBC to interact with a database specified by {@link Constants#DB_URL}.
+ * It supports generic entity loading and provides methods for retrieving single entities by ID or all entities of a specific type.
+ * Each {@link Entity} subclass is expected to provide methods for generating SQL statements (insert, update, select, delete).
+ */
 public class DataManager {
 	private static DataManager instance;
 	
